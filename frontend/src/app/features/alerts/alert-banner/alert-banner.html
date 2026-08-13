@@ -1,0 +1,30 @@
+@if (alerts().length) {
+  <aside
+    class="alert-banner"
+    role="region"
+    aria-live="polite"
+    [attr.aria-label]="t('alertBanner.title', { count: alerts().length })"
+  >
+    <div class="alert-signal" aria-hidden="true"><span></span></div>
+    <div class="alert-copy">
+      <strong>{{ t('alertBanner.title', { count: alerts().length }) }}</strong>
+      <p>
+        {{
+          t('alertBanner.summary', {
+            departments: departmentCount(),
+          })
+        }}
+      </p>
+    </div>
+    <div class="banner-actions">
+      @if (notifications.supported && notifications.permission() !== 'granted') {
+        <button type="button" class="ghost" (click)="notifications.requestPermission()">
+          {{ t('alertBanner.enableNotifications') }}
+        </button>
+      }
+      <a class="directory-link" href="/puntos#directorio-ayuda">
+        {{ t('alertBanner.viewDirectory') }}
+      </a>
+    </div>
+  </aside>
+}

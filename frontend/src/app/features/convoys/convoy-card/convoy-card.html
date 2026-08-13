@@ -1,0 +1,81 @@
+<article class="convoy-card" [class]="'status-' + trip().status">
+  <header>
+    <div>
+      <h3>{{ trip().driverName }}</h3>
+      <p class="route">{{ routeLabel() }}</p>
+    </div>
+    <span class="status-chip">{{ statusLabel() }}</span>
+  </header>
+
+  <p class="destination">{{ trip().destination.name }}</p>
+
+  @if (trip().status === convoyStatus.ARRIVED) {
+    <p class="eta arrived">{{ t('convoyCard.arrivedAt', { time: arrivedLabel() }) }}</p>
+  } @else if (etaLabel()) {
+    <p class="eta">
+      <strong>{{ t('convoyCard.eta', { time: etaLabel() }) }}</strong>
+      <span>{{ t('convoyCard.etaIn', { time: etaCountdown() }) }}</span>
+    </p>
+  } @else {
+    <p class="eta unknown">{{ t('convoyCard.etaUnknown') }}</p>
+  }
+
+  @if (isTravelling() && trip().remainingKm !== null) {
+    <p class="progress">
+      {{ t('convoyCard.remaining', { km: trip().remainingKm ?? 0 }) }}
+      @if (trip().speedKmh) {
+        · {{ t('convoyCard.speed', { speed: trip().speedKmh ?? 0 }) }}
+      }
+      @if (lastSignalLabel()) {
+        · {{ t('convoyCard.lastSignal', { time: lastSignalLabel() }) }}
+      }
+    </p>
+  }
+
+  @if (!trip().shareLocation) {
+    <p class="notice">{{ t('convoyCard.notSharing') }}</p>
+  } @else if (!trip().lastPingAt && trip().status !== convoyStatus.ARRIVED) {
+    <p class="notice">{{ t('convoyCard.waitingSignal') }}</p>
+  } @else if (isStraightLine() && isTravelling()) {
+    <p class="notice">{{ t('convoyCard.straightLine') }}</p>
+  }
+
+  <dl class="facts">
+    <div>
+      <dt>{{ t('convoyCard.cargo') }}</dt>
+      <dd>
+        {{ cargoLabel() }}
+        @if (trip().cargoNotes) {
+          <small>{{ trip().cargoNotes }}</small>
+        }
+      </dd>
+    </div>
+    <div>
+      <dt>{{ t('convoyCard.vehicle') }}</dt>
+      <dd>
+        {{ trip().vehicleDescription }}
+        @if (trip().vehiclePlate) {
+          <small>{{ t('convoyCard.plate', { plate: trip().vehiclePlate }) }}</small>
+        }
+      </dd>
+    </div>
+    <div>
+      <dt>{{ t('convoyCard.departure') }}</dt>
+      <dd>
+        <time [attr.datetime]="trip().departureAt">{{ departureLabel() }}</time>
+      </dd>
+    </div>
+  </dl>
+
+  <footer>
+    <div class="contact-links">
+      <a class="call" [href]="'tel:' + trip().contactPhone">
+        {{ t('convoyCard.call') }} · {{ trip().contactPhone }}
+      </a>
+      <a class="whatsapp" [href]="whatsappLink()" target="_blank" rel="noopener">
+        {{ t('convoyCard.whatsapp') }}
+      </a>
+    </div>
+    <a [href]="mapLink()" target="_blank" rel="noopener">{{ t('convoyCard.openMap') }}</a>
+  </footer>
+</article>

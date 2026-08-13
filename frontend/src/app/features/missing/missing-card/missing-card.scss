@@ -1,0 +1,293 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.missing-card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.missing-card.status-found {
+  border-color: #bcdcc5;
+}
+
+.missing-card.status-closed {
+  opacity: 0.72;
+}
+
+.poster {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #eef1ec;
+}
+
+.poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.kind-chip,
+.status-chip {
+  position: absolute;
+  top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 750;
+  backdrop-filter: blur(6px);
+}
+
+.kind-chip {
+  left: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+}
+
+.kind-chip i {
+  font-style: normal;
+  font-size: 14px;
+}
+
+.status-chip {
+  right: 12px;
+  background: var(--coral);
+  color: white;
+}
+
+.status-found .status-chip {
+  background: var(--green);
+}
+
+.status-closed .status-chip {
+  background: #6c776f;
+}
+
+.body {
+  display: grid;
+  align-content: start;
+  gap: 13px;
+  padding: 17px 19px 19px;
+}
+
+.body header h3 {
+  margin: 0;
+  font: 700 21px/1.2 var(--serif);
+}
+
+.age {
+  margin: 3px 0 0;
+  color: var(--green);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.place {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.facts {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 13px 15px;
+  background: #f4f7f2;
+  border-radius: 11px;
+}
+
+.facts dt {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.facts dd {
+  margin: 3px 0 0;
+  font-size: 13.5px;
+}
+
+.body h4 {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.signs p,
+.contact p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.thumbnails {
+  display: flex;
+  gap: 8px;
+}
+
+.thumbnails img {
+  width: 62px;
+  height: 62px;
+  object-fit: cover;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 9px;
+}
+
+.contact-links a {
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.contact-links .call {
+  background: var(--green);
+  color: white;
+}
+
+.contact-links .whatsapp {
+  border: 1px solid var(--green);
+  color: var(--green);
+}
+
+.found-notice {
+  margin: 0;
+  padding: 10px 13px;
+  border-radius: 9px;
+  background: #e9f4ec;
+  color: #1b5b3a;
+  font-size: 13px;
+}
+
+.pin-prompt {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 13px 15px;
+  border: 1px dashed var(--green);
+  border-radius: 11px;
+  background: #f4f7f2;
+}
+
+.pin-prompt p {
+  flex: 1 0 100%;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.pin-prompt input {
+  width: 7rem;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  color: var(--ink);
+  font-size: 17px;
+  letter-spacing: 0.18em;
+  text-align: center;
+}
+
+.pin-prompt button {
+  border-radius: 8px;
+  padding: 9px 15px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid var(--green);
+  background: white;
+  color: var(--green);
+  cursor: pointer;
+}
+
+.pin-prompt button.primary {
+  background: var(--green);
+  color: white;
+}
+
+.pin-prompt button.primary:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.pin-prompt button.ghost {
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.card-error {
+  margin: 0;
+  color: #8c2f1c;
+  font-size: 13px;
+}
+
+.missing-card footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.missing-card footer a {
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.missing-card footer button {
+  border-radius: 8px;
+  padding: 9px 15px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid var(--green);
+  background: white;
+  color: var(--green);
+  cursor: pointer;
+}
+
+.missing-card footer button.primary {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+
+.missing-card footer button.ghost {
+  border-color: var(--line);
+  color: var(--muted);
+}

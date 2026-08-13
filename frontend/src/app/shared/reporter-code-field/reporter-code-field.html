@@ -1,0 +1,11 @@
+<label class="reporter-code">
+  <span>{{ t('reporterCode.label') }}</span>
+  <input
+    type="password"
+    autocomplete="off"
+    [placeholder]="t('reporterCode.placeholder')"
+    [value]="access.code()"
+    (input)="updateCode($event)"
+  />
+  <small>{{ t('reporterCode.hint') }}</small>
+</label>

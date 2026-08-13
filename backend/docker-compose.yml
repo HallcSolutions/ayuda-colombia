@@ -1,0 +1,27 @@
+# El nombre fija el proyecto de Compose: sin esto toma el de la carpeta ("backend")
+# y choca con otros proyectos del monorepo, borrando sus contenedores como huérfanos.
+name: redayuda
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: redayuda_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: redayuda_user
+      POSTGRES_PASSWORD: redayuda_secret
+      POSTGRES_DB: redayuda_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - redayuda_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U redayuda_user -d redayuda_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  redayuda_postgres_data:
+    # Nombre real fijado para no depender del prefijo del proyecto.
+    name: redayuda_postgres_data

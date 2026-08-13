@@ -1,0 +1,322 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.lodging-card {
+  display: grid;
+  align-content: start;
+  gap: 13px;
+  height: 100%;
+  padding: 17px 19px 19px;
+  box-sizing: border-box;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.lodging-card.status-full {
+  border-color: #f3c9c1;
+}
+
+.lodging-card.status-closed {
+  opacity: 0.72;
+}
+
+header {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: start;
+  gap: 8px;
+}
+
+.kind-chip,
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 750;
+}
+
+.kind-chip {
+  background: #f4f7f2;
+  color: var(--ink);
+}
+
+.kind-chip i {
+  font-style: normal;
+  font-size: 14px;
+}
+
+.status-chip {
+  background: var(--green);
+  color: white;
+}
+
+.status-full .status-chip {
+  background: var(--coral);
+}
+
+.status-closed .status-chip {
+  background: #6c776f;
+}
+
+header h3 {
+  grid-column: 1 / -1;
+  margin: 0;
+  font: 700 21px/1.2 var(--serif);
+}
+
+.place {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.spaces {
+  display: grid;
+  gap: 7px;
+  padding: 14px 16px;
+  border-radius: 11px;
+  background: #f4f7f2;
+}
+
+.spaces .free {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+}
+
+.spaces .free strong {
+  font: 800 32px/1 var(--serif);
+  color: var(--green);
+}
+
+.status-full .spaces .free strong {
+  color: var(--coral);
+}
+
+.spaces .free span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.bar {
+  height: 8px;
+  border-radius: 999px;
+  background: #dfe6dc;
+  overflow: hidden;
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  background: var(--green);
+}
+
+.status-full .bar i {
+  background: var(--coral);
+}
+
+.taken {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.facts dt {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.facts dd {
+  margin: 3px 0 0;
+  font-size: 13.5px;
+}
+
+.notes {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+h4 {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.contact p {
+  margin: 0;
+  font-size: 13.5px;
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 9px;
+}
+
+.contact-links a {
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.contact-links .call {
+  background: var(--green);
+  color: white;
+}
+
+.contact-links .whatsapp {
+  border: 1px solid var(--green);
+  color: var(--green);
+}
+
+.pin-prompt {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 13px 15px;
+  border: 1px dashed var(--green);
+  border-radius: 11px;
+  background: #f4f7f2;
+}
+
+.pin-prompt p {
+  flex: 1 0 100%;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.pin-prompt input {
+  width: 7rem;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  color: var(--ink);
+  font-size: 17px;
+  letter-spacing: 0.18em;
+  text-align: center;
+}
+
+.pin-prompt .spaces-field {
+  display: grid;
+  gap: 4px;
+}
+
+.pin-prompt .spaces-field span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.pin-prompt .spaces-field input {
+  width: 5rem;
+  letter-spacing: normal;
+}
+
+.pin-prompt button {
+  border-radius: 8px;
+  padding: 9px 15px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid var(--green);
+  background: white;
+  color: var(--green);
+  cursor: pointer;
+}
+
+.pin-prompt button.primary {
+  background: var(--green);
+  color: white;
+}
+
+.pin-prompt button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.pin-prompt button.ghost {
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+.card-error {
+  margin: 0;
+  color: #8c2f1c;
+  font-size: 13px;
+}
+
+.lodging-card footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.lodging-card footer a {
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.lodging-card footer button {
+  border-radius: 8px;
+  padding: 9px 15px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid var(--green);
+  background: white;
+  color: var(--green);
+  cursor: pointer;
+}
+
+.lodging-card footer button.primary {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+
+.lodging-card footer button.ghost {
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

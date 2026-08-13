@@ -1,0 +1,113 @@
+<form class="inline-form convoy-form" [formGroup]="form" (ngSubmit)="submit()">
+  <p class="hint">{{ t('convoyForm.hint') }}</p>
+
+  <div class="field-grid">
+    <label>
+      <span>{{ t('convoyForm.driverName') }}</span>
+      <input formControlName="driverName" />
+    </label>
+    <label>
+      <span>{{ t('convoyForm.contactPhone') }}</span>
+      <input
+        formControlName="contactPhone"
+        inputmode="tel"
+        [placeholder]="t('convoyForm.contactPhonePlaceholder')"
+      />
+    </label>
+    <label>
+      <span>{{ t('convoyForm.vehicleDescription') }}</span>
+      <input
+        formControlName="vehicleDescription"
+        [placeholder]="t('convoyForm.vehiclePlaceholder')"
+      />
+    </label>
+    <label>
+      <span>{{ t('convoyForm.vehiclePlate', { optional: t('common.optional') }) }}</span>
+      <input formControlName="vehiclePlate" maxlength="12" />
+    </label>
+    <label>
+      <span>{{ t('convoyForm.originDepartment') }}</span>
+      <select formControlName="originDepartment">
+        <option value="">{{ t('region.selectDepartment') }}</option>
+        @for (department of departments; track department) {
+          <option [value]="department">{{ department }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      <span>{{ t('convoyForm.originMunicipality') }}</span>
+      <input formControlName="originMunicipality" />
+    </label>
+    <label class="wide">
+      <span>{{ t('convoyForm.destination') }}</span>
+      <select formControlName="destinationPointId">
+        <option value="">{{ t('convoyForm.destinationPlaceholder') }}</option>
+        @for (point of destinations(); track point.id) {
+          <option [value]="point.id">
+            {{ point.name }} · {{ point.municipality }}, {{ point.department }}
+          </option>
+        }
+      </select>
+    </label>
+    <label>
+      <span>{{ t('convoyForm.departureAt') }}</span>
+      <input formControlName="departureAt" type="datetime-local" />
+    </label>
+    <label class="wide">
+      <span>{{ t('convoyForm.cargoNotes', { optional: t('common.optional') }) }}</span>
+      <input formControlName="cargoNotes" [placeholder]="t('convoyForm.cargoNotesPlaceholder')" />
+    </label>
+  </div>
+
+  @if (!destinations().length) {
+    <p class="form-error" role="alert">{{ t('convoyForm.noDestinations') }}</p>
+  }
+
+  <fieldset class="cargo-choice">
+    <legend>{{ t('convoyForm.cargo') }}</legend>
+    @for (category of categories; track category) {
+      <button
+        type="button"
+        [class.selected]="cargo().includes(category)"
+        [attr.aria-pressed]="cargo().includes(category)"
+        (click)="toggleCargo(category)"
+      >
+        {{ t(categoryKey(category)) }}
+      </button>
+    }
+  </fieldset>
+
+  <label class="consent">
+    <input type="checkbox" formControlName="shareLocation" />
+    <span>
+      <strong>{{ t('convoyForm.share') }}</strong>
+      <small>{{ t('convoyForm.shareHint') }}</small>
+    </span>
+  </label>
+
+  @if (errorMessage()) {
+    <p class="form-error" role="alert">{{ errorMessage() }}</p>
+  }
+  @if (successMessage()) {
+    <p class="form-success" role="status">{{ successMessage() }}</p>
+  }
+  @if (publishedPin()) {
+    <aside class="pin-panel" role="status">
+      <strong>{{ t('convoyForm.pinTitle') }}</strong>
+      <output class="pin-value">{{ publishedPin() }}</output>
+      <p>{{ t('convoyForm.pinBody') }}</p>
+      <button type="button" class="secondary" (click)="copyPin()">
+        {{ pinCopied() ? t('convoyForm.pinCopied') : t('convoyForm.pinCopy') }}
+      </button>
+    </aside>
+  }
+
+  <div class="form-buttons">
+    <button type="submit" [disabled]="submitting()">
+      {{ submitting() ? t('convoyForm.submitting') : t('convoyForm.submit') }}
+    </button>
+    <button type="button" class="secondary" (click)="closed.emit()">
+      {{ t('common.cancel') }}
+    </button>
+  </div>
+</form>

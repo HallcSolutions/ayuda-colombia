@@ -1,0 +1,78 @@
+<form class="inline-form" [formGroup]="form" (ngSubmit)="submit()">
+  <app-reporter-code-field />
+
+  <div class="field-grid">
+    <label>
+      <span>{{ t('reliefPointForm.name') }}</span>
+      <input formControlName="name" [placeholder]="t('reliefPointForm.namePlaceholder')" />
+    </label>
+    <label>
+      <span>{{ t('reliefPointForm.type') }}</span>
+      <select formControlName="type">
+        @for (pointType of pointTypes; track pointType) {
+          <option [value]="pointType">{{ t(pointTypeKey(pointType)) }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      <span>{{ t('reliefPointForm.department') }}</span>
+      <select formControlName="department">
+        <option value="">{{ t('region.selectDepartment') }}</option>
+        @for (department of departments; track department) {
+          <option [value]="department">{{ department }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      <span>{{ t('reliefPointForm.municipality') }}</span>
+      <input formControlName="municipality" />
+    </label>
+    <label class="wide">
+      <span>{{ t('reliefPointForm.address') }}</span>
+      <input formControlName="addressReference" />
+    </label>
+    <label>
+      <span>{{ t('reliefPointForm.contactName') }}</span>
+      <input formControlName="contactName" />
+    </label>
+    <label>
+      <span>{{ t('reliefPointForm.contactPhone') }}</span>
+      <input formControlName="contactPhone" inputmode="tel" />
+    </label>
+    <label>
+      <span>{{ t('reliefPointForm.schedule') }}</span>
+      <input formControlName="schedule" [placeholder]="t('reliefPointForm.schedulePlaceholder')" />
+    </label>
+    <label>
+      <span>{{ t('reliefPointForm.capacity', { optional: t('common.optional') }) }}</span>
+      <input formControlName="dailyMealCapacity" type="number" min="0" max="50000" />
+    </label>
+    <label class="wide">
+      <span>{{ t('reliefPointForm.notes', { optional: t('common.optional') }) }}</span>
+      <input formControlName="notes" [placeholder]="t('reliefPointForm.notesPlaceholder')" />
+    </label>
+  </div>
+
+  <div class="location-row">
+    <div>
+      <strong>{{ t('reliefPointForm.location') }}</strong>
+      <p>{{ locationMessage() }}</p>
+    </div>
+    <button type="button" class="secondary" (click)="captureCurrentLocation()">
+      {{ t('reliefPointForm.useCurrentLocation') }}
+    </button>
+  </div>
+
+  @if (errorMessage()) {
+    <p class="form-error" role="alert">{{ errorMessage() }}</p>
+  }
+
+  <div class="form-buttons">
+    <button type="submit" [disabled]="submitting()">
+      {{ submitting() ? t('reliefPointForm.submitting') : t('reliefPointForm.submit') }}
+    </button>
+    <button type="button" class="secondary" (click)="closed.emit()">
+      {{ t('common.cancel') }}
+    </button>
+  </div>
+</form>

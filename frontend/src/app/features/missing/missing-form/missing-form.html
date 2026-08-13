@@ -1,0 +1,148 @@
+<form class="inline-form missing-form" [formGroup]="form" (ngSubmit)="submit()">
+  <p class="hint">{{ t('missingForm.hint') }}</p>
+
+  <fieldset class="kind-choice">
+    <legend>{{ t('missingForm.kind') }}</legend>
+    @for (kind of kinds; track kind) {
+      <button
+        type="button"
+        [class.selected]="form.controls.kind.value === kind"
+        [attr.aria-pressed]="form.controls.kind.value === kind"
+        (click)="selectKind(kind)"
+      >
+        <span class="kind-icon" aria-hidden="true">{{ kindIcons[kind] }}</span>
+        {{ t(kindKey(kind)) }}
+      </button>
+    }
+  </fieldset>
+
+  <div class="field-grid">
+    <label>
+      <span>{{ t('missingForm.name') }}</span>
+      <input formControlName="name" [placeholder]="t('missingForm.namePlaceholder')" />
+    </label>
+    <label>
+      <span>{{ t('missingForm.age', { optional: t('common.optional') }) }}</span>
+      <input formControlName="ageYears" type="number" min="0" max="120" inputmode="numeric" />
+    </label>
+    <label class="wide">
+      <span>{{ t('missingForm.description') }}</span>
+      <textarea
+        formControlName="description"
+        rows="3"
+        [placeholder]="t('missingForm.descriptionPlaceholder')"
+      ></textarea>
+    </label>
+    <label>
+      <span>{{ t('missingForm.department') }}</span>
+      <select formControlName="department">
+        <option value="">{{ t('region.selectDepartment') }}</option>
+        @for (department of departments; track department) {
+          <option [value]="department">{{ department }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      <span>{{ t('missingForm.municipality') }}</span>
+      <input formControlName="municipality" />
+    </label>
+    <label class="wide">
+      <span>{{ t('missingForm.lastSeenPlace') }}</span>
+      <input
+        formControlName="lastSeenPlace"
+        [placeholder]="t('missingForm.lastSeenPlacePlaceholder')"
+      />
+    </label>
+    <label>
+      <span>{{ t('missingForm.lastSeenAt') }}</span>
+      <input formControlName="lastSeenAt" type="datetime-local" />
+    </label>
+    <label>
+      <span>{{ t('missingForm.contactName') }}</span>
+      <input
+        formControlName="contactName"
+        [placeholder]="t('missingForm.contactNamePlaceholder')"
+      />
+    </label>
+    <label>
+      <span>{{ t('missingForm.contactPhone') }}</span>
+      <input
+        formControlName="contactPhone"
+        inputmode="tel"
+        [placeholder]="t('missingForm.contactPhonePlaceholder')"
+      />
+    </label>
+  </div>
+
+  <div class="photo-field">
+    <span class="field-title">{{ t('missingForm.photos') }}</span>
+    <label class="upload-box">
+      <input
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        multiple
+        (change)="onPhotosSelected($event)"
+      />
+      <span class="upload-icon" aria-hidden="true">＋</span>
+      <strong>{{ t('missingForm.selectPhotos') }}</strong>
+      <small>{{ t('missingForm.photoHint') }}</small>
+    </label>
+    @if (selectedPhotos().length) {
+      <div class="photo-previews">
+        @for (photo of selectedPhotos(); track photo.previewUrl; let index = $index) {
+          <figure>
+            <img [src]="photo.previewUrl" [alt]="t('missingForm.photoPreview', { index: index + 1 })" />
+            <button
+              type="button"
+              (click)="removePhoto(index)"
+              [attr.aria-label]="t('missingForm.removePhoto', { index: index + 1 })"
+            >
+              ×
+            </button>
+          </figure>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="location-row">
+    <div>
+      <strong>{{ t('missingForm.location', { optional: t('common.optional') }) }}</strong>
+      <p>{{ locationMessage() }}</p>
+    </div>
+    <button type="button" class="secondary" (click)="captureCurrentLocation()">
+      {{ t('reliefPointForm.useCurrentLocation') }}
+    </button>
+  </div>
+
+  <label class="consent">
+    <input type="checkbox" formControlName="consentToPublish" />
+    <span>{{ t('missingForm.consent') }}</span>
+  </label>
+
+  @if (errorMessage()) {
+    <p class="form-error" role="alert">{{ errorMessage() }}</p>
+  }
+  @if (successMessage()) {
+    <p class="form-success" role="status">{{ successMessage() }}</p>
+  }
+  @if (publishedPin()) {
+    <aside class="pin-panel" role="status">
+      <strong>{{ t('missingForm.pinTitle') }}</strong>
+      <output class="pin-value">{{ publishedPin() }}</output>
+      <p>{{ t('missingForm.pinBody') }}</p>
+      <button type="button" class="secondary" (click)="copyPin()">
+        {{ pinCopied() ? t('missingForm.pinCopied') : t('missingForm.pinCopy') }}
+      </button>
+    </aside>
+  }
+
+  <div class="form-buttons">
+    <button type="submit" [disabled]="submitting()">
+      {{ submitting() ? t('missingForm.submitting') : t('missingForm.submit') }}
+    </button>
+    <button type="button" class="secondary" (click)="closed.emit()">
+      {{ t('common.cancel') }}
+    </button>
+  </div>
+</form>

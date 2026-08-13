@@ -1,0 +1,39 @@
+@use '../../../shared/styles/form';
+
+.inline-form {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.location-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 15px;
+  border: 1px dashed #c5cdc4;
+  border-radius: 10px;
+  background: #f4f7f2;
+}
+
+.location-row strong {
+  font-size: 14px;
+}
+
+.location-row p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.location-row button {
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-weight: 700;
+  background: transparent;
+  color: var(--green);
+  border: 1px solid var(--green);
+  cursor: pointer;
+}

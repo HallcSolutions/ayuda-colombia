@@ -1,0 +1,47 @@
+<form class="inline-form" [formGroup]="form" (ngSubmit)="submit()">
+  <app-reporter-code-field />
+
+  <div class="field-grid">
+    <label>
+      <span>{{ t('mealForm.mealType') }}</span>
+      <select formControlName="mealType">
+        @for (mealType of mealTypes; track mealType) {
+          <option [value]="mealType">{{ t(mealTypeKey(mealType)) }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      <span>{{ t('mealForm.servedOn') }}</span>
+      <input formControlName="servedOn" type="date" />
+    </label>
+    <label>
+      <span>{{ t('mealForm.startsAt') }}</span>
+      <input formControlName="startsAt" type="time" />
+    </label>
+    <label>
+      <span>{{ t('mealForm.portionsPlanned') }}</span>
+      <input formControlName="portionsPlanned" type="number" min="1" max="50000" />
+    </label>
+    <label>
+      <span>{{ t('mealForm.portionsDelivered') }}</span>
+      <input formControlName="portionsDelivered" type="number" min="0" max="50000" />
+    </label>
+    <label class="wide">
+      <span>{{ t('mealForm.notes', { optional: t('common.optional') }) }}</span>
+      <input formControlName="notes" [placeholder]="t('mealForm.notesPlaceholder')" />
+    </label>
+  </div>
+
+  @if (errorMessage()) {
+    <p class="form-error" role="alert">{{ errorMessage() }}</p>
+  }
+
+  <div class="form-buttons">
+    <button type="submit" [disabled]="submitting()">
+      {{ submitting() ? t('mealForm.submitting') : t('mealForm.submit') }}
+    </button>
+    <button type="button" class="secondary" (click)="closed.emit()">
+      {{ t('common.cancel') }}
+    </button>
+  </div>
+</form>

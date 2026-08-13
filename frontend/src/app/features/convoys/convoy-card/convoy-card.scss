@@ -1,0 +1,142 @@
+.convoy-card {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--green);
+  border-radius: 13px;
+  background: white;
+}
+
+.convoy-card.status-scheduled,
+.convoy-card.status-paused {
+  border-left-color: #c8811f;
+}
+
+.convoy-card.status-arrived,
+.convoy-card.status-cancelled {
+  border-left-color: #7b8a80;
+}
+
+header {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+h3 {
+  margin: 0;
+  font: 700 19px/1.2 var(--serif);
+}
+
+.route {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.status-chip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #eef2ec;
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.destination {
+  margin: 0;
+  font-weight: 700;
+}
+
+.eta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+  margin: 0;
+}
+
+.eta strong {
+  font-size: 17px;
+}
+
+.eta span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.eta.unknown,
+.eta.arrived {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.progress {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.notice {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #fbf4ea;
+  color: #7a5518;
+  font-size: 12px;
+}
+
+.facts {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+}
+
+.facts dt {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.facts dd {
+  margin: 2px 0 0;
+  font-size: 14px;
+}
+
+.facts small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+footer a {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.contact-links .whatsapp {
+  color: #1d7d4b;
+}

@@ -1,0 +1,60 @@
+<form class="inline-form" [formGroup]="form" (ngSubmit)="submit()">
+  <p class="hint">{{ t('alertForm.hint') }}</p>
+
+  <app-reporter-code-field />
+
+  <div class="field-grid">
+    <label>
+      <span>{{ t('alertForm.category') }}</span>
+      <select formControlName="category">
+        @for (category of categories; track category) {
+          <option [value]="category">{{ t(categoryKey(category)) }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      <span>{{ t('alertForm.severity') }}</span>
+      <select formControlName="severity">
+        @for (urgency of urgencies; track urgency) {
+          <option [value]="urgency">{{ t(urgencyKey(urgency)) }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      <span>{{ t('alertForm.quantity') }}</span>
+      <input
+        formControlName="requestedQuantity"
+        [placeholder]="t('alertForm.quantityPlaceholder')"
+      />
+    </label>
+    <label>
+      <span>{{ t('alertForm.reporter') }}</span>
+      <input formControlName="createdBy" [placeholder]="t('alertForm.reporterPlaceholder')" />
+    </label>
+    <label class="wide">
+      <span>{{ t('alertForm.alertTitle') }}</span>
+      <input formControlName="title" [placeholder]="t('alertForm.alertTitlePlaceholder')" />
+    </label>
+    <label class="wide">
+      <span>{{ t('alertForm.detail') }}</span>
+      <textarea
+        formControlName="message"
+        rows="3"
+        [placeholder]="t('alertForm.detailPlaceholder')"
+      ></textarea>
+    </label>
+  </div>
+
+  @if (errorMessage()) {
+    <p class="form-error" role="alert">{{ errorMessage() }}</p>
+  }
+
+  <div class="form-buttons">
+    <button type="submit" [disabled]="submitting()">
+      {{ submitting() ? t('alertForm.submitting') : t('alertForm.submit') }}
+    </button>
+    <button type="button" class="secondary" (click)="closed.emit()">
+      {{ t('common.cancel') }}
+    </button>
+  </div>
+</form>

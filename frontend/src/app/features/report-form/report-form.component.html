@@ -1,0 +1,193 @@
+<section class="report-section" id="reportar">
+  <div class="section-heading">
+    <div>
+      <span class="eyebrow">{{ t('reportForm.eyebrow') }}</span>
+      <h2>{{ t('reportForm.title') }}</h2>
+    </div>
+    <p>{{ t('reportForm.subtitle') }}</p>
+  </div>
+
+  <form class="report-form" [formGroup]="reportForm" (ngSubmit)="submitReport()">
+    <div class="form-card">
+      <div class="card-heading">
+        <span>1</span>
+        <div>
+          <h3>{{ t('reportForm.step1Title') }}</h3>
+          <p>{{ t('reportForm.step1Subtitle') }}</p>
+        </div>
+      </div>
+      <label class="access-field">
+        <span>{{ t('reporterCode.label') }}</span>
+        <input
+          formControlName="accessCode"
+          type="password"
+          autocomplete="off"
+          [placeholder]="t('reporterCode.placeholder')"
+        />
+        <small>{{ t('reporterCode.hint') }}</small>
+      </label>
+      <div class="form-grid">
+        <label
+          ><span>{{ t('reportForm.reporterName') }}</span
+          ><input
+            formControlName="reporterName"
+            [placeholder]="t('reportForm.reporterNamePlaceholder')"
+        /></label>
+        <label
+          ><span>{{ t('reportForm.contactPhone') }}</span
+          ><input
+            formControlName="contactPhone"
+            inputmode="tel"
+            [placeholder]="t('reportForm.contactPhonePlaceholder')"
+        /></label>
+        <label
+          ><span>{{ t('reportForm.department') }}</span
+          ><input
+            formControlName="department"
+            [placeholder]="t('reportForm.departmentPlaceholder')"
+        /></label>
+        <label
+          ><span>{{ t('reportForm.municipality') }}</span
+          ><input
+            formControlName="municipality"
+            [placeholder]="t('reportForm.municipalityPlaceholder')"
+        /></label>
+        <label class="wide"
+          ><span>{{ t('reportForm.address') }}</span
+          ><input
+            formControlName="addressReference"
+            [placeholder]="t('reportForm.addressPlaceholder')"
+        /></label>
+        <label
+          ><span>{{ t('reportForm.householdSize') }}</span
+          ><input formControlName="householdSize" type="number" min="1" max="50"
+        /></label>
+        <label
+          ><span>{{ t('reportForm.urgency') }}</span
+          ><select formControlName="urgency">
+            <option value="critical">{{ t('reportForm.urgencyCritical') }}</option>
+            <option value="high">{{ t('reportForm.urgencyHigh') }}</option>
+            <option value="medium">{{ t('urgency.medium') }}</option>
+            <option value="low">{{ t('urgency.low') }}</option>
+          </select></label
+        >
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="card-heading">
+        <span>2</span>
+        <div>
+          <h3>{{ t('reportForm.step2Title') }}</h3>
+          <p>{{ t('reportForm.step2Subtitle') }}</p>
+        </div>
+      </div>
+      <label class="upload-zone">
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          multiple
+          (change)="onPhotosSelected($event)"
+        />
+        <span class="upload-icon">＋</span><strong>{{ t('reportForm.selectPhotos') }}</strong
+        ><small>{{ t('reportForm.photoHint') }}</small>
+      </label>
+      @if (selectedPhotos().length) {
+        <div class="photo-preview-list">
+          @for (photo of selectedPhotos(); track photo.previewUrl; let index = $index) {
+            <figure>
+              <img
+                [src]="photo.previewUrl"
+                [alt]="t('reportForm.photoPreview', { index: index + 1 })"
+              /><button
+                type="button"
+                (click)="removePhoto(index)"
+                [attr.aria-label]="t('reportForm.removePhoto', { index: index + 1 })"
+              >
+                ×
+              </button>
+            </figure>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-card">
+      <div class="card-heading">
+        <span>3</span>
+        <div>
+          <h3>{{ t('reportForm.step3Title') }}</h3>
+          <p>{{ t('reportForm.step3Subtitle') }}</p>
+        </div>
+      </div>
+      <div class="location-box" [class.active]="reportForm.value.latitude !== null">
+        <div class="location-symbol">⌖</div>
+        <div>
+          <strong>{{
+            reportForm.value.latitude !== null
+              ? t('reportForm.locationReady')
+              : t('reportForm.locationPrompt')
+          }}</strong>
+          <p>{{ locationMessage() }}</p>
+        </div>
+        <button type="button" class="secondary-button" (click)="captureCurrentLocation()">
+          {{ t('reliefPointForm.useCurrentLocation') }}
+        </button>
+      </div>
+      <button
+        type="button"
+        class="tracking-toggle"
+        [class.active]="trackingLocation()"
+        (click)="toggleLocationTracking()"
+      >
+        <span></span
+        >{{ trackingLocation() ? t('reportForm.stopTracking') : t('reportForm.startTracking') }}
+      </button>
+    </div>
+
+    <div class="form-card full-width">
+      <div class="card-heading">
+        <span>4</span>
+        <div>
+          <h3>{{ t('reportForm.step4Title') }}</h3>
+          <p>{{ t('reportForm.step4Subtitle') }}</p>
+        </div>
+      </div>
+      <div class="needs-grid">
+        @for (need of needsOptions; track need.value) {
+          <button
+            type="button"
+            [class.selected]="selectedNeeds().includes(need.value)"
+            (click)="toggleNeed(need.value)"
+          >
+            <span>{{ selectedNeeds().includes(need.value) ? '✓' : '+' }}</span
+            >{{ t(need.key) }}
+          </button>
+        }
+      </div>
+      <label class="notice-field"
+        ><span>{{ t('reportForm.notice') }}</span
+        ><textarea
+          formControlName="notice"
+          rows="5"
+          [placeholder]="t('reportForm.noticePlaceholder')"
+        ></textarea
+        ><small>{{ reportForm.value.notice?.length || 0 }}/800</small></label
+      >
+      <label class="consent"
+        ><input type="checkbox" formControlName="consentToShareLocation" /><span>{{
+          t('reportForm.consent')
+        }}</span></label
+      >
+      @if (errorMessage()) {
+        <div class="form-message error" role="alert">{{ errorMessage() }}</div>
+      }
+      @if (successMessage()) {
+        <div class="form-message success" role="status">{{ successMessage() }}</div>
+      }
+      <button class="submit-button" type="submit" [disabled]="submitting()">
+        {{ submitting() ? t('reportForm.submitting') : t('reportForm.submit') }} <span>→</span>
+      </button>
+    </div>
+  </form>
+</section>

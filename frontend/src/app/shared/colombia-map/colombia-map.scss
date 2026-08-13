@@ -1,0 +1,338 @@
+.colombia-map {
+  --tone: var(--green);
+  --tone-warning: #c8811f;
+  --tone-muted: #7b8a80;
+  display: grid;
+  gap: 12px;
+  grid-template-areas:
+    'bar'
+    'stage'
+    'detail'
+    'legend';
+}
+
+.map-bar {
+  grid-area: bar;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.map-bar .zone {
+  display: block;
+  font-size: 17px;
+  font-weight: 750;
+}
+
+.map-bar p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  max-width: 46ch;
+}
+
+.map-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.map-bar .ghost {
+  padding: 9px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.map-bar .ghost:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+/* El país es alto y estrecho: se le fija la altura y el dibujo se centra dentro. */
+.map-stage {
+  grid-area: stage;
+  position: relative;
+  height: min(72vh, 560px);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #eef2ec;
+  overflow: hidden;
+}
+
+/* En un teléfono el mapa deja ver que abajo sigue habiendo contenido. */
+@media (max-width: 680px) {
+  .map-stage {
+    height: min(58vh, 460px);
+  }
+
+  .map-bar .zone {
+    font-size: 15px;
+  }
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: manipulation;
+}
+
+.canvas,
+.department-name,
+.pin {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  transition: transform 0.45s ease;
+}
+
+.department {
+  fill: #d7ded4;
+  stroke: #f4f6f2;
+  stroke-width: 1.4;
+  cursor: pointer;
+  transition:
+    fill 0.2s ease,
+    stroke 0.2s ease;
+}
+
+.department.has-points {
+  fill: #b7d3bf;
+}
+
+.department:hover,
+.department:focus-visible {
+  fill: #9cc3a8;
+  outline: none;
+}
+
+.department.is-focused {
+  fill: #cfe3d3;
+  stroke: var(--green);
+  stroke-width: 2.4;
+}
+
+.department-hit-target {
+  fill: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.department-hit-target:focus-visible {
+  fill: rgb(255 210 48 / 18%);
+  stroke: var(--color-focus, #f5c518);
+  stroke-width: 3;
+}
+
+/* Los nombres se leen sobre cualquier relleno gracias al borde claro, y no estorban al tocar. */
+.department-name {
+  pointer-events: none;
+}
+
+.department-name text {
+  fill: #40584a;
+  font-weight: 700;
+  paint-order: stroke;
+  stroke: #f2f5f0;
+  stroke-width: 4;
+  stroke-linejoin: round;
+}
+
+.inset-frame {
+  fill: none;
+  stroke: #b9c3ba;
+  stroke-width: 1.6;
+  stroke-dasharray: 7 5;
+  rx: 8;
+}
+
+/* El camino de un camión: sólido lo recorrido, punteado lo que falta. Con
+   `non-scaling-stroke` la línea conserva su grosor al acercar el mapa. */
+.trail {
+  fill: none;
+  stroke: var(--tone);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.trail.is-pending {
+  stroke-dasharray: 9 7;
+  opacity: 0.5;
+}
+
+.pin {
+  cursor: pointer;
+}
+
+.pin .drop {
+  fill: var(--tone);
+  stroke: #fff;
+  stroke-width: 2.5;
+}
+
+.pin .dot {
+  fill: #fff;
+}
+
+.pin .count {
+  fill: #fff;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+/* El nombre del lugar va bajo la chincheta: se puede leer sin tocarla. */
+.pin .caption {
+  fill: var(--ink);
+  font-size: 22px;
+  font-weight: 700;
+  paint-order: stroke;
+  stroke: #eef2ec;
+  stroke-width: 5;
+  stroke-linejoin: round;
+}
+
+.pin:hover .drop,
+.pin:focus-visible .drop {
+  stroke: var(--ink);
+  outline: none;
+}
+
+.pin.is-selected .drop {
+  fill: var(--coral);
+  stroke-width: 3.5;
+}
+
+.pin .halo {
+  fill: none;
+  stroke: var(--coral);
+  stroke-width: 3;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: map-pulse 1.8s ease-out infinite;
+}
+
+@keyframes map-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas,
+  .pin,
+  .department-name {
+    transition: none;
+  }
+
+  .pin .halo {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+.map-empty {
+  position: absolute;
+  inset: auto 16px 16px;
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+.map-detail {
+  grid-area: detail;
+  position: relative;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: #fff;
+  box-shadow: 0 14px 34px rgba(23, 35, 29, 0.1);
+}
+
+.map-detail .close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--ink);
+  font-size: 19px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.map-legend {
+  grid-area: legend;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.map-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.map-legend li::before {
+  content: '';
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--tone);
+}
+
+.tone-warning {
+  --tone: var(--tone-warning);
+}
+
+.tone-muted {
+  --tone: var(--tone-muted);
+}
+
+.map-legend .legend-urgent::before {
+  background: transparent;
+  border: 2px solid var(--coral);
+}
+
+/* Con la ficha abierta el mapa cede espacio en vez de quedar tapado. */
+@media (min-width: 900px) {
+  .colombia-map:has(.map-detail) {
+    grid-template-columns: minmax(0, 1fr) 22rem;
+    grid-template-areas:
+      'bar bar'
+      'stage detail'
+      'legend legend';
+    align-items: start;
+  }
+
+  .colombia-map:has(.map-detail) .map-detail {
+    max-height: min(72vh, 560px);
+    overflow: auto;
+  }
+}

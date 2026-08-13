@@ -1,0 +1,235 @@
+<section class="relief-points" id="puntos-ayuda">
+  <header class="section-heading">
+    <div>
+      <span class="eyebrow">{{ t('reliefPoints.eyebrow') }}</span>
+      <h2>{{ t('reliefPoints.title') }}</h2>
+      <p>{{ t('reliefPoints.subtitle') }}</p>
+    </div>
+    <button type="button" class="register" (click)="openPointForm()">
+      {{ t('reliefPoints.register') }}
+    </button>
+  </header>
+
+  <app-colombia-map
+    [markers]="mapMarkers()"
+    [selectedId]="selectedPointId()"
+    (markerSelected)="selectPoint($event)"
+  >
+    @if (selectedPoint(); as point) {
+      <div class="map-point-detail">
+        <div class="point-kicker">
+          <span>{{ t(typeKey(point.type)) }}</span>
+          <span [class]="'status status-' + point.status">{{ t(statusKey(point.status)) }}</span>
+        </div>
+        <h3>{{ point.name }}</h3>
+        <p class="point-address">
+          {{ point.municipality }}, {{ point.department }} · {{ point.addressReference }}
+        </p>
+        <div class="selected-need">
+          <strong>{{ t('reliefPoints.needLabel') }}</strong>
+          <p>{{ needSummary(point.id) }}</p>
+        </div>
+        <div class="selected-actions">
+          <a [href]="directionsFor(point)" target="_blank" rel="noopener">
+            {{ t('common.directions') }}
+          </a>
+          <button type="button" (click)="openAlertForm(point)">
+            {{ t('reliefPointCard.requestHelp') }}
+          </button>
+        </div>
+      </div>
+    }
+  </app-colombia-map>
+
+  <section class="directory" id="directorio-ayuda">
+    <header class="directory-heading">
+      <div>
+        <span class="eyebrow">{{ t('reliefPoints.directoryEyebrow') }}</span>
+        <h3>{{ directoryTitle() }}</h3>
+        <p>{{ t('reliefPoints.directoryHint') }}</p>
+      </div>
+      <span class="result-count">{{ totalPoints() }}</span>
+    </header>
+
+    <div class="toolbar">
+      <label class="search">
+        <span class="visually-hidden">{{ t('reliefPoints.searchPlaceholder') }}</span>
+        <input
+          type="search"
+          [placeholder]="t('reliefPoints.searchPlaceholder')"
+          [value]="search()"
+          (input)="updateSearch($event)"
+        />
+      </label>
+      <label>
+        <span class="visually-hidden">{{ t('reliefPoints.allTypes') }}</span>
+        <select [value]="typeFilter()" (change)="updateTypeFilter($event)">
+          <option value="">{{ t('reliefPoints.allTypes') }}</option>
+          @for (pointType of pointTypes; track pointType) {
+            <option [value]="pointType">{{ t(typeKey(pointType)) }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        <span class="visually-hidden">{{ t('reliefPoints.allStatuses') }}</span>
+        <select [value]="statusFilter()" (change)="updateStatusFilter($event)">
+          <option value="">{{ t('reliefPoints.allStatuses') }}</option>
+          @for (status of pointStatuses; track status) {
+            <option [value]="status">{{ t(statusKey(status)) }}</option>
+          }
+        </select>
+      </label>
+      <button type="button" class="ghost" [disabled]="locating()" (click)="sortByDistance()">
+        {{ locating() ? t('reliefPoints.locating') : t('reliefPoints.useMyLocation') }}
+      </button>
+    </div>
+
+    <dl class="stats">
+      <div>
+        <dt>{{ t('reliefPoints.stats.points') }}</dt>
+        <dd>{{ totalPoints() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('reliefPoints.stats.kitchens') }}</dt>
+        <dd>{{ totalKitchens() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('reliefPoints.stats.portionsToday') }}</dt>
+        <dd>{{ totalPortionsToday() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('reliefPoints.stats.alerts') }}</dt>
+        <dd>{{ totalAlerts() }}</dd>
+      </div>
+    </dl>
+
+    @if (locationError()) {
+      <p class="section-error" role="alert">{{ locationError() }}</p>
+    }
+    @if (reliefPointsService.error()) {
+      <p class="section-error" role="alert">{{ reliefPointsService.error() }}</p>
+    }
+
+    @if (showPointForm()) {
+      <app-modal
+        [eyebrow]="t('reliefPoints.eyebrow')"
+        [title]="t('reliefPointForm.title')"
+        (closed)="closePointForm()"
+      >
+        <app-relief-point-form (closed)="closePointForm()" />
+      </app-modal>
+    }
+
+    @if (activeAction(); as action) {
+      <app-modal
+        [eyebrow]="
+          t(
+            action.kind === 'alert' ? 'reliefPointCard.requestHelp' : 'reliefPointCard.registerMeal'
+          )
+        "
+        [title]="
+          action.kind === 'alert'
+            ? t('alertForm.title', { point: action.point.name })
+            : t('mealForm.title', { point: action.point.name })
+        "
+        (closed)="closeAction()"
+      >
+        @if (action.kind === 'alert') {
+          <app-alert-form [reliefPoint]="action.point" (closed)="closeAction()" />
+        } @else {
+          <app-meal-service-form [reliefPoint]="action.point" (closed)="closeAction()" />
+        }
+      </app-modal>
+    }
+
+    @if (reliefPointsService.loading()) {
+      <p class="empty">{{ t('common.loading') }}</p>
+    } @else if (!groups().length) {
+      <div class="empty-state">
+        <h3>{{ t('reliefPoints.empty.title') }}</h3>
+        <p>{{ t('reliefPoints.empty.body') }}</p>
+      </div>
+    } @else {
+      <div class="department-list">
+        @for (group of groups(); track group.department) {
+          <section class="department">
+            <header>
+              <div>
+                <span class="department-dot" aria-hidden="true"></span>
+                <h4>{{ group.department }}</h4>
+              </div>
+              <span>
+                {{
+                  t('region.summary', {
+                    points: group.pointCount,
+                    portions: group.portionsToday,
+                    alerts: group.alertCount,
+                  })
+                }}
+              </span>
+            </header>
+
+            @for (city of group.municipalities; track city.municipality) {
+              <div class="municipality">
+                <h5>{{ city.municipality }}</h5>
+                <ul class="point-list">
+                  @for (point of city.points; track point.id) {
+                    <li class="point-row" [class]="'point-row status-' + point.status">
+                      <div class="point-identity">
+                        <div class="point-kicker">
+                          <span>{{ t(typeKey(point.type)) }}</span>
+                          <span [class]="'status status-' + point.status">
+                            {{ t(statusKey(point.status)) }}
+                          </span>
+                        </div>
+                        <h6>{{ point.name }}</h6>
+                        <p class="point-address">{{ point.addressReference }}</p>
+                        <div class="need-line">
+                          <strong>{{ t('reliefPoints.needLabel') }}</strong>
+                          <span>{{ needSummary(point.id) }}</span>
+                        </div>
+                      </div>
+
+                      <dl class="point-facts">
+                        <div>
+                          <dt>{{ t('reliefPointCard.schedule') }}</dt>
+                          <dd>{{ point.schedule }}</dd>
+                        </div>
+                        <div>
+                          <dt>{{ t('reliefPointCard.contact') }}</dt>
+                          <dd>
+                            {{ point.contactName }}
+                            @if (hasCallablePhone(point)) {
+                              · <a [href]="'tel:' + point.contactPhone">{{ point.contactPhone }}</a>
+                            }
+                          </dd>
+                        </div>
+                      </dl>
+
+                      <div class="row-actions">
+                        <a
+                          class="directions"
+                          [href]="directionsFor(point)"
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          {{ t('common.directions') }}
+                        </a>
+                        <button type="button" (click)="openAlertForm(point)">
+                          {{ t('reliefPointCard.requestHelp') }}
+                        </button>
+                        <button type="button" class="subtle" (click)="openMealForm(point)">
+                          {{ t('reliefPointCard.registerMeal') }}
+                        </button>
+                      </div>
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+          </section>
+        }
+      </div>
+    }
+  </section>
+</section>

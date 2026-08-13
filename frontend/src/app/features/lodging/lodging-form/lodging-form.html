@@ -1,0 +1,120 @@
+<form class="inline-form lodging-form" [formGroup]="form" (ngSubmit)="submit()">
+  <p class="hint">{{ t('lodgingForm.hint') }}</p>
+
+  <fieldset class="kind-choice">
+    <legend>{{ t('lodgingForm.kind') }}</legend>
+    @for (kind of kinds; track kind) {
+      <button
+        type="button"
+        [class.selected]="form.controls.kind.value === kind"
+        [attr.aria-pressed]="form.controls.kind.value === kind"
+        (click)="selectKind(kind)"
+      >
+        <span class="kind-icon" aria-hidden="true">{{ kindIcons[kind] }}</span>
+        {{ t(kindKey(kind)) }}
+      </button>
+    }
+  </fieldset>
+
+  <div class="field-grid">
+    <label>
+      <span>{{ t('lodgingForm.placeName') }}</span>
+      <input formControlName="placeName" [placeholder]="t('lodgingForm.placeNamePlaceholder')" />
+    </label>
+    <label>
+      <span>{{ t('lodgingForm.totalSpaces') }}</span>
+      <input formControlName="totalSpaces" type="number" min="1" max="2000" inputmode="numeric" />
+    </label>
+    <label>
+      <span>{{ t('lodgingForm.department') }}</span>
+      <select formControlName="department">
+        <option value="">{{ t('region.selectDepartment') }}</option>
+        @for (department of departments; track department) {
+          <option [value]="department">{{ department }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      <span>{{ t('lodgingForm.municipality') }}</span>
+      <input formControlName="municipality" />
+    </label>
+    <label class="wide">
+      <span>{{ t('lodgingForm.address') }}</span>
+      <input
+        formControlName="addressReference"
+        [placeholder]="t('lodgingForm.addressPlaceholder')"
+      />
+    </label>
+    <label>
+      <span>{{ t('lodgingForm.hostName') }}</span>
+      <input formControlName="hostName" [placeholder]="t('lodgingForm.hostNamePlaceholder')" />
+    </label>
+    <label>
+      <span>{{ t('lodgingForm.contactPhone') }}</span>
+      <input
+        formControlName="contactPhone"
+        inputmode="tel"
+        [placeholder]="t('lodgingForm.contactPhonePlaceholder')"
+      />
+    </label>
+    <label>
+      <span>{{ t('lodgingForm.maxNights', { optional: t('common.optional') }) }}</span>
+      <input formControlName="maxNights" type="number" min="1" max="365" inputmode="numeric" />
+    </label>
+    <label class="wide">
+      <span>{{ t('lodgingForm.notes', { optional: t('common.optional') }) }}</span>
+      <textarea
+        formControlName="notes"
+        rows="3"
+        [placeholder]="t('lodgingForm.notesPlaceholder')"
+      ></textarea>
+    </label>
+  </div>
+
+  <div class="conditions">
+    <label class="switch">
+      <input type="checkbox" formControlName="freeOfCharge" />
+      <span>{{ t('lodgingForm.freeOfCharge') }}</span>
+    </label>
+    <label class="switch">
+      <input type="checkbox" formControlName="acceptsPets" />
+      <span>{{ t('lodgingForm.acceptsPets') }}</span>
+    </label>
+  </div>
+
+  <div class="location-row">
+    <div>
+      <strong>{{ t('lodgingForm.location', { optional: t('common.optional') }) }}</strong>
+      <p>{{ locationMessage() }}</p>
+    </div>
+    <button type="button" class="secondary" (click)="captureCurrentLocation()">
+      {{ t('reliefPointForm.useCurrentLocation') }}
+    </button>
+  </div>
+
+  @if (errorMessage()) {
+    <p class="form-error" role="alert">{{ errorMessage() }}</p>
+  }
+  @if (successMessage()) {
+    <p class="form-success" role="status">{{ successMessage() }}</p>
+  }
+  @if (publishedPin()) {
+    <aside class="pin-panel" role="status">
+      <strong>{{ t('lodgingForm.pinTitle') }}</strong>
+      <output class="pin-value">{{ publishedPin() }}</output>
+      <p>{{ t('lodgingForm.pinBody') }}</p>
+      <button type="button" class="secondary" (click)="copyPin()">
+        {{ pinCopied() ? t('missingForm.pinCopied') : t('missingForm.pinCopy') }}
+      </button>
+    </aside>
+  }
+
+  <div class="form-buttons">
+    <button type="submit" [disabled]="submitting()">
+      {{ submitting() ? t('lodgingForm.submitting') : t('lodgingForm.submit') }}
+    </button>
+    <button type="button" class="secondary" (click)="closed.emit()">
+      {{ t('common.cancel') }}
+    </button>
+  </div>
+</form>

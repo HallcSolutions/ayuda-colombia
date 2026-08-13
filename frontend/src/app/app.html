@@ -1,0 +1,35 @@
+<header class="site-header">
+  <a class="brand" routerLink="/inicio" [attr.aria-label]="t('brand.name') + ', ' + t('brand.tagline')">
+    <span class="brand-mark" aria-hidden="true">
+      <img src="/assets/brand/redayuda-mark-192.png" alt="" width="48" height="48" />
+    </span>
+    <span><strong>{{ t('brand.name') }}</strong><small>{{ t('brand.tagline') }}</small></span>
+  </a>
+
+  <nav class="nav-tabs" [attr.aria-label]="t('brand.name')">
+    @for (tab of tabs; track tab.path) {
+      <a [routerLink]="tab.path" routerLinkActive="active" [attr.data-badge]="tab.badge?.() || null">
+        {{ t(tab.labelKey) }}
+      </a>
+    }
+  </nav>
+
+  <div class="header-tools"><app-language-switcher /></div>
+</header>
+
+<app-alert-banner />
+
+<main id="inicio">
+  <router-outlet />
+</main>
+
+<footer>
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true">
+      <img src="/assets/brand/redayuda-mark-192.png" alt="" width="48" height="48" loading="lazy" />
+    </span>
+    <span><strong>{{ t('brand.name') }}</strong><small>{{ t('brand.tagline') }}</small></span>
+  </div>
+  <p>{{ t('footer.lead') }}</p>
+  <span>{{ t('footer.signature') }}</span>
+</footer>

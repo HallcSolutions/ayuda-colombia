@@ -1,0 +1,13 @@
+<div class="language-switcher" role="group" [attr.aria-label]="t('language.label')">
+  @for (locale of i18n.locales; track locale) {
+    <button
+      type="button"
+      [class.active]="i18n.locale() === locale"
+      [attr.aria-pressed]="i18n.locale() === locale"
+      [attr.aria-label]="t(localeKey(locale))"
+      (click)="i18n.setLocale(locale)"
+    >
+      {{ locale.toUpperCase() }}
+    </button>
+  }
+</div>

@@ -1,0 +1,30 @@
+<div class="modal-backdrop" (click)="closed.emit()">
+  <section
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="title()"
+    (click)="$event.stopPropagation()"
+  >
+    <header>
+      <div>
+        @if (eyebrow()) {
+          <span class="modal-eyebrow">{{ eyebrow() }}</span>
+        }
+        <h3>{{ title() }}</h3>
+      </div>
+      <button
+        type="button"
+        class="modal-close"
+        [attr.aria-label]="t('common.cancel')"
+        autofocus
+        (click)="closed.emit()"
+      >
+        ×
+      </button>
+    </header>
+    <div class="modal-content">
+      <ng-content />
+    </div>
+  </section>
+</div>

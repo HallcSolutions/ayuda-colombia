@@ -1,0 +1,59 @@
+.convoy-tracker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #f8faf7;
+}
+
+/* Mientras se comparte, el panel se distingue: es una decisión activa, no un adorno. */
+.convoy-tracker.is-sharing {
+  border-color: var(--green);
+  background: #eef5ee;
+}
+
+.tracker-text strong {
+  font: 700 17px/1.2 var(--serif);
+}
+
+.tracker-text p {
+  margin: 4px 0 0;
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.tracker-error {
+  color: var(--coral);
+  font-weight: 650;
+}
+
+.tracker-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tracker-actions button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tracker-actions .primary {
+  border: 0;
+  background: var(--green);
+  color: white;
+}
+
+.tracker-actions .ghost {
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--ink);
+}

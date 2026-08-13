@@ -1,0 +1,166 @@
+<section class="colombia-map">
+  <header class="map-bar">
+    <div>
+      <span class="zone">{{ zoneLabel() }}</span>
+      <p>{{ t('map.hint') }}</p>
+    </div>
+    <div class="map-steps">
+      @if (region.municipality()) {
+        <button type="button" class="ghost" (click)="showWholeDepartment()">
+          {{ t('map.wholeDepartment', { department: region.department() }) }}
+        </button>
+      }
+      @if (region.isFiltered()) {
+        <button type="button" class="ghost" (click)="showWholeCountry()">
+          {{ t('map.wholeCountry') }}
+        </button>
+      }
+    </div>
+  </header>
+
+  <div class="map-stage">
+    <svg [attr.viewBox]="viewBox" role="group" [attr.aria-label]="t('map.title')">
+      <g class="canvas" [style.transform]="canvasTransform()">
+        <rect
+          class="inset-frame"
+          [attr.x]="inset.x"
+          [attr.y]="inset.y"
+          [attr.width]="inset.size"
+          [attr.height]="inset.size"
+        />
+
+        @for (area of areas(); track area.shape.name) {
+          <path
+            class="department"
+            [class.has-points]="area.count > 0"
+            [class.is-focused]="area.selected"
+            [attr.d]="area.shape.d"
+            [attr.role]="hasExpandedHitTarget(area) ? null : 'button'"
+            [attr.tabindex]="hasExpandedHitTarget(area) ? null : 0"
+            [attr.aria-pressed]="area.selected"
+            [attr.aria-label]="hasExpandedHitTarget(area) ? null : areaLabel(area)"
+            (click)="focusDepartment(area)"
+            (keydown.enter)="focusDepartment(area)"
+            (keydown.space)="focusDepartment(area)"
+          >
+            <title>{{ areaLabel(area) }}</title>
+          </path>
+
+          @if (hasExpandedHitTarget(area)) {
+            <rect
+              class="department-hit-target"
+              [attr.x]="hitTargetX(area)"
+              [attr.y]="hitTargetY(area)"
+              [attr.width]="hitTargetWidth(area)"
+              [attr.height]="hitTargetHeight(area)"
+              role="button"
+              tabindex="0"
+              [attr.aria-pressed]="area.selected"
+              [attr.aria-label]="areaLabel(area)"
+              (click)="focusDepartment(area)"
+              (keydown.enter)="focusDepartment(area)"
+              (keydown.space)="focusDepartment(area)"
+            >
+              <title>{{ areaLabel(area) }}</title>
+            </rect>
+          }
+        }
+
+        @for (label of departmentLabels(); track label.name) {
+          <g class="department-name" [style.transform]="scaledTransform(label)" aria-hidden="true">
+            @for (line of label.lines; track $index) {
+              <text
+                x="0"
+                [attr.y]="lineOffset(label, $index)"
+                [attr.font-size]="label.fontSize"
+                text-anchor="middle"
+                dominant-baseline="central"
+              >
+                {{ line }}
+              </text>
+            }
+          </g>
+        }
+
+        @for (trail of trailPaths(); track trail.id) {
+          <path
+            class="trail"
+            [class]="'tone-' + trail.tone"
+            [class.is-pending]="trail.pending"
+            [attr.d]="trail.d"
+            vector-effect="non-scaling-stroke"
+            aria-hidden="true"
+          />
+        }
+
+        @for (pin of pins(); track pin.key) {
+          <g
+            class="pin"
+            [class]="'tone-' + pin.tone"
+            [class.is-selected]="pin.selected"
+            [class.is-urgent]="pin.urgent"
+            [style.transform]="scaledTransform(pin)"
+            role="button"
+            tabindex="0"
+            [attr.aria-label]="
+              pin.count > 1
+                ? t('map.cityLabel', { municipality: pin.municipality, count: pin.count })
+                : pin.label
+            "
+            (click)="choosePin(pin)"
+            (keydown.enter)="choosePin(pin)"
+            (keydown.space)="choosePin(pin)"
+          >
+            <title>
+              {{
+                pin.count > 1
+                  ? t('map.cityLabel', { municipality: pin.municipality, count: pin.count })
+                  : pin.label
+              }}
+            </title>
+            @if (pin.urgent) {
+              <circle class="halo" cx="0" cy="-28" r="15" />
+            }
+            <path
+              class="drop"
+              d="M0 0 C-7 -12 -15 -19 -15 -28 A15 15 0 1 1 15 -28 C15 -19 7 -12 0 0 Z"
+            />
+            @if (pin.count > 1) {
+              <text class="count" x="0" y="-22" text-anchor="middle">{{ pin.count }}</text>
+            } @else {
+              <circle class="dot" cx="0" cy="-28" r="5" />
+            }
+            <text class="caption" x="0" y="9" text-anchor="middle" dominant-baseline="hanging">
+              {{ pin.caption }}
+            </text>
+          </g>
+        }
+      </g>
+    </svg>
+
+    @if (!markers().length) {
+      <p class="map-empty">{{ t('map.empty') }}</p>
+    }
+  </div>
+
+  @if (selectedId()) {
+    <aside class="map-detail" #detail>
+      <button
+        type="button"
+        class="close"
+        [attr.aria-label]="t('map.close')"
+        (click)="markerSelected.emit(null)"
+      >
+        ×
+      </button>
+      <ng-content />
+    </aside>
+  }
+
+  <ul class="map-legend">
+    <li class="tone-active">{{ t('map.legendActive') }}</li>
+    <li class="tone-warning">{{ t('map.legendWarning') }}</li>
+    <li class="tone-muted">{{ t('map.legendMuted') }}</li>
+    <li class="legend-urgent">{{ t('map.legendUrgent') }}</li>
+  </ul>
+</section>

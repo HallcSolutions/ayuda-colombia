@@ -1,0 +1,102 @@
+/* Estilos compartidos por los formularios en línea (alertas, comidas, puntos). */
+.inline-form {
+  display: grid;
+  gap: 14px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 18px 20px;
+}
+
+.inline-form h4 {
+  margin: 0;
+  font: 700 19px/1.2 var(--serif);
+}
+
+.inline-form .hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.inline-form .field-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+
+.inline-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.inline-form label.wide {
+  grid-column: 1 / -1;
+}
+
+.inline-form label span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+}
+
+.inline-form input,
+.inline-form select,
+.inline-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfa;
+  color: var(--ink);
+}
+
+.inline-form input:focus-visible,
+.inline-form select:focus-visible,
+.inline-form textarea:focus-visible {
+  outline: 3px solid rgba(18, 88, 64, 0.2);
+  outline-offset: 1px;
+  border-color: var(--green);
+}
+
+.inline-form .form-error {
+  margin: 0;
+  padding: 11px 14px;
+  border-radius: 9px;
+  background: #fdeceb;
+  border: 1px solid #f3c9c1;
+  color: #8c2f1c;
+}
+
+.inline-form .form-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.inline-form .form-buttons button {
+  border: 0;
+  border-radius: 8px;
+  padding: 11px 19px;
+  font-weight: 750;
+  background: var(--green);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(18, 88, 64, 0.15);
+}
+
+.inline-form .form-buttons button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.inline-form .form-buttons button.secondary {
+  background: transparent;
+  color: var(--green);
+  border: 1px solid var(--green);
+  box-shadow: none;
+}

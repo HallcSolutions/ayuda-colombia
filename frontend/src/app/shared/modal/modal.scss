@@ -1,0 +1,130 @@
+/* El anfitrión no dibuja nada: la ventana se coloca sobre toda la página. */
+:host {
+  display: contents;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  background: rgba(13, 29, 22, 0.62);
+  backdrop-filter: blur(8px);
+  animation: backdrop-in 0.18s ease-out;
+}
+
+.modal {
+  width: min(920px, 100%);
+  max-height: calc(100dvh - 64px);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 28px 90px rgba(3, 16, 10, 0.34);
+  animation: modal-in 0.22s ease-out;
+}
+
+.modal > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 26px;
+  border-bottom: 1px solid var(--line);
+  background: #f5f7f3;
+}
+
+.modal-eyebrow {
+  color: var(--green);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+}
+
+.modal h3 {
+  margin: 5px 0 0;
+  font: 700 25px/1.08 var(--serif);
+  letter-spacing: -0.02em;
+}
+
+.modal-close {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid #d7ded5;
+  border-radius: 50%;
+  background: white;
+  color: var(--ink);
+  font: 400 26px/1 var(--sans);
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.modal-close:focus-visible {
+  outline: 3px solid rgba(18, 88, 64, 0.2);
+  outline-offset: 2px;
+}
+
+.modal-content {
+  overflow: auto;
+  padding: 24px 26px 28px;
+  overscroll-behavior: contain;
+}
+
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+}
+
+/* En un teléfono la ventana ocupa la pantalla entera: hay formularios largos. */
+@media (max-width: 640px) {
+  .modal-backdrop {
+    place-items: stretch;
+    padding: 0;
+  }
+
+  .modal {
+    width: 100%;
+    max-height: 100dvh;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .modal > header {
+    padding: 17px 18px;
+  }
+
+  .modal h3 {
+    font-size: 22px;
+  }
+
+  .modal-content {
+    padding: 20px 18px 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-backdrop,
+  .modal {
+    animation: none;
+  }
+}

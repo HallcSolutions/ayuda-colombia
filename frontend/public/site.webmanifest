@@ -1,0 +1,22 @@
+{
+  "name": "RedAyuda Colombia",
+  "short_name": "RedAyuda",
+  "description": "Red ciudadana para coordinar ayuda humanitaria en Colombia.",
+  "lang": "es-CO",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f9f6",
+  "theme_color": "#245d46",
+  "icons": [
+    {
+      "src": "/assets/brand/redayuda-app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/brand/redayuda-app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

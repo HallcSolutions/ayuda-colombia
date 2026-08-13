@@ -1,0 +1,111 @@
+<article class="missing-card" [class]="'missing-card status-' + record().status">
+  <div class="poster">
+    <img [src]="record().photos[0]" [alt]="t('missingCard.photoAlt', { name: record().name })" />
+    <span class="kind-chip">
+      <i aria-hidden="true">{{ kindIcons[record().kind] }}</i>{{ t(kindKey(record().kind)) }}
+    </span>
+    <span class="status-chip">{{ t(statusKey(record().status)) }}</span>
+  </div>
+
+  <div class="body">
+    <header>
+      <h3>{{ record().name }}</h3>
+      <p class="age">
+        {{
+          record().ageYears === null
+            ? t('missingCard.ageUnknown')
+            : t('missingCard.age', { years: record().ageYears ?? 0 })
+        }}
+      </p>
+      <p class="place">{{ record().municipality }}, {{ record().department }}</p>
+    </header>
+
+    <dl class="facts">
+      <div>
+        <dt>{{ t('missingCard.lastSeenPlace') }}</dt>
+        <dd>{{ record().lastSeenPlace }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('missingCard.lastSeenAt') }}</dt>
+        <dd>
+          <time [attr.datetime]="record().lastSeenAt">{{ lastSeenLabel() }}</time>
+        </dd>
+      </div>
+    </dl>
+
+    <section class="signs">
+      <h4>{{ t('missingCard.signs') }}</h4>
+      <p>{{ record().description }}</p>
+    </section>
+
+    @if (record().photos.length > 1) {
+      <div class="thumbnails">
+        @for (photo of record().photos.slice(1); track photo; let index = $index) {
+          <img [src]="photo" [alt]="t('missingCard.photoAlt', { name: record().name })" />
+        }
+      </div>
+    }
+
+    <section class="contact">
+      <h4>{{ t('missingCard.contact') }}</h4>
+      <p>{{ record().contactName }}</p>
+      <div class="contact-links">
+        <a class="call" [href]="'tel:' + record().contactPhone">
+          {{ t('missingCard.call') }} · {{ record().contactPhone }}
+        </a>
+        <a class="whatsapp" [href]="whatsappLink()" target="_blank" rel="noopener">
+          {{ t('missingCard.whatsapp') }}
+        </a>
+      </div>
+    </section>
+
+    @if (record().status === missingStatus.FOUND && foundLabel()) {
+      <p class="found-notice">{{ t('missingCard.foundNotice', { date: foundLabel() }) }}</p>
+    }
+    @if (errorMessage()) {
+      <p class="card-error" role="alert">{{ errorMessage() }}</p>
+    }
+
+    @if (pendingStatus()) {
+      <div class="pin-prompt">
+        <p>{{ t('missingCard.pinPrompt') }}</p>
+        <label>
+          <span class="visually-hidden">{{ t('missingCard.pinLabel') }}</span>
+          <input
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            maxlength="6"
+            [placeholder]="t('missingCard.pinLabel')"
+            [value]="pin()"
+            (input)="updatePin($event)"
+          />
+        </label>
+        <button type="button" class="primary" [disabled]="saving()" (click)="confirmStatusChange()">
+          {{ t('missingCard.pinConfirm') }}
+        </button>
+        <button type="button" class="ghost" (click)="cancelPinPrompt()">
+          {{ t('common.cancel') }}
+        </button>
+      </div>
+    }
+
+    <footer>
+      @if (mapLink()) {
+        <a [href]="mapLink()" target="_blank" rel="noopener">{{ t('missingCard.openMap') }}</a>
+      }
+      @if (record().status === missingStatus.SEARCHING) {
+        <button type="button" class="primary" (click)="askForPin(missingStatus.FOUND)">
+          {{ t('missingCard.markFound') }}
+        </button>
+        <button type="button" class="ghost" (click)="askForPin(missingStatus.CLOSED)">
+          {{ t('missingCard.close') }}
+        </button>
+      } @else {
+        <button type="button" class="ghost" (click)="askForPin(missingStatus.SEARCHING)">
+          {{ t('missingCard.reopen') }}
+        </button>
+      }
+    </footer>
+  </div>
+</article>

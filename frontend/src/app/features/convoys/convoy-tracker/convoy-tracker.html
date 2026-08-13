@@ -1,0 +1,29 @@
+@if (tracker.trip(); as trip) {
+  <aside class="convoy-tracker" [class.is-sharing]="tracker.sharing()">
+    <div class="tracker-text">
+      <strong>{{ title() }}</strong>
+      <p>{{ body() }}</p>
+      @if (tracker.errorMessage()) {
+        <p class="tracker-error" role="alert">{{ tracker.errorMessage() }}</p>
+      }
+    </div>
+
+    <div class="tracker-actions">
+      @if (trip.shareLocation) {
+        <button type="button" class="ghost" (click)="tracker.stopSharing()">
+          {{ t('convoyTracker.stop') }}
+        </button>
+      } @else {
+        <button type="button" class="ghost" (click)="tracker.resumeSharing()">
+          {{ t('convoyTracker.share') }}
+        </button>
+      }
+      <button type="button" class="primary" (click)="tracker.markArrived()">
+        {{ t('convoyTracker.arrived') }}
+      </button>
+      <button type="button" class="ghost" (click)="tracker.forget()">
+        {{ t('convoyTracker.forget') }}
+      </button>
+    </div>
+  </aside>
+}

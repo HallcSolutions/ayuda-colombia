@@ -1,0 +1,33 @@
+<section class="news" [attr.aria-label]="t('news.title')">
+  <header class="overview-heading">
+    <span class="section-kicker"><i></i>{{ t('news.eyebrow') }}</span>
+    <div>
+      <h2>{{ t('news.title') }}</h2>
+      <p>
+        {{ openNeeds() ? t('news.leadWithNeeds', { count: openNeeds() }) : t('news.lead') }}
+      </p>
+    </div>
+  </header>
+
+  @if (!events().length) {
+    <p class="news-empty">{{ t('news.empty') }}</p>
+  } @else {
+    <ol class="news-list">
+      @for (event of events(); track event.id) {
+        <li [class]="'kind-' + event.kind" [class.urgent]="event.urgent">
+          <time [attr.datetime]="event.at">
+            {{ event.at | date: 'd MMM · h:mm a' : undefined : i18n.locale() }}
+          </time>
+          <a [routerLink]="event.route">
+            <strong>{{ event.headline }}</strong>
+            <span class="news-meta">
+              {{ event.place }}@if (event.detail) {
+                <span> · {{ event.detail }}</span>
+              }
+            </span>
+          </a>
+        </li>
+      }
+    </ol>
+  }
+</section>

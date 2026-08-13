@@ -1,0 +1,17 @@
+{
+  "target": "claude",
+  "stacks": [
+    "nestjs"
+  ],
+  "skills": [
+    "clean-code",
+    "minimal-implementation",
+    "solid-principles",
+    "modular-architecture",
+    "mutation-testing",
+    "nestjs-best-practices"
+  ],
+  "mcp": [],
+  "methods": [],
+  "generatedAt": "2026-08-13T19:46:54.141Z"
+}

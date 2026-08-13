@@ -1,0 +1,145 @@
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow"><i></i> {{ t('hero.eyebrow') }}</span>
+    <h1>
+      {{ t('hero.title') }}<br /><em>{{ t('hero.titleAccent') }}</em>
+    </h1>
+    <p>{{ t('hero.lead') }}</p>
+    <div class="hero-actions">
+      <a class="primary-button" routerLink="/reportar">{{ t('hero.primaryCta') }} <span>→</span></a>
+      <a class="text-button" routerLink="/puntos">{{ t('nav.points') }}</a>
+    </div>
+    <div class="trust-note"><span>✓</span> {{ t('hero.trust') }}</div>
+  </div>
+
+  <aside class="impact-panel" [attr.aria-label]="t('hero.panelTitle')">
+    <div class="impact-top">
+      <span>{{ t('hero.panelTitle') }}</span
+      ><span class="live-dot">{{ t('hero.live') }}</span>
+    </div>
+    <div class="impact-map impact-map-image">
+      <img
+        src="/assets/redayuda-colombia-hero.png"
+        [alt]="t('hero.imageAlt')"
+        width="1680"
+        height="945"
+      />
+      <div class="map-callout">
+        <strong>{{ openReports() }}</strong
+        ><span>{{ t('hero.pending') }}</span>
+      </div>
+    </div>
+    <div class="impact-stats">
+      <div>
+        <strong>{{ criticalReports() }}</strong
+        ><span>{{ t('hero.critical') }}</span>
+      </div>
+      <div>
+        <strong>{{ peopleReported() }}</strong
+        ><span>{{ t('hero.people') }}</span>
+      </div>
+      <div>
+        <strong>{{ reportsService.reportsInRegion().length }}</strong
+        ><span>{{ t('hero.reports') }}</span>
+      </div>
+    </div>
+  </aside>
+</section>
+
+<app-news-feed class="home-news" />
+
+<section class="home-map" [attr.aria-label]="t('home.mapTitle')">
+  <header class="overview-heading">
+    <span class="section-kicker"><i></i>{{ t('home.mapEyebrow') }}</span>
+    <div>
+      <h2>{{ t('home.mapTitle') }}</h2>
+      <p>{{ t('home.mapLead') }}</p>
+    </div>
+  </header>
+
+  <app-colombia-map
+    [markers]="mapMarkers()"
+    [selectedId]="selectedPointId()"
+    (markerSelected)="selectPoint($event)"
+  >
+    @if (selectedPoint(); as point) {
+      <article class="map-summary">
+        <span class="type">{{ t(typeKey(point.type)) }}</span>
+        <h3>{{ point.name }}</h3>
+        <p class="place">{{ point.municipality }}, {{ point.department }}</p>
+        <p>{{ point.addressReference }}</p>
+        <p>{{ point.schedule }}</p>
+        <p>
+          {{ point.contactName }} ·
+          <a [href]="'tel:' + point.contactPhone">{{ point.contactPhone }}</a>
+        </p>
+        <a class="text-button" routerLink="/puntos">{{ t('map.details') }}</a>
+      </article>
+    }
+  </app-colombia-map>
+</section>
+
+<section class="home-overview" [attr.aria-label]="t('overview.title')">
+  <header class="overview-heading">
+    <span class="section-kicker"><i></i>{{ t('overview.eyebrow') }}</span>
+    <div>
+      <h2>{{ t('overview.title') }}</h2>
+      <p>{{ t('overview.lead') }}</p>
+    </div>
+  </header>
+
+  <div class="overview-metrics">
+    <a routerLink="/puntos">
+      <span class="metric-label"><i></i>{{ t('reliefPoints.stats.points') }}</span>
+      <strong>{{ activePoints() }}</strong>
+      <span class="metric-arrow" aria-hidden="true">↗</span>
+    </a>
+    <a routerLink="/puntos">
+      <span class="metric-label"><i></i>{{ t('reliefPoints.stats.portionsToday') }}</span>
+      <strong>{{ portionsToday() }}</strong>
+      <span class="metric-arrow" aria-hidden="true">↗</span>
+    </a>
+    <a routerLink="/puntos">
+      <span class="metric-label"><i></i>{{ t('reliefPoints.stats.alerts') }}</span>
+      <strong>{{ activeAlerts() }}</strong>
+      <span class="metric-arrow" aria-hidden="true">↗</span>
+    </a>
+    <a routerLink="/reportes">
+      <span class="metric-label"><i></i>{{ t('hero.pending') }}</span>
+      <strong>{{ openReports() }}</strong>
+      <span class="metric-arrow" aria-hidden="true">↗</span>
+    </a>
+  </div>
+
+  <ol class="process-flow" [attr.aria-label]="t('reportForm.title')">
+    <li>
+      <span class="step-number">01</span>
+      <span
+        ><strong>{{ t('process.documentStep') }}</strong
+        ><small>{{ t('process.documentTail') }}</small></span
+      >
+    </li>
+    <li>
+      <span class="step-number">02</span>
+      <span
+        ><strong>{{ t('process.locateStep') }}</strong
+        ><small>{{ t('process.locateTail') }}</small></span
+      >
+    </li>
+    <li>
+      <span class="step-number">03</span>
+      <span
+        ><strong>{{ t('process.publishStep') }}</strong
+        ><small>{{ t('process.publishTail') }}</small></span
+      >
+    </li>
+  </ol>
+</section>
+
+<aside class="safety-banner">
+  <span>!</span>
+  <div>
+    <strong>{{ t('safety.title') }}</strong>
+    <p>{{ t('safety.body') }}</p>
+  </div>
+</aside>
