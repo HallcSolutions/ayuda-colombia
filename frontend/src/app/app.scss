@@ -979,9 +979,21 @@ textarea {
     padding-top: 54px;
     min-height: auto;
   }
+  /* En el teléfono el botón ocupa el ancho: es la acción principal y se toca sin apuntar. */
   .hero-actions {
-    align-items: flex-start;
+    align-items: stretch;
     flex-direction: column;
+    gap: 14px;
+  }
+  .hero-actions .primary-button,
+  .hero-actions .text-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .hero-actions .primary-button span {
+    margin-left: 12px;
   }
   .section-heading {
     align-items: flex-start;
