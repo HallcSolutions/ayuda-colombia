@@ -81,6 +81,49 @@ nav a:hover,
   align-items: center;
   gap: 12px;
 }
+/* Solo aparece cuando las pestañas no caben; en escritorio la navegación está a la vista. */
+.menu-toggle {
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+}
+.menu-bars {
+  position: relative;
+}
+.menu-bars,
+.menu-bars::before,
+.menu-bars::after {
+  display: block;
+  width: 19px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--green);
+}
+.menu-bars::before,
+.menu-bars::after {
+  content: '';
+  position: absolute;
+  left: 0;
+}
+.menu-bars::before {
+  top: -6px;
+}
+.menu-bars::after {
+  top: 6px;
+}
+.menu-toggle[aria-expanded='true'] {
+  border-color: var(--green);
+  background: #eef4ef;
+}
+.menu-toggle:focus-visible {
+  outline: 3px solid rgba(18, 88, 64, 0.22);
+  outline-offset: 2px;
+}
 main {
   // Empuja el pie de página al fondo cuando el contenido no llena la pantalla.
   flex: 1 0 auto;
@@ -897,7 +940,6 @@ textarea {
   .site-header {
     height: 66px;
   }
-  .site-header nav,
   .header-action {
     display: none;
   }
@@ -906,6 +948,32 @@ textarea {
   }
   .header-tools {
     margin-left: auto;
+  }
+  /* Siete destinos no caben en una barra de teléfono: se despliegan desde el botón. */
+  .menu-toggle {
+    display: grid;
+  }
+  .site-header .nav-tabs {
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 62dvh;
+    overflow-y: auto;
+    padding: 6px;
+    border-radius: 16px;
+  }
+  .site-header .nav-tabs.is-open {
+    display: flex;
+  }
+  .nav-tabs a {
+    padding: 14px 16px;
+    border-radius: 12px;
+    font-size: 15.5px;
+  }
+  .nav-tabs a[data-badge]::after {
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
   }
   .hero {
     padding-top: 54px;

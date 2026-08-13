@@ -71,7 +71,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'alertBanner.urgency': '{level} urgency',
   'alertBanner.resolve': 'Mark as handled',
   'alertBanner.resolving': 'Closing…',
-  'alertBanner.resolveError': 'The alert could not be closed. Check your responder code.',
+  'alertBanner.resolveError': 'The alert could not be closed. Check your connection and try again.',
 
   'alertForm.title': 'Request help for {point}',
   'alertForm.hint': 'Once published, the alert reaches every connected team instantly.',
@@ -80,14 +80,14 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'alertForm.quantity': 'Estimated amount',
   'alertForm.quantityPlaceholder': 'E.g. 200 meals, 50 gallons',
   'alertForm.reporter': 'Reported by',
-  'alertForm.reporterPlaceholder': 'Name and brigade',
+  'alertForm.reporterPlaceholder': 'Name and organization or community',
   'alertForm.alertTitle': 'Alert title',
   'alertForm.alertTitlePlaceholder': 'E.g. No food left for today’s lunch',
   'alertForm.detail': 'Details',
   'alertForm.detailPlaceholder':
     'Explain what is missing, for how many people and how long the current supplies last.',
   'alertForm.invalid': 'Fill in the title, the description and who is reporting.',
-  'alertForm.error': 'The alert could not be published. Check your responder code and connection.',
+  'alertForm.error': 'The alert could not be published. Check the details and your connection.',
   'alertForm.submit': 'Send alert to the whole network',
   'alertForm.submitting': 'Sending alert…',
 
@@ -195,7 +195,8 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'reliefPointForm.locationUnavailable': 'We could not determine the location right now.',
   'reliefPointForm.useCurrentLocation': 'Use current location',
   'reliefPointForm.invalid': 'Complete the point details and share its location.',
-  'reliefPointForm.error': 'The point could not be registered. Check your responder code.',
+  'reliefPointForm.error':
+    'The point could not be registered. Check the details and your connection.',
   'reliefPointForm.submit': 'Publish point',
   'reliefPointForm.submitting': 'Publishing…',
 
@@ -208,7 +209,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'mealForm.notes': 'Notes ({optional})',
   'mealForm.notesPlaceholder': 'Menu, priority groups, donor…',
   'mealForm.invalid': 'Set the meal type, the time and the planned meals.',
-  'mealForm.error': 'The meal shift could not be saved. Check your responder code.',
+  'mealForm.error': 'The meal shift could not be saved. Check the details and your connection.',
   'mealForm.submit': 'Save meal shift',
   'mealForm.submitting': 'Saving…',
 
@@ -220,6 +221,8 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'nav.missing': 'Missing',
   'nav.convoys': 'Trucks',
   'nav.cta': 'Create report',
+  'nav.openMenu': 'Open menu',
+  'nav.closeMenu': 'Close menu',
 
   'hero.eyebrow': 'Citizen humanitarian response network',
   'hero.title': 'Precise help,',
@@ -257,8 +260,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
 
   'reportForm.eyebrow': 'New report',
   'reportForm.title': 'Tell us what is happening',
-  'reportForm.subtitle':
-    'Only authorized responders and community leaders can publish. Clear information helps prioritize aid.',
+  'reportForm.subtitle': 'Anyone affected can publish. Clear information helps prioritize aid.',
   'reportForm.step1Title': 'Person and home',
   'reportForm.step1Subtitle': 'Details to verify and contact the case.',
   'reportForm.reporterName': 'Reported by',
@@ -345,7 +347,6 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'feed.markInProgress': 'Mark in progress',
   'feed.markResolved': 'Mark handled',
   'feed.statusError': 'The report status could not be updated.',
-  'feed.missingCode': 'Enter the responder code to update the status.',
 
   'reportStatus.open': 'Pending',
   'reportStatus.in_progress': 'In progress',

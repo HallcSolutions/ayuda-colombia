@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { NavTab } from './app.model';
 import { I18nService } from './core/i18n/i18n.service';
@@ -13,6 +20,7 @@ import { LanguageSwitcher } from './shared/language-switcher/language-switcher';
   imports: [RouterOutlet, RouterLink, RouterLinkActive, AlertBanner, LanguageSwitcher],
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '(document:keydown.escape)': 'closeMenu()' },
 })
 export class App {
   private readonly region = inject(RegionService);
@@ -33,6 +41,20 @@ export class App {
     { path: '/reportar', labelKey: 'nav.report' },
     { path: '/reportes', labelKey: 'nav.needs' },
   ];
+
+  /**
+   * En el teléfono las pestañas no caben en la barra, así que se despliegan desde el
+   * botón de menú. En pantalla ancha se ven siempre y este estado no pinta nada.
+   */
+  readonly menuOpen = signal(false);
+
+  toggleMenu(): void {
+    this.menuOpen.update((open) => !open);
+  }
+
+  closeMenu(): void {
+    this.menuOpen.set(false);
+  }
 
   constructor() {
     // Cambiar de departamento o ciudad recarga los reportes de esa zona.

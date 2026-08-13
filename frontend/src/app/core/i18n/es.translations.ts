@@ -70,7 +70,8 @@ export const ES_TRANSLATIONS = {
   'alertBanner.urgency': 'Urgencia {level}',
   'alertBanner.resolve': 'Marcar como atendida',
   'alertBanner.resolving': 'Cerrando…',
-  'alertBanner.resolveError': 'No se pudo cerrar la alerta. Verifica tu código de brigadista.',
+  'alertBanner.resolveError':
+    'No se pudo cerrar la alerta. Revisa tu conexión e intenta nuevamente.',
 
   'alertForm.title': 'Pedir ayuda para {point}',
   'alertForm.hint': 'Al publicar, la alerta llega en el momento a todos los equipos conectados.',
@@ -79,14 +80,14 @@ export const ES_TRANSLATIONS = {
   'alertForm.quantity': 'Cantidad estimada',
   'alertForm.quantityPlaceholder': 'Ej. 200 raciones, 50 galones',
   'alertForm.reporter': 'Quién reporta',
-  'alertForm.reporterPlaceholder': 'Nombre y brigada',
+  'alertForm.reporterPlaceholder': 'Nombre y organización o comunidad',
   'alertForm.alertTitle': 'Título de la alerta',
   'alertForm.alertTitlePlaceholder': 'Ej. Sin alimentos para el almuerzo de hoy',
   'alertForm.detail': 'Detalle',
   'alertForm.detailPlaceholder':
     'Explica qué falta, para cuántas personas y hasta cuándo alcanza lo que hay.',
   'alertForm.invalid': 'Completa el título, la descripción y quién reporta.',
-  'alertForm.error': 'No se pudo publicar la alerta. Revisa tu código de brigadista y la conexión.',
+  'alertForm.error': 'No se pudo publicar la alerta. Revisa los datos y la conexión.',
   'alertForm.submit': 'Enviar alerta a toda la red',
   'alertForm.submitting': 'Enviando alerta…',
 
@@ -194,7 +195,7 @@ export const ES_TRANSLATIONS = {
   'reliefPointForm.locationUnavailable': 'No pudimos determinar la ubicación en este momento.',
   'reliefPointForm.useCurrentLocation': 'Usar ubicación actual',
   'reliefPointForm.invalid': 'Completa los datos del punto y comparte su ubicación.',
-  'reliefPointForm.error': 'No se pudo registrar el punto. Revisa tu código de brigadista.',
+  'reliefPointForm.error': 'No se pudo registrar el punto. Revisa los datos y la conexión.',
   'reliefPointForm.submit': 'Publicar punto',
   'reliefPointForm.submitting': 'Publicando…',
 
@@ -207,7 +208,7 @@ export const ES_TRANSLATIONS = {
   'mealForm.notes': 'Notas ({optional})',
   'mealForm.notesPlaceholder': 'Menú, población priorizada, donante…',
   'mealForm.invalid': 'Indica el tipo de comida, la hora y las raciones planeadas.',
-  'mealForm.error': 'No se pudo registrar la jornada. Revisa tu código de brigadista.',
+  'mealForm.error': 'No se pudo registrar la jornada. Revisa los datos y la conexión.',
   'mealForm.submit': 'Guardar jornada',
   'mealForm.submitting': 'Guardando…',
 
@@ -219,6 +220,8 @@ export const ES_TRANSLATIONS = {
   'nav.missing': 'Desaparecidos',
   'nav.convoys': 'Camiones',
   'nav.cta': 'Crear reporte',
+  'nav.openMenu': 'Abrir el menú',
+  'nav.closeMenu': 'Cerrar el menú',
 
   'hero.eyebrow': 'Red ciudadana de respuesta humanitaria',
   'hero.title': 'Ayuda precisa,',
@@ -259,7 +262,7 @@ export const ES_TRANSLATIONS = {
   'reportForm.eyebrow': 'Nuevo reporte',
   'reportForm.title': 'Cuéntanos qué está pasando',
   'reportForm.subtitle':
-    'Solo brigadistas y líderes autorizados pueden publicar. La información clara permite priorizar mejor la ayuda.',
+    'Cualquier persona afectada puede publicar. La información clara permite priorizar mejor la ayuda.',
   'reportForm.step1Title': 'Persona y vivienda',
   'reportForm.step1Subtitle': 'Datos para verificar y contactar el caso.',
   'reportForm.reporterName': 'Nombre de quien reporta',
@@ -351,7 +354,6 @@ export const ES_TRANSLATIONS = {
   'feed.markInProgress': 'Marcar en atención',
   'feed.markResolved': 'Marcar atendido',
   'feed.statusError': 'No fue posible actualizar el estado del reporte.',
-  'feed.missingCode': 'Ingresa el código de reportero para actualizar el estado.',
 
   'reportStatus.open': 'Pendiente',
   'reportStatus.in_progress': 'En atención',
