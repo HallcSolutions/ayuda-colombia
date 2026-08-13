@@ -206,14 +206,28 @@ h1 em {
   font-weight: 800;
   color: var(--green);
 }
+/* Las filas de acciones se estiran y se parten solas a cualquier ancho: así el botón
+   nunca queda cortado ni diminuto entre dos puntos de corte. */
 .hero-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 25px;
+  gap: 14px 25px;
   margin: 34px 0 24px;
+}
+.hero-actions .primary-button {
+  flex: 1 1 16rem;
+  max-width: 21rem;
 }
 .primary-button {
   padding: 16px 22px;
+}
+.header-action,
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 .primary-button span,
 .submit-button span {
@@ -707,10 +721,16 @@ textarea {
 }
 .feed-tools {
   display: flex;
+  flex-wrap: wrap;
   gap: 9px;
 }
+/* El buscador ocupa lo que sobre y baja de línea antes que desbordar la fila. */
 .feed-tools input {
-  min-width: 250px;
+  flex: 1 1 15rem;
+  min-width: 0;
+}
+.feed-tools select {
+  flex: 0 1 auto;
 }
 .report-list {
   display: grid;
@@ -835,6 +855,8 @@ textarea {
 }
 .report-footer {
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   justify-content: space-between;
   align-items: center;
   padding-top: 13px;
@@ -915,6 +937,20 @@ textarea {
   max-width: 360px;
   text-align: center;
 }
+/* El teléfono de soporte se lee y se toca: en el móvil marca directo. */
+.footer-support a {
+  display: inline-block;
+  margin-top: 4px;
+  color: white;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+.footer-support a:hover,
+.footer-support a:focus-visible {
+  text-decoration: underline;
+}
 @media (max-width: 980px) {
   .hero {
     grid-template-columns: 1fr;
@@ -985,11 +1021,10 @@ textarea {
     flex-direction: column;
     gap: 14px;
   }
-  .hero-actions .primary-button,
+  .hero-actions .primary-button {
+    max-width: none;
+  }
   .hero-actions .text-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     text-align: center;
   }
   .hero-actions .primary-button span {

@@ -295,6 +295,8 @@
 
 .detail-actions a,
 .detail-actions button {
+  flex: 1 1 11rem;
+  text-align: center;
   border: 1px solid var(--green);
   border-radius: 10px;
   padding: 11px 18px;
@@ -353,7 +355,6 @@
 
   .detail-actions a,
   .detail-actions button {
-    flex: 1 1 10rem;
-    text-align: center;
+    flex-basis: 100%;
   }
 }

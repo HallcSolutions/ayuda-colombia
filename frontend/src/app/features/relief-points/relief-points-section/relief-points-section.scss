@@ -151,9 +151,11 @@
 
 .selected-actions a,
 .selected-actions button {
+  flex: 1 1 8rem;
   border: 1px solid var(--green);
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 10px 12px;
+  text-align: center;
   color: var(--green);
   background: white;
   font-size: 12px;
@@ -431,17 +433,21 @@
   color: var(--green);
 }
 
+/* Las tres acciones se reparten la fila y bajan de línea solas: en una columna
+   estrecha quedan apiladas y en una ancha, en fila, sin depender del ancho exacto. */
 .row-actions {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   gap: 7px;
   min-width: 9.5rem;
 }
 
 .row-actions a,
 .row-actions button {
+  flex: 1 1 8.5rem;
   border: 1px solid var(--green);
   border-radius: 8px;
-  padding: 8px 11px;
+  padding: 10px 11px;
   color: var(--green);
   background: white;
   font-size: 11px;
@@ -497,7 +503,6 @@
 
   .row-actions {
     grid-column: 1 / -1;
-    display: flex;
     min-width: 0;
   }
 }
@@ -564,13 +569,7 @@
     font-size: 14px;
   }
 
-  .row-actions {
-    grid-column: auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
   .row-actions .detail {
-    grid-column: 1 / -1;
+    flex-basis: 100%;
   }
 }

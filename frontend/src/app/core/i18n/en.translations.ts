@@ -606,6 +606,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'duration.moment': 'a moment',
 
   'footer.lead': 'A citizen tool to connect real needs with responsible help.',
+  'footer.support': 'Any suggestion or trouble? Message us on WhatsApp only, we do not take calls:',
   'footer.signature': 'Made with solidarity in Colombia',
 
   'notification.title': '{point} needs help',

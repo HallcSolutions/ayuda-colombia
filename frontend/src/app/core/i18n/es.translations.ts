@@ -615,6 +615,8 @@ export const ES_TRANSLATIONS = {
 
   'footer.lead':
     'Una herramienta ciudadana para conectar necesidades reales con ayuda responsable.',
+  'footer.support':
+    '¿Alguna sugerencia o dificultad? Escríbenos solo por WhatsApp, no atendemos llamadas:',
   'footer.signature': 'Hecho con solidaridad en Colombia',
 
   'notification.title': '{point} necesita ayuda',
