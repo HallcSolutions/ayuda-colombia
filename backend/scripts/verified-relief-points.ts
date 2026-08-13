@@ -32,6 +32,8 @@ const CALI_SHELTERS =
   'https://elpais.com/america-colombia/2026-08-13/entre-carpas-y-escombros-cali-ruega-para-que-la-lluvia-no-agrave-la-tragedia-del-terremoto.html';
 const CALI_FOOD_BANK =
   'https://www.bancodealimentoscali.org/nuevo-contactenos/';
+const LUIS_DIAZ_POINT =
+  'https://www.tropicanafm.com/2026/luis-diaz-y-gera-ponce-enviaran-ayuda-humanitaria-para-apoyar-a-las-victimas-del-terremoto-todo-suma-473397.html';
 
 type VerifiedReliefPointInput = Omit<
   VerifiedReliefPoint,
@@ -422,4 +424,276 @@ VERIFIED_RELIEF_POINTS.push(
       sourceUrl: INITIATIVES,
     }),
   ),
+);
+
+const nationalCampaignPoints = [
+  [
+    'yumbo-colombia-un-corazon',
+    'Punto Colombia: un solo corazón — Yumbo',
+    'Valle del Cauca',
+    'Yumbo',
+    'Carrera 30 # 10-90, sector Arroyo Hondo',
+    3.4930688,
+    -76.4882663,
+  ],
+  [
+    'ibague-banco-alimentos-arquidiocesis',
+    'Banco de Alimentos de la Arquidiócesis de Ibagué',
+    'Tolima',
+    'Ibagué',
+    'Carrera 4 # 23-42',
+    4.5099882,
+    -75.2990826,
+  ],
+  [
+    'pasto-preicfes-montilla',
+    'Punto Colombia: un solo corazón — Pasto',
+    'Nariño',
+    'Pasto',
+    'Calle 17 # 27-59, antiguo PreIcfes Montilla',
+    1.2255768,
+    -77.2888472,
+  ],
+  [
+    'florencia-colombia-un-corazon',
+    'Punto Colombia: un solo corazón — Florencia',
+    'Caquetá',
+    'Florencia',
+    'Carrera 10A # 7-04',
+    1.6070934,
+    -75.5995969,
+  ],
+  [
+    'acacias-colombia-un-corazon',
+    'Punto Colombia: un solo corazón — Acacías',
+    'Meta',
+    'Acacías',
+    'Calle 15 # 16-43',
+    3.9922299,
+    -73.7824059,
+  ],
+  [
+    'sincelejo-colombia-un-corazon',
+    'Punto Colombia: un solo corazón — Sincelejo',
+    'Sucre',
+    'Sincelejo',
+    'Calle 19 # 21-41',
+    9.306897,
+    -75.3885873,
+  ],
+  [
+    'caqueza-deportivos-willys',
+    'Deportivos Willys — punto de acopio',
+    'Cundinamarca',
+    'Cáqueza',
+    'Calle 4, local Deportivos Willys',
+    4.3979257,
+    -73.9447049,
+  ],
+  [
+    'chia-carrera-9',
+    'Punto Colombia: un solo corazón — Chía',
+    'Cundinamarca',
+    'Chía',
+    'Carrera 9 # 12-41',
+    4.85304,
+    -74.0616952,
+  ],
+] as const;
+
+VERIFIED_RELIEF_POINTS.push(
+  ...nationalCampaignPoints.map(
+    ([
+      key,
+      name,
+      department,
+      municipality,
+      addressReference,
+      latitude,
+      longitude,
+    ]) =>
+      verified({
+        key,
+        name,
+        department,
+        municipality,
+        addressReference,
+        latitude,
+        longitude,
+        contactName: 'Campaña Colombia: un solo corazón',
+        contactPhone: 'No publicado',
+        schedule: 'Horario por confirmar en el canal oficial de la campaña',
+        needs:
+          'Agua, alimentos no perecederos, ropa limpia, artículos de aseo y primeros auxilios.',
+        sourceLabel: 'Colombia: un solo corazón / EL PAÍS',
+        sourceUrl: INITIATIVES,
+        caveat:
+          'La campaña confirmó la ciudad; la dirección fue contrastada con el directorio ciudadano. Confirmar horario antes de ir.',
+      }),
+  ),
+);
+
+const santanderPoints = [
+  [
+    'santander-gobernacion',
+    'Gobernación de Santander — punto de acopio',
+    'Bucaramanga',
+    'Calle 37 # 10-30, Palacio Amarillo',
+    7.1178281,
+    -73.1308882,
+  ],
+  [
+    'santander-gestion-riesgo-floridablanca',
+    'CEGIRD Oriente — Gestión del Riesgo',
+    'Floridablanca',
+    'Calle 5 # 3-18',
+    7.0826717,
+    -73.1034606,
+  ],
+  [
+    'santander-loteria',
+    'Lotería de Santander — punto de acopio',
+    'Bucaramanga',
+    'Calle 36 # 21-16',
+    7.1192,
+    -73.1204,
+  ],
+  [
+    'santander-inder',
+    'INDERSANTANDER — punto de acopio',
+    'Bucaramanga',
+    'Unidad Deportiva Alfonso López, Carrera 30 # 14-45',
+    7.1350041,
+    -73.1172165,
+  ],
+  [
+    'santander-idesan',
+    'IDESAN — punto de acopio',
+    'Bucaramanga',
+    'Calle 48 # 27A-48',
+    7.1112,
+    -73.1164,
+  ],
+] as const;
+
+VERIFIED_RELIEF_POINTS.push(
+  ...santanderPoints.map(
+    ([key, name, municipality, addressReference, latitude, longitude]) =>
+      verified({
+        key,
+        name,
+        department: 'Santander',
+        municipality,
+        addressReference,
+        latitude,
+        longitude,
+        contactName: 'Gobernación de Santander',
+        contactPhone: 'No publicado',
+        schedule: 'Todos los días, 8:00 a 17:00; confirmar antes de ir',
+        needs:
+          'Agua, alimentos no perecederos, elementos de aseo, cobijas y artículos de primera necesidad.',
+        sourceLabel: 'Gobernación de Santander / EL PAÍS',
+        sourceUrl: INITIATIVES,
+      }),
+  ),
+);
+
+VERIFIED_RELIEF_POINTS.push(
+  verified({
+    key: 'bogota-samu-norte',
+    name: 'SAMU Norte Cruz Roja',
+    department: 'Bogotá D.C.',
+    municipality: 'Bogotá',
+    addressReference: 'Carrera 7B Bis # 132-31, acceso por Calle 134',
+    latitude: 4.7325756,
+    longitude: -74.0252056,
+    contactName: 'Cruz Roja Colombiana',
+    contactPhone: '(601) 746 0909',
+    schedule: 'Horario por confirmar con la Cruz Roja',
+    needs: 'Agua, alimentos no perecederos, aseo, cobijas y primeros auxilios.',
+    sourceLabel: 'Cruz Roja / EL PAÍS',
+    sourceUrl: GUIDE,
+  }),
+  verified({
+    key: 'bogota-gobernacion-cundinamarca',
+    name: 'Gobernación de Cundinamarca — punto de acopio',
+    department: 'Bogotá D.C.',
+    municipality: 'Bogotá',
+    addressReference: 'Calle 26 # 51-53',
+    latitude: 4.6399555,
+    longitude: -74.0966413,
+    contactName: 'Gobernación de Cundinamarca',
+    contactPhone: '(601) 749 0000',
+    schedule: 'Lunes a viernes, 8:30 a 16:00; confirmar vigencia',
+    needs:
+      'Ayudas humanitarias para Chocó, Risaralda, Caldas, Quindío y Valle del Cauca.',
+    sourceLabel: 'Gobernación de Cundinamarca / EL PAÍS',
+    sourceUrl: INITIATIVES,
+  }),
+  verified({
+    key: 'cota-empresa-licores',
+    name: 'Empresa de Licores de Cundinamarca — punto de acopio',
+    department: 'Cundinamarca',
+    municipality: 'Cota',
+    addressReference: 'Autopista Medellín km 3,8, vía Siberia-Cota',
+    latitude: 4.7304781,
+    longitude: -74.1288006,
+    contactName: 'Empresa de Licores de Cundinamarca',
+    contactPhone: '01 8000 117 090',
+    schedule: 'Lunes a viernes, 7:30 a 16:00; confirmar vigencia',
+    needs:
+      'Ayudas humanitarias para Chocó, Risaralda, Caldas, Quindío y Valle del Cauca.',
+    sourceLabel: 'Gobernación de Cundinamarca / EL PAÍS',
+    sourceUrl: INITIATIVES,
+  }),
+  verified({
+    key: 'tunja-gobernacion-boyaca',
+    name: 'Carpa de la Gobernación de Boyacá',
+    department: 'Boyacá',
+    municipality: 'Tunja',
+    addressReference: 'Frente al Palacio de la Torre, Calle 20 # 9-90',
+    latitude: 5.5333637,
+    longitude: -73.3614618,
+    contactName: 'Gobernación de Boyacá',
+    contactPhone: '(608) 742 0150',
+    schedule: 'Activa hasta el 14 de agosto; confirmar horario',
+    needs:
+      'Agua, alimentos no perecederos, elementos de aseo, cobijas y artículos de primera necesidad.',
+    sourceLabel: 'Gobernación de Boyacá / EL PAÍS',
+    sourceUrl: INITIATIVES,
+  }),
+  verified({
+    key: 'monteria-happy-lora',
+    name: 'Coliseo Miguel Happy Lora',
+    department: 'Córdoba',
+    municipality: 'Montería',
+    addressReference: 'Carrera 13, sector Villa Olímpica',
+    latitude: 8.7472479,
+    longitude: -75.8816517,
+    contactName: 'Gobernación de Córdoba',
+    contactPhone: 'No publicado',
+    schedule: '8:00 a 12:30 y 14:00 a 19:00; confirmar vigencia',
+    needs:
+      'Agua, alimentos no perecederos, elementos de aseo, pañales, cobijas y colchones.',
+    sourceLabel: 'Gobernación de Córdoba / EL PAÍS',
+    sourceUrl: INITIATIVES,
+  }),
+  verified({
+    key: 'barranquilla-casa-dann-luis-diaz',
+    name: 'Casa Dann Carlton — Fundación Luis Díaz',
+    department: 'Atlántico',
+    municipality: 'Barranquilla',
+    addressReference: 'Carrera 52C # 96-101',
+    latitude: 11.0137,
+    longitude: -74.8279,
+    contactName: 'Fundación Luis Díaz Sembrando Esperanza',
+    contactPhone: 'No publicado',
+    schedule: 'Hasta el 14 de agosto, 8:00 a 19:00',
+    needs:
+      'Alimentos no perecederos, agua, higiene personal, pañales e insumos médicos nuevos y sellados.',
+    sourceLabel: 'Fundación Luis Díaz / Tropicana',
+    sourceUrl: LUIS_DIAZ_POINT,
+    caveat:
+      'No recibe medicamentos, alimentos preparados o perecederos, productos abiertos, usados o vencidos ni ropa usada.',
+  }),
 );

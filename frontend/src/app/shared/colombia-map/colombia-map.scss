@@ -30,7 +30,6 @@
   margin: 4px 0 0;
   color: var(--muted);
   font-size: 13px;
-  max-width: 46ch;
 }
 
 .map-steps {
@@ -97,9 +96,7 @@ svg {
   stroke: #f4f6f2;
   stroke-width: 1.4;
   cursor: pointer;
-  transition:
-    fill 0.2s ease,
-    stroke 0.2s ease;
+  transition: fill 0.2s ease;
 }
 
 .department.has-points {
@@ -149,11 +146,9 @@ svg {
   stroke: #b9c3ba;
   stroke-width: 1.6;
   stroke-dasharray: 7 5;
-  rx: 8;
 }
 
-/* El camino de un camión: sólido lo recorrido, punteado lo que falta. Con
-   `non-scaling-stroke` la línea conserva su grosor al acercar el mapa. */
+/* Camino de un camión: sólido lo recorrido, punteado lo que falta. */
 .trail {
   fill: none;
   stroke: var(--tone);
@@ -197,7 +192,6 @@ svg {
   paint-order: stroke;
   stroke: #eef2ec;
   stroke-width: 5;
-  stroke-linejoin: round;
 }
 
 .pin:hover .drop,
@@ -249,11 +243,9 @@ svg {
   inset: auto 16px 16px;
   margin: 0;
   padding: 12px 14px;
-  border-radius: 12px;
   background: rgba(255, 255, 255, 0.94);
   color: var(--muted);
   font-size: 14px;
-  text-align: center;
 }
 
 .map-detail {
@@ -263,7 +255,16 @@ svg {
   border-radius: 14px;
   border: 1px solid var(--line);
   background: #fff;
-  box-shadow: 0 14px 34px rgba(23, 35, 29, 0.1);
+  box-shadow: 0 14px 34px #17231d1a;
+}
+
+/* El callejero del punto abierto: las calles que el dibujo del país no puede mostrar. */
+.street-map {
+  display: block;
+  width: 100%;
+  height: 190px;
+  margin-bottom: 12px;
+  border: 0;
 }
 
 .map-detail .close {

@@ -106,6 +106,7 @@ export const ES_TRANSLATIONS = {
   'map.departmentEmpty': '{department}: sin puntos registrados',
   'map.cityLabel': '{municipality}: {count} puntos',
   'map.close': 'Cerrar la ficha',
+  'map.streetTitle': 'Calles alrededor de {place}',
   'map.details': 'Ver todos los datos y necesidades ↗',
   'map.empty': 'Todavía no hay puntos registrados para mostrar en el mapa.',
   'map.legendActive': 'Abierto',
@@ -601,10 +602,6 @@ export const ES_TRANSLATIONS = {
   'duration.minutes': '{minutes} min',
   'duration.hours': '{hours} h {minutes} min',
   'duration.moment': 'un momento',
-
-  'safety.title': 'Si existe peligro inmediato, llama al 123.',
-  'safety.body':
-    'Este portal ayuda a coordinar donaciones y atención comunitaria; no reemplaza a los organismos oficiales de emergencia.',
 
   'footer.lead':
     'Una herramienta ciudadana para conectar necesidades reales con ayuda responsable.',

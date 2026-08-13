@@ -107,6 +107,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'map.departmentEmpty': '{department}: no points registered',
   'map.cityLabel': '{municipality}: {count} points',
   'map.close': 'Close the details',
+  'map.streetTitle': 'Streets around {place}',
   'map.details': 'See every detail and need ↗',
   'map.empty': 'There are no registered points to show on the map yet.',
   'map.legendActive': 'Open',
@@ -595,10 +596,6 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'duration.minutes': '{minutes} min',
   'duration.hours': '{hours} h {minutes} min',
   'duration.moment': 'a moment',
-
-  'safety.title': 'If there is immediate danger, call 123.',
-  'safety.body':
-    'This portal helps coordinate donations and community care; it does not replace official emergency services.',
 
   'footer.lead': 'A citizen tool to connect real needs with responsible help.',
   'footer.signature': 'Made with solidarity in Colombia',

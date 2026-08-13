@@ -16,7 +16,11 @@ export function distanceInKm(origin: Coordinates, target: Coordinates): number {
   return 2 * EARTH_RADIUS_KM * Math.asin(Math.min(1, Math.sqrt(haversine)));
 }
 
-/** Enlace a OpenStreetMap centrado en el punto indicado. */
+/**
+ * Enlace para llegar hasta el punto. Abre Google Maps con la ruta desde donde esté quien
+ * consulta: en el teléfono salta a la app y da las indicaciones de una vez, que es lo que
+ * hace falta en una emergencia. Es un enlace normal, no necesita clave ni pago.
+ */
 export function mapUrl({ latitude, longitude }: Coordinates): string {
-  return `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=17/${latitude}/${longitude}`;
+  return `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
 }

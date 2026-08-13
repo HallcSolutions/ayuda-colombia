@@ -33,8 +33,13 @@ const MIN_TRAIL_METERS = 60;
 const MAX_TRAIL_POINTS = 240;
 /** Cada cuánto se le vuelve a preguntar la carretera al motor de rutas. */
 const ROUTE_MAX_AGE_MINUTES = 6;
-/** Separación de la carretera guardada que indica que el camión tomó otro camino. */
-const ROUTE_DEVIATION_KM = 1.5;
+/**
+ * Separación de la carretera guardada que indica que el camión tomó otro camino. Se mide
+ * contra los vértices que quedaron tras recortar la ruta, y en un viaje largo esos vértices
+ * están a kilómetros unos de otros: por debajo de esto, un camión bien encarrilado haría
+ * pedir una ruta nueva en cada señal.
+ */
+const ROUTE_DEVIATION_KM = 3;
 /** Detalle con el que viaja la carretera al navegador. */
 const ROUTE_MAX_POINTS = 200;
 /** Detalle con el que viaja el camino recorrido al navegador. */

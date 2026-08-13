@@ -52,8 +52,59 @@
   font: inherit;
 }
 
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 14px;
+  margin: 0;
+}
+
+.stats div {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 16px 20px;
+}
+
+.stats dt {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 700;
+}
+
+.stats dd {
+  margin: 6px 0 0;
+  font: 800 30px/1 var(--serif);
+  color: var(--green);
+}
+
+.section-error {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #fdeceb;
+  border: 1px solid #f3c9c1;
+  color: #8c2f1c;
+}
+
+.empty {
+  color: var(--muted);
+}
+
 .convoy-grid {
   display: grid;
   gap: 16px;
   grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

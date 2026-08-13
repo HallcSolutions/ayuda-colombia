@@ -153,6 +153,11 @@
       >
         ×
       </button>
+
+      @if (streetMap(); as street) {
+        <iframe class="street-map" [src]="street" [title]="streetMapTitle()" loading="lazy"></iframe>
+      }
+
       <ng-content />
     </aside>
   }

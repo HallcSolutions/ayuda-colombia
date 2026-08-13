@@ -1,0 +1,12 @@
+**/node_modules
+**/dist
+**/.git
+**/.env
+**/.DS_Store
+**/.claude
+**/.chalc
+**/.chalc.json
+**/.vscode
+**/coverage
+backend/uploads/*
+!backend/uploads/.gitkeep

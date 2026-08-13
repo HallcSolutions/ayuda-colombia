@@ -7,6 +7,7 @@ import { I18nService } from '../../core/i18n/i18n.service';
 import { HouseReport } from '../../core/models/house-report.model';
 import { ReporterAccessService } from '../../core/services/reporter-access.service';
 import { ReportsService } from '../../core/services/reports.service';
+import { mapUrl as directionsUrl } from '../../core/utils/geo.util';
 
 @Component({
   selector: 'app-reports-feed',
@@ -60,8 +61,7 @@ export class ReportsFeedComponent {
   }
 
   mapUrl(report: HouseReport): string {
-    const { latitude, longitude } = report.location;
-    return `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=17/${latitude}/${longitude}`;
+    return directionsUrl(report.location);
   }
 
   urgencyLabel(urgency: UrgencyLevel): string {

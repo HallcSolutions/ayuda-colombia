@@ -18,6 +18,7 @@ import {
   COLOMBIA_MAP_WIDTH,
   projectToMap,
 } from '../../core/constants/colombia-map.constants';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { DepartmentShape, MapPoint } from '../../core/models/map-geometry.model';
 import { RegionService } from '../../core/services/region.service';
@@ -63,6 +64,8 @@ const CAPTION_OFFSET = 20;
 const PIN_WIDTH = 34;
 const PIN_HEIGHT = 48;
 const PIN_CENTER = -24;
+/** Acercamiento del callejero de la ficha: la manzana del punto, con sus calles. */
+const STREET_ZOOM = 16;
 /** Área táctil mínima para distritos y departamentos muy pequeños. */
 const MIN_DEPARTMENT_HIT_SIZE = 64;
 const COMPACT_DEPARTMENT_AREA = 5000;
@@ -178,6 +181,29 @@ export class ColombiaMap {
   protected readonly inset = COLOMBIA_MAP_INSET;
 
   private readonly detail = viewChild<ElementRef<HTMLElement>>('detail');
+  private readonly sanitizer = inject(DomSanitizer);
+
+  /** El punto abierto en la ficha, para poder enseñar sus calles. */
+  private readonly selectedMarker = computed(
+    () => this.markers().find((marker) => marker.id === this.selectedId()) ?? null,
+  );
+
+  /**
+   * Callejero del punto abierto. El dibujo de Colombia sirve para escoger la zona, pero no
+   * dice por qué calle se llega: eso lo enseña este recuadro, y solo se carga cuando alguien
+   * abre una ficha, no antes.
+   */
+  readonly streetMap = computed<SafeResourceUrl | null>(() => {
+    const marker = this.selectedMarker();
+    if (!marker) return null;
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://maps.google.com/maps?q=${marker.latitude},${marker.longitude}&z=${STREET_ZOOM}&output=embed`,
+    );
+  });
+
+  streetMapTitle(): string {
+    return this.t('map.streetTitle', { place: this.selectedMarker()?.label ?? '' });
+  }
 
   constructor() {
     // En un teléfono la ficha se abre debajo del mapa: se acerca sola para no buscarla.
