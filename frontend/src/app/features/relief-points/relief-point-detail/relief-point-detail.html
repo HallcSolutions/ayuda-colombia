@@ -1,0 +1,151 @@
+<article class="detail">
+  <header class="detail-head">
+    <span [class]="'status status-' + point().status">{{ t(statusKey(point().status)) }}</span>
+    <span class="place">{{ point().municipality }}, {{ point().department }}</span>
+    @if (distanceKm() !== null) {
+      <span class="distance">{{
+        t('reliefPointCard.distance', { km: (distanceKm() ?? 0).toFixed(1) })
+      }}</span>
+    }
+  </header>
+
+  <div class="detail-body">
+    <div class="detail-main">
+      <!-- Lo primero que se busca en una emergencia: qué hace falta aquí. -->
+      <section class="needs" aria-labelledby="detail-needs">
+        <h4 id="detail-needs">{{ t('reliefPointCard.needs') }}</h4>
+        @if (alerts().length) {
+          <ul class="need-cards">
+            @for (alert of alerts(); track alert.id) {
+              <li [class]="'severity-' + alert.severity">
+                <span class="need-icon" aria-hidden="true">{{ alertIcon(alert) }}</span>
+                <div class="need-body">
+                  <p class="need-head">
+                    <strong>{{ t(categoryKey(alert.category)) }}</strong>
+                    <span class="severity">{{ t(urgencyKey(alert.severity)) }}</span>
+                  </p>
+                  <p class="need-title">{{ alert.title }}</p>
+                  @if (alert.requestedQuantity) {
+                    <p class="need-quantity">
+                      <span>{{ t('reliefPointCard.requestedQuantity') }}</span>
+                      {{ alert.requestedQuantity }}
+                    </p>
+                  }
+                  @if (alert.message) {
+                    <p class="need-message">{{ alert.message }}</p>
+                  }
+                  <p class="need-meta">
+                    {{ t('reliefPointCard.reportedBy', { name: alert.createdBy }) }} ·
+                    {{ alert.createdAt | date: 'd MMM, h:mm a' : undefined : i18n.locale() }}
+                  </p>
+                </div>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="muted">{{ t('reliefPointCard.noNeeds') }}</p>
+        }
+      </section>
+
+      @if (point().notes) {
+        <section class="about" aria-labelledby="detail-about">
+          <h4 id="detail-about">{{ t('reliefPointCard.verifiedInformation') }}</h4>
+          <p>{{ point().notes }}</p>
+        </section>
+      }
+
+      <section class="meals" aria-labelledby="detail-meals">
+        <h4 id="detail-meals">{{ t('reliefPointCard.mealsToday') }}</h4>
+        @if (meals().length) {
+          <ul class="meal-list">
+            @for (meal of meals(); track meal.id) {
+              <li>
+                <strong>{{ meal.startsAt }} · {{ t(mealTypeKey(meal.mealType)) }}</strong>
+                <span>
+                  {{
+                    t('reliefPointCard.portions', {
+                      delivered: meal.portionsDelivered,
+                      planned: meal.portionsPlanned,
+                    })
+                  }}
+                </span>
+                @if (meal.notes) {
+                  <small>{{ meal.notes }}</small>
+                }
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="muted">{{ t('reliefPointCard.noMeals') }}</p>
+        }
+      </section>
+    </div>
+
+    <aside class="detail-aside">
+      <iframe
+        class="street-map"
+        [src]="streetMap()"
+        [title]="t('map.streetTitle', { place: point().name })"
+        loading="lazy"
+      ></iframe>
+
+      <dl class="facts">
+        <div>
+          <dt>{{ t('reliefPointCard.address') }}</dt>
+          <dd>{{ point().addressReference }}</dd>
+        </div>
+        <div>
+          <dt>{{ t('reliefPointCard.schedule') }}</dt>
+          <dd>{{ point().schedule }}</dd>
+        </div>
+        <div>
+          <dt>{{ t('reliefPointCard.contact') }}</dt>
+          <dd>
+            {{ point().contactName }}
+            @if (hasCallablePhone()) {
+              <a [href]="'tel:' + point().contactPhone">{{ point().contactPhone }}</a>
+            }
+          </dd>
+        </div>
+        @if (point().dailyMealCapacity) {
+          <div>
+            <dt>{{ t('reliefPoints.stats.portionsToday') }}</dt>
+            <dd>{{ t('reliefPointCard.capacity', { count: point().dailyMealCapacity ?? 0 }) }}</dd>
+          </div>
+        }
+      </dl>
+    </aside>
+  </div>
+
+  @if (errorMessage()) {
+    <p class="detail-error" role="alert">{{ errorMessage() }}</p>
+  }
+
+  <footer class="detail-actions">
+    <a class="primary" [href]="directionsUrl()" target="_blank" rel="noopener">
+      {{ t('common.directions') }}
+    </a>
+    <button type="button" (click)="requestHelp.emit(point())">
+      {{ t('reliefPointCard.requestHelp') }}
+    </button>
+    <button type="button" (click)="registerMeal.emit(point())">
+      {{ t('reliefPointCard.registerMeal') }}
+    </button>
+  </footer>
+
+  <section class="status-switch">
+    <span>{{ t('reliefPointCard.updateStatus') }}</span>
+    @if (point().status === pointStatus.ACTIVE) {
+      <button type="button" (click)="changeStatus(pointStatus.FULL)">
+        {{ t('reliefPointCard.markFull') }}
+      </button>
+      <button type="button" (click)="changeStatus(pointStatus.CLOSED)">
+        {{ t('reliefPointCard.markClosed') }}
+      </button>
+    } @else {
+      <button type="button" (click)="changeStatus(pointStatus.ACTIVE)">
+        {{ t('reliefPointCard.markActive') }}
+      </button>
+    }
+  </section>
+</article>

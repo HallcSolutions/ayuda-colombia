@@ -5,7 +5,6 @@ import { houseNeedKey, reportStatusKey, urgencyKey } from '../../core/i18n/domai
 import { TranslationKey } from '../../core/i18n/es.translations';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { HouseReport } from '../../core/models/house-report.model';
-import { ReporterAccessService } from '../../core/services/reporter-access.service';
 import { ReportsService } from '../../core/services/reports.service';
 import { mapUrl as directionsUrl } from '../../core/utils/geo.util';
 
@@ -16,7 +15,6 @@ import { mapUrl as directionsUrl } from '../../core/utils/geo.util';
 })
 export class ReportsFeedComponent {
   readonly reportsService = inject(ReportsService);
-  private readonly reporterAccess = inject(ReporterAccessService);
   private readonly i18n = inject(I18nService);
   readonly t = this.i18n.t;
   readonly reportStatus = ReportStatus;
@@ -48,11 +46,6 @@ export class ReportsFeedComponent {
 
   async changeStatus(report: HouseReport, status: ReportStatus): Promise<void> {
     this.errorMessageKey.set(null);
-    const accessCode = this.reporterAccess.code();
-    if (!accessCode) {
-      this.errorMessageKey.set('feed.missingCode');
-      return;
-    }
     try {
       await firstValueFrom(this.reportsService.updateStatus(report.id, status));
     } catch {

@@ -9,6 +9,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Matches,
   Max,
   MaxLength,
   Min,
@@ -20,6 +21,15 @@ export class CreateReportDto {
   @IsNotEmpty()
   @MaxLength(80)
   reporterName!: string;
+
+  /**
+   * Se aceptan letras y guiones, no solo los dígitos de la cédula colombiana: en un
+   * albergue hay cédulas de extranjería y pasaportes, y rechazarlos dejaría fuera de
+   * la ayuda justo a quien menos respaldo tiene.
+   */
+  @IsString()
+  @Matches(/^[A-Za-z0-9-]{5,20}$/)
+  documentId!: string;
 
   @IsString()
   @IsNotEmpty()

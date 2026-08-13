@@ -21,8 +21,7 @@ import { FindConvoysQueryDto } from './dto/find-convoys-query.dto';
 import { UpdateConvoyTripDto } from './dto/update-convoy-trip.dto';
 
 /**
- * Como en `missing`, aquí las escrituras NO piden `x-reporter-key`: quien presta su
- * camión no es brigadista y exigirlo dejaría el módulo sin uso. Cada viaje se mueve con
+ * Quien presta un camión puede anunciar el viaje sin cuenta. Cada viaje se mueve con
  * el PIN que se entregó al anunciarlo, y el abuso se contiene con el límite de peticiones.
  */
 @Controller('convoys')

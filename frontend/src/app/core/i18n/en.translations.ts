@@ -15,10 +15,6 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'brand.name': 'RedAyuda',
   'brand.tagline': 'Colombia takes care of its own',
 
-  'reporterCode.label': 'Authorized responder code',
-  'reporterCode.placeholder': 'Code given to your brigade',
-  'reporterCode.hint': 'Stored on this device so you do not have to type it again.',
-
   'reliefPointType.collection_center': 'Collection point',
   'reliefPointType.community_kitchen': 'Community kitchen',
   'reliefPointType.shelter': 'Shelter',
@@ -157,6 +153,8 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
 
   'reliefPointCard.contact': 'Contact',
   'reliefPointCard.schedule': 'Schedule',
+  'reliefPointCard.address': 'Address',
+  'reliefPointCard.viewDetail': 'View details',
   'reliefPointCard.capacity': 'Daily capacity: {count} meals',
   'reliefPointCard.distance': '{km} km away from you',
   'reliefPointCard.mealsToday': 'Today’s meals',
@@ -165,8 +163,11 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'reliefPointCard.needs': 'Needed now',
   'reliefPointCard.verifiedInformation': 'Verified information',
   'reliefPointCard.noNeeds': 'No urgent needs reported.',
+  'reliefPointCard.requestedQuantity': 'Amount requested',
+  'reliefPointCard.reportedBy': 'Reported by {name}',
   'reliefPointCard.requestHelp': 'Request help',
   'reliefPointCard.registerMeal': 'Log a meal',
+  'reliefPointCard.updateStatus': 'Has the situation changed?',
   'reliefPointCard.markFull': 'Mark at capacity',
   'reliefPointCard.markActive': 'Mark open',
   'reliefPointCard.markClosed': 'Mark closed',
@@ -225,6 +226,9 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'hero.titleAccent': 'where it is needed most.',
   'hero.lead':
     'Register an affected home, share evidence and location, and tell those who can help what is urgently needed.',
+  'hero.faithQuote': '"Carry one another\'s burdens."',
+  'hero.faithSource': 'Galatians 6:2',
+  'hero.faithNote': "With God's help and everyone's hands, no family faces the storm alone.",
   'hero.primaryCta': 'Report a home',
   'hero.secondaryCta': 'See active needs',
   'hero.trust': 'Location is shared only with explicit consent.',
@@ -259,6 +263,10 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'reportForm.step1Subtitle': 'Details to verify and contact the case.',
   'reportForm.reporterName': 'Reported by',
   'reportForm.reporterNamePlaceholder': 'Full name',
+  'reportForm.documentId': 'ID number',
+  'reportForm.documentIdPlaceholder': 'Document number',
+  'reportForm.documentIdHint':
+    'Used to match your case against official damage records. It is never shown in the public list.',
   'reportForm.contactPhone': 'Contact phone',
   'reportForm.contactPhonePlaceholder': 'E.g. 300 123 4567',
   'reportForm.department': 'Department',
@@ -579,8 +587,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'convoyTracker.sharingTitle': 'You are sharing your trip',
   'convoyTracker.pausedTitle': 'Your trip is announced, without sharing location',
   'convoyTracker.body': 'You are heading to {destination}. {status}',
-  'convoyTracker.sharingBody':
-    'Your location is sent every few seconds while this tab stays open.',
+  'convoyTracker.sharingBody': 'Your location is sent every few seconds while this tab stays open.',
   'convoyTracker.pausedBody': 'Nobody can see where you are.',
   'convoyTracker.share': 'Start sharing',
   'convoyTracker.stop': 'Stop sharing',

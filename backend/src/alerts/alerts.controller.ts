@@ -6,10 +6,8 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { AlertStatus, SupplyCategory } from '../common/constants/app.constants';
-import { ReporterAccessGuard } from '../common/guards/reporter-access.guard';
 import { AidAlert } from '../common/interfaces/aid-alert.interface';
 import { AlertsService } from './alerts.service';
 import { CreateAidAlertDto } from './dto/create-aid-alert.dto';
@@ -36,13 +34,11 @@ export class AlertsController {
   }
 
   @Post()
-  @UseGuards(ReporterAccessGuard)
   create(@Body() dto: CreateAidAlertDto): Promise<AidAlert> {
     return this.alertsService.create(dto);
   }
 
   @Patch(':id/resolve')
-  @UseGuards(ReporterAccessGuard)
   resolve(@Param('id') id: string): Promise<AidAlert> {
     return this.alertsService.resolve(id);
   }

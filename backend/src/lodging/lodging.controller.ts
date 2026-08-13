@@ -21,9 +21,8 @@ import { UpdateOccupancyDto } from './dto/update-occupancy.dto';
 import { LodgingService } from './lodging.service';
 
 /**
- * Como en `missing`, aquí las escrituras NO piden `x-reporter-key`: una familia,
- * un hotel o un motel que ofrece dormida no tiene código de brigadista. Quien
- * publica recibe un PIN y con él va mermando los cupos que ya ocupó.
+ * Una familia, hotel o motel puede ofrecer dormida sin cuenta. Quien publica
+ * recibe un PIN y con él va mermando los cupos que ya ocupó.
  */
 @Controller('lodging')
 export class LodgingController {

@@ -39,6 +39,7 @@ describe('ReportsService', () => {
   it('publica un reporte con fotos y necesidades normalizadas', async () => {
     const dto: CreateReportDto = {
       reporterName: 'Líder local',
+      documentId: '1017234567',
       contactPhone: '3001234567',
       department: 'Chocó',
       municipality: 'Istmina',
@@ -69,6 +70,18 @@ describe('ReportsService', () => {
     expect(gateway.reportCreated.mock.calls[0][0]).toEqual(result);
   });
 
+  it('guarda la cédula pero no la deja salir por la API', async () => {
+    const entity = reportEntity();
+    repository.findAll.mockResolvedValue([entity]);
+    repository.findById.mockResolvedValue(entity);
+
+    const [listed] = await service.findAll({});
+    const detail = await service.findOne(entity.id);
+
+    // El listado es público: la cédula no puede viajar en él ni en el detalle.
+    expect(JSON.stringify([listed, detail])).not.toContain(entity.documentId);
+  });
+
   it('devuelve los reportes ordenados por el repositorio', async () => {
     repository.findAll.mockResolvedValue([reportEntity()]);
 
@@ -85,6 +98,7 @@ function reportEntity(): ReportEntity {
   return {
     id: '5c4826f4-b3a9-4f18-8d81-67eb1301d017',
     reporterName: 'Líder local',
+    documentId: '1017234567',
     contactPhone: '3001234567',
     department: 'Chocó',
     municipality: 'Istmina',

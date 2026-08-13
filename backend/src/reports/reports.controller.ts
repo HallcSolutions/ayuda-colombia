@@ -9,7 +9,6 @@ import {
   Post,
   Query,
   UploadedFiles,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -21,7 +20,6 @@ import { UpdateLocationDto } from './dto/update-location.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
 import { HouseReport } from '../common/interfaces/house-report.interface';
 import { ReportsService } from './reports.service';
-import { ReporterAccessGuard } from '../common/guards/reporter-access.guard';
 import { FindReportsQueryDto } from './dto/find-reports-query.dto';
 
 @Controller('reports')
@@ -40,7 +38,6 @@ export class ReportsController {
 
   @Post()
   @Throttle({ default: { limit: 10, ttl: 60_000 } })
-  @UseGuards(ReporterAccessGuard)
   @UseInterceptors(
     FilesInterceptor('photos', MAX_REPORT_PHOTOS, photoUploadOptions),
   )
@@ -59,7 +56,6 @@ export class ReportsController {
   }
 
   @Patch(':id')
-  @UseGuards(ReporterAccessGuard)
   update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: UpdateReportDto,
@@ -68,7 +64,6 @@ export class ReportsController {
   }
 
   @Patch(':id/location')
-  @UseGuards(ReporterAccessGuard)
   updateLocation(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: UpdateLocationDto,

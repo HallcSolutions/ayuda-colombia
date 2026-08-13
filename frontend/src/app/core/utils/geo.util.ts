@@ -24,3 +24,11 @@ export function distanceInKm(origin: Coordinates, target: Coordinates): number {
 export function mapUrl({ latitude, longitude }: Coordinates): string {
   return `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
 }
+
+/** Cercanía del callejero incrustado: la cuadra del punto, no la ciudad entera. */
+const STREET_ZOOM = 16;
+
+/** Mapa de calles incrustable alrededor del punto; el dibujo del país no llega a ese detalle. */
+export function streetMapUrl({ latitude, longitude }: Coordinates): string {
+  return `https://maps.google.com/maps?q=${latitude},${longitude}&z=${STREET_ZOOM}&output=embed`;
+}

@@ -1,13 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   OnDestroy,
   computed,
   inject,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import {
@@ -20,7 +18,6 @@ import { HOUSE_NEED_OPTIONS } from '../../core/i18n/domain-keys';
 import { TranslationKey } from '../../core/i18n/es.translations';
 import { I18nService, TranslationParams } from '../../core/i18n/i18n.service';
 import { SelectedPhoto } from '../../core/models/selected-photo.model';
-import { ReporterAccessService } from '../../core/services/reporter-access.service';
 import { ReportsService } from '../../core/services/reports.service';
 
 @Component({
@@ -32,8 +29,6 @@ import { ReportsService } from '../../core/services/reports.service';
 export class ReportFormComponent implements OnDestroy {
   private readonly formBuilder = inject(FormBuilder);
   private readonly reportsService = inject(ReportsService);
-  private readonly reporterAccess = inject(ReporterAccessService);
-  private readonly destroyRef = inject(DestroyRef);
   private readonly i18n = inject(I18nService);
   private locationWatchId: number | null = null;
 
@@ -61,13 +56,15 @@ export class ReportFormComponent implements OnDestroy {
   });
 
   readonly reportForm = this.formBuilder.group({
-    accessCode: this.formBuilder.nonNullable.control(
-      this.reporterAccess.code(),
-      Validators.required,
-    ),
     reporterName: this.formBuilder.nonNullable.control('', [
       Validators.required,
       Validators.maxLength(80),
+    ]),
+    // Se aceptan letras y guiones además de la cédula colombiana: en un albergue hay
+    // cédulas de extranjería y pasaportes. Mismo patrón que valida la API.
+    documentId: this.formBuilder.nonNullable.control('', [
+      Validators.required,
+      Validators.pattern(/^[A-Za-z0-9-]{5,20}$/),
     ]),
     contactPhone: this.formBuilder.nonNullable.control('', [
       Validators.required,
@@ -100,12 +97,6 @@ export class ReportFormComponent implements OnDestroy {
     accuracy: this.formBuilder.control<number | null>(null),
     consentToShareLocation: this.formBuilder.nonNullable.control(false, Validators.requiredTrue),
   });
-
-  constructor() {
-    this.reportForm.controls.accessCode.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((code) => this.reporterAccess.setCode(code));
-  }
 
   ngOnDestroy(): void {
     this.stopLocationTracking();
@@ -215,6 +206,7 @@ export class ReportFormComponent implements OnDestroy {
     const value = this.reportForm.getRawValue();
     const payload = new FormData();
     payload.append('reporterName', value.reporterName);
+    payload.append('documentId', value.documentId);
     payload.append('contactPhone', value.contactPhone);
     payload.append('department', value.department);
     payload.append('municipality', value.municipality);
@@ -243,15 +235,14 @@ export class ReportFormComponent implements OnDestroy {
   }
 
   private resetForm(): void {
-    const accessCode = this.reportForm.controls.accessCode.value;
     this.stopLocationTracking();
     this.selectedPhotos().forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
     this.selectedPhotos.set([]);
     this.selectedNeeds.set([]);
     this.setLocationMessage('reportForm.locationIdle');
     this.reportForm.reset({
-      accessCode,
       reporterName: '',
+      documentId: '',
       contactPhone: '',
       department: '',
       municipality: '',

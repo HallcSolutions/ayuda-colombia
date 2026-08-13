@@ -22,6 +22,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { DepartmentShape, MapPoint } from '../../core/models/map-geometry.model';
 import { RegionService } from '../../core/services/region.service';
+import { streetMapUrl } from '../../core/utils/geo.util';
 import {
   DepartmentArea,
   DepartmentLabel,
@@ -64,8 +65,6 @@ const CAPTION_OFFSET = 20;
 const PIN_WIDTH = 34;
 const PIN_HEIGHT = 48;
 const PIN_CENTER = -24;
-/** Acercamiento del callejero de la ficha: la manzana del punto, con sus calles. */
-const STREET_ZOOM = 16;
 /** Área táctil mínima para distritos y departamentos muy pequeños. */
 const MIN_DEPARTMENT_HIT_SIZE = 64;
 const COMPACT_DEPARTMENT_AREA = 5000;
@@ -196,9 +195,7 @@ export class ColombiaMap {
   readonly streetMap = computed<SafeResourceUrl | null>(() => {
     const marker = this.selectedMarker();
     if (!marker) return null;
-    return this.sanitizer.bypassSecurityTrustResourceUrl(
-      `https://maps.google.com/maps?q=${marker.latitude},${marker.longitude}&z=${STREET_ZOOM}&output=embed`,
-    );
+    return this.sanitizer.bypassSecurityTrustResourceUrl(streetMapUrl(marker));
   });
 
   streetMapTitle(): string {

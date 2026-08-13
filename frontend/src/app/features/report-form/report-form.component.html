@@ -16,16 +16,6 @@
           <p>{{ t('reportForm.step1Subtitle') }}</p>
         </div>
       </div>
-      <label class="access-field">
-        <span>{{ t('reporterCode.label') }}</span>
-        <input
-          formControlName="accessCode"
-          type="password"
-          autocomplete="off"
-          [placeholder]="t('reporterCode.placeholder')"
-        />
-        <small>{{ t('reporterCode.hint') }}</small>
-      </label>
       <div class="form-grid">
         <label
           ><span>{{ t('reportForm.reporterName') }}</span
@@ -33,6 +23,14 @@
             formControlName="reporterName"
             [placeholder]="t('reportForm.reporterNamePlaceholder')"
         /></label>
+        <label
+          ><span>{{ t('reportForm.documentId') }}</span
+          ><input
+            formControlName="documentId"
+            inputmode="text"
+            [placeholder]="t('reportForm.documentIdPlaceholder')"
+          /><small>{{ t('reportForm.documentIdHint') }}</small></label
+        >
         <label
           ><span>{{ t('reportForm.contactPhone') }}</span
           ><input

@@ -1,0 +1,359 @@
+:host {
+  display: block;
+}
+
+.detail {
+  display: grid;
+  gap: 18px;
+}
+
+.detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.status {
+  border-radius: 999px;
+  padding: 6px 12px;
+  color: #2c6a4f;
+  background: #e4f0e6;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-full {
+  color: #875310;
+  background: #fff0d5;
+}
+
+.status-closed {
+  color: #66706b;
+  background: #e9ece9;
+}
+
+.detail-head .place,
+.distance {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.detail-head .place::after {
+  content: '·';
+  margin-left: 8px;
+}
+
+.detail-head .place:last-child::after {
+  content: none;
+}
+
+.detail-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.detail-main {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
+.detail h4 {
+  margin: 0 0 9px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* Las necesidades son el motivo de abrir la ficha: van primero y con más peso. */
+.needs h4 {
+  color: #8b3824;
+}
+
+.need-cards {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.need-cards li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  padding: 13px 15px;
+  border: 1px solid #f2d3c3;
+  border-left: 4px solid var(--coral);
+  border-radius: 13px;
+  background: #fff8f4;
+}
+
+.need-cards li.severity-critical {
+  border-left-color: #c53a1c;
+  background: #fff2ed;
+}
+
+.need-cards li.severity-low {
+  border-left-color: #e6b58f;
+}
+
+.need-icon {
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.need-body {
+  min-width: 0;
+}
+
+.need-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+}
+
+.need-head strong {
+  color: #7d3421;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.severity {
+  border-radius: 999px;
+  padding: 3px 9px;
+  border: 1px solid #eec5b1;
+  color: #96442d;
+  background: white;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.severity-critical .severity {
+  border-color: transparent;
+  color: white;
+  background: #c53a1c;
+}
+
+.need-title,
+.need-quantity,
+.need-message,
+.need-meta {
+  margin: 5px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.need-title {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.need-quantity {
+  color: #7d3421;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.need-quantity span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* La descripción que escribe quien pide: se lee corrida, sin recortar. */
+.need-message {
+  color: #4a3b35;
+  font-size: 13.5px;
+  line-height: 1.55;
+  white-space: pre-line;
+}
+
+.need-meta {
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.about {
+  padding: 14px 16px;
+  border: 1px solid #dce8de;
+  border-radius: 13px;
+  background: #f4f8f3;
+}
+
+.about p {
+  margin: 0;
+  color: #435349;
+  font-size: 13.5px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.meal-list {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.meal-list li {
+  display: grid;
+  gap: 2px;
+  padding: 10px 13px;
+  border-radius: 11px;
+  background: #f4f7f2;
+  font-size: 13px;
+}
+
+.meal-list small {
+  color: var(--muted);
+}
+
+.detail-aside {
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: #fbfcfa;
+}
+
+.street-map {
+  display: block;
+  width: 100%;
+  height: 190px;
+  border: 0;
+  border-radius: 11px;
+}
+
+.facts {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.facts dt {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.facts dd {
+  margin: 3px 0 0;
+  font-size: 13.5px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.facts a {
+  display: block;
+  color: var(--green);
+  font-weight: 700;
+}
+
+.muted {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.detail-error {
+  margin: 0;
+  color: #8c2f1c;
+  font-size: 13px;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.detail-actions a,
+.detail-actions button {
+  border: 1px solid var(--green);
+  border-radius: 10px;
+  padding: 11px 18px;
+  color: var(--green);
+  background: white;
+  font-size: 13.5px;
+  font-weight: 750;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.detail-actions .primary {
+  color: white;
+  background: var(--green);
+  box-shadow: 0 8px 20px rgba(18, 88, 64, 0.18);
+}
+
+.status-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.status-switch button {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 13px;
+  color: var(--muted);
+  background: white;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.status-switch button:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+@media (max-width: 780px) {
+  .detail-body {
+    grid-template-columns: 1fr;
+  }
+
+  /* En el teléfono manda lo que necesitan; el callejero y los datos quedan debajo. */
+  .detail-aside {
+    order: 2;
+  }
+
+  .street-map {
+    height: 160px;
+  }
+
+  .detail-actions a,
+  .detail-actions button {
+    flex: 1 1 10rem;
+    text-align: center;
+  }
+}

@@ -26,9 +26,7 @@ import { UpdateMissingRecordDto } from './dto/update-missing-record.dto';
 import { MissingService } from './missing.service';
 
 /**
- * Excepción deliberada a la regla del proyecto: aquí las escrituras NO piden
- * `x-reporter-key`. Quien busca a un familiar o a su mascota no tiene el código
- * de brigadista, así que exigirlo dejaría el módulo sin uso. El abuso se contiene
+ * Cualquier persona puede publicar una búsqueda sin cuenta. El abuso se contiene
  * con el límite de peticiones y con el máximo de fotos por publicación.
  */
 @Controller('missing')

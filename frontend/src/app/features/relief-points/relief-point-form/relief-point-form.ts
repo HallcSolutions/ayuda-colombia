@@ -6,11 +6,10 @@ import { COLOMBIA_DEPARTMENTS } from '../../../core/constants/colombia.constants
 import { reliefPointTypeKey } from '../../../core/i18n/domain-keys';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { ReliefPointsService } from '../../../core/services/relief-points.service';
-import { ReporterCodeField } from '../../../shared/reporter-code-field/reporter-code-field';
 
 @Component({
   selector: 'app-relief-point-form',
-  imports: [ReactiveFormsModule, ReporterCodeField],
+  imports: [ReactiveFormsModule],
   templateUrl: './relief-point-form.html',
   styleUrl: './relief-point-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

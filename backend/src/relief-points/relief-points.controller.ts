@@ -6,13 +6,11 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ReliefPointStatus,
   ReliefPointType,
 } from '../common/constants/app.constants';
-import { ReporterAccessGuard } from '../common/guards/reporter-access.guard';
 import { ReliefPoint } from '../common/interfaces/relief-point.interface';
 import { CreateReliefPointDto } from './dto/create-relief-point.dto';
 import { UpdateReliefPointDto } from './dto/update-relief-point.dto';
@@ -43,13 +41,11 @@ export class ReliefPointsController {
   }
 
   @Post()
-  @UseGuards(ReporterAccessGuard)
   create(@Body() dto: CreateReliefPointDto): Promise<ReliefPoint> {
     return this.reliefPointsService.create(dto);
   }
 
   @Patch(':id')
-  @UseGuards(ReporterAccessGuard)
   update(
     @Param('id') id: string,
     @Body() dto: UpdateReliefPointDto,

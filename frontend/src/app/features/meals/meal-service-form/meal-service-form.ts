@@ -7,11 +7,10 @@ import { I18nService } from '../../../core/i18n/i18n.service';
 import { ReliefPoint } from '../../../core/models/relief-point.model';
 import { MealsService } from '../../../core/services/meals.service';
 import { toIsoDate, toIsoTime } from '../../../core/utils/date.util';
-import { ReporterCodeField } from '../../../shared/reporter-code-field/reporter-code-field';
 
 @Component({
   selector: 'app-meal-service-form',
-  imports: [ReactiveFormsModule, ReporterCodeField],
+  imports: [ReactiveFormsModule],
   templateUrl: './meal-service-form.html',
   styleUrl: './meal-service-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

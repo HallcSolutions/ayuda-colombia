@@ -91,15 +91,54 @@
 
 .selected-need strong,
 .need-line strong {
+  display: block;
+  margin-bottom: 6px;
   color: #8b3824;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
-.selected-need p {
-  margin: 3px 0 0;
-  color: #523b34;
+/* Una burbuja por necesidad: se escanean mucho más rápido que una frase larga. */
+.need-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.need-chips li {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  max-width: 100%;
+  border: 1px solid #f2d3c3;
+  border-radius: 999px;
+  padding: 5px 11px 5px 8px;
+  background: #fff8f4;
+  color: #7d3421;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  /* Una necesidad escrita en una palabra larguísima no puede romper la fila. */
+  overflow-wrap: anywhere;
+}
+
+.need-icon {
+  flex-shrink: 0;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.selected-need .need-chips li {
+  background: #fff;
+}
+
+.need-empty {
+  margin: 0;
+  color: var(--muted);
   font-size: 12px;
   line-height: 1.45;
 }
@@ -121,6 +160,17 @@
   font-weight: 750;
   text-decoration: none;
   cursor: pointer;
+}
+
+/* Abrir la ficha completa es la acción principal de la vista previa del mapa. */
+.selected-actions .detail,
+.row-actions .detail {
+  color: white;
+  background: var(--green);
+}
+
+.selected-actions .detail {
+  flex: 1 1 100%;
 }
 
 .directory {
@@ -332,21 +382,29 @@
   font: 720 18px/1.2 var(--serif);
 }
 
-.need-line {
-  display: flex;
-  gap: 7px;
-  align-items: baseline;
-  margin-top: 9px;
-  color: #65483f;
-  font-size: 12px;
-  line-height: 1.4;
+/* El nombre abre la ficha completa: se ve como texto, se comporta como botón. */
+.point-name {
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
-.need-line span {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+.point-name:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.point-name:focus-visible {
+  outline: 3px solid rgba(18, 88, 64, 0.2);
+  outline-offset: 3px;
+}
+
+.need-line {
+  margin-top: 10px;
 }
 
 .point-facts {
@@ -391,17 +449,6 @@
   text-align: center;
   text-decoration: none;
   cursor: pointer;
-}
-
-.row-actions .directions {
-  color: white;
-  background: var(--green);
-}
-
-.row-actions .subtle {
-  border-color: transparent;
-  color: var(--muted);
-  background: transparent;
 }
 
 .section-error {
@@ -502,13 +549,28 @@
     padding: 17px 15px;
   }
 
+  /* En pantalla pequeña la lista de necesidades es lo primero que se busca:
+     burbujas algo más grandes y con más aire para leerlas y tocarlas cómodo. */
+  .need-chips {
+    gap: 7px;
+  }
+
+  .need-chips li {
+    padding: 6px 12px 6px 9px;
+    font-size: 13px;
+  }
+
+  .need-icon {
+    font-size: 14px;
+  }
+
   .row-actions {
     grid-column: auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
 
-  .row-actions .subtle {
+  .row-actions .detail {
     grid-column: 1 / -1;
   }
 }

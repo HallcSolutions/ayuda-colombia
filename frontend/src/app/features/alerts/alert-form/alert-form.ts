@@ -11,11 +11,10 @@ import { supplyCategoryKey, urgencyKey } from '../../../core/i18n/domain-keys';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { ReliefPoint } from '../../../core/models/relief-point.model';
 import { AlertsService } from '../../../core/services/alerts.service';
-import { ReporterCodeField } from '../../../shared/reporter-code-field/reporter-code-field';
 
 @Component({
   selector: 'app-alert-form',
-  imports: [ReactiveFormsModule, ReporterCodeField],
+  imports: [ReactiveFormsModule],
   templateUrl: './alert-form.html',
   styleUrl: './alert-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

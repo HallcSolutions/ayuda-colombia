@@ -34,6 +34,7 @@ export class ReportsService {
     const now = new Date();
     const entity = this.repository.create({
       reporterName: dto.reporterName.trim(),
+      documentId: dto.documentId.trim(),
       contactPhone: dto.contactPhone.trim(),
       department: dto.department.trim(),
       municipality: dto.municipality.trim(),

@@ -5,6 +5,10 @@
       {{ t('hero.title') }}<br /><em>{{ t('hero.titleAccent') }}</em>
     </h1>
     <p>{{ t('hero.lead') }}</p>
+    <blockquote class="hero-faith">
+      <p>{{ t('hero.faithQuote') }}</p>
+      <footer><cite>{{ t('hero.faithSource') }}</cite> · {{ t('hero.faithNote') }}</footer>
+    </blockquote>
     <div class="hero-actions">
       <a class="primary-button" routerLink="/reportar">{{ t('hero.primaryCta') }} <span>→</span></a>
       <a class="text-button" routerLink="/puntos">{{ t('nav.points') }}</a>

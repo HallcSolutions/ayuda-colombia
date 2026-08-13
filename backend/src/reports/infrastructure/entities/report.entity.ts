@@ -19,6 +19,12 @@ export class ReportEntity {
   id!: string;
 
   @Column({ length: 80 }) reporterName!: string;
+  /**
+   * Cédula de quien reporta, para cruzar con los censos oficiales de damnificados.
+   * Se queda en la base a propósito: `HouseReport`, que es lo que sale por la API
+   * pública, no la lleva. Los reportes anteriores a este campo quedan en vacío.
+   */
+  @Column({ length: 20, default: '' }) documentId!: string;
   @Column({ length: 30 }) contactPhone!: string;
   @Column({ length: 80 }) department!: string;
   @Column({ length: 80 }) municipality!: string;

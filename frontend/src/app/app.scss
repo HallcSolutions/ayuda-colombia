@@ -141,6 +141,28 @@ h1 em {
   line-height: 1.7;
   max-width: 640px;
 }
+.hero-faith {
+  max-width: 640px;
+  margin: 22px 0 0;
+  padding: 14px 0 14px 18px;
+  border-left: 3px solid var(--green);
+}
+.hero-faith p {
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.hero-faith footer {
+  margin-top: 7px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.hero-faith cite {
+  font-style: normal;
+  font-weight: 800;
+  color: var(--green);
+}
 .hero-actions {
   display: flex;
   align-items: center;
@@ -831,7 +853,8 @@ textarea {
   margin: 0;
   color: var(--muted);
 }
-footer {
+// Solo el pie del sitio: `footer` a secas también alcanzaba a los <footer> de tarjetas y citas.
+.site-footer {
   flex-shrink: 0;
   background: var(--ink);
   color: rgba(255, 255, 255, 0.55);
@@ -842,10 +865,10 @@ footer {
   gap: 30px;
   font-size: 11px;
 }
-footer .brand {
+.site-footer .brand {
   color: white;
 }
-footer p {
+.site-footer p {
   max-width: 360px;
   text-align: center;
 }
@@ -922,11 +945,11 @@ footer p {
   .impact-map {
     height: 230px;
   }
-  footer {
+  .site-footer {
     align-items: flex-start;
     flex-direction: column;
   }
-  footer p {
+  .site-footer p {
     text-align: left;
   }
 }

@@ -14,10 +14,6 @@ export const ES_TRANSLATIONS = {
   'brand.name': 'RedAyuda',
   'brand.tagline': 'Colombia se cuida',
 
-  'reporterCode.label': 'Código de brigadista autorizado',
-  'reporterCode.placeholder': 'Código entregado a tu brigada',
-  'reporterCode.hint': 'Se guarda en este dispositivo para no volver a escribirlo.',
-
   'reliefPointType.collection_center': 'Punto de acopio',
   'reliefPointType.community_kitchen': 'Comedor comunitario',
   'reliefPointType.shelter': 'Albergue',
@@ -156,6 +152,8 @@ export const ES_TRANSLATIONS = {
 
   'reliefPointCard.contact': 'Contacto',
   'reliefPointCard.schedule': 'Horario',
+  'reliefPointCard.address': 'Dirección',
+  'reliefPointCard.viewDetail': 'Ver detalle',
   'reliefPointCard.capacity': 'Capacidad diaria: {count} raciones',
   'reliefPointCard.distance': 'a {km} km de ti',
   'reliefPointCard.mealsToday': 'Comidas de hoy',
@@ -164,8 +162,11 @@ export const ES_TRANSLATIONS = {
   'reliefPointCard.needs': 'Necesita ahora',
   'reliefPointCard.verifiedInformation': 'Información verificada',
   'reliefPointCard.noNeeds': 'Sin necesidades urgentes reportadas.',
+  'reliefPointCard.requestedQuantity': 'Cantidad pedida',
+  'reliefPointCard.reportedBy': 'Reportado por {name}',
   'reliefPointCard.requestHelp': 'Pedir ayuda',
   'reliefPointCard.registerMeal': 'Registrar comida',
+  'reliefPointCard.updateStatus': '¿Cambió la situación?',
   'reliefPointCard.markFull': 'Marcar sin capacidad',
   'reliefPointCard.markActive': 'Marcar abierto',
   'reliefPointCard.markClosed': 'Marcar cerrado',
@@ -224,6 +225,10 @@ export const ES_TRANSLATIONS = {
   'hero.titleAccent': 'donde más se necesita.',
   'hero.lead':
     'Registra una vivienda afectada, comparte evidencia y ubicación, y comunica las necesidades urgentes a quienes pueden ayudar.',
+  'hero.faithQuote': '«Lleven los unos las cargas de los otros».',
+  'hero.faithSource': 'Gálatas 6:2',
+  'hero.faithNote':
+    'Con la ayuda de Dios y las manos de todos, ninguna familia queda sola en la tormenta.',
   'hero.primaryCta': 'Reportar una vivienda',
   'hero.secondaryCta': 'Ver necesidades activas',
   'hero.trust': 'La ubicación se comparte únicamente con autorización.',
@@ -259,6 +264,10 @@ export const ES_TRANSLATIONS = {
   'reportForm.step1Subtitle': 'Datos para verificar y contactar el caso.',
   'reportForm.reporterName': 'Nombre de quien reporta',
   'reportForm.reporterNamePlaceholder': 'Nombre completo',
+  'reportForm.documentId': 'Cédula',
+  'reportForm.documentIdPlaceholder': 'Número de documento',
+  'reportForm.documentIdHint':
+    'Sirve para cruzar tu caso con los censos oficiales. No se publica en el listado.',
   'reportForm.contactPhone': 'Teléfono de contacto',
   'reportForm.contactPhonePlaceholder': 'Ej. 300 123 4567',
   'reportForm.department': 'Departamento',
@@ -592,8 +601,7 @@ export const ES_TRANSLATIONS = {
   'convoyTracker.stop': 'Dejar de compartir',
   'convoyTracker.arrived': 'Ya llegué',
   'convoyTracker.forget': 'Quitar de este dispositivo',
-  'convoyTracker.denied':
-    'No diste permiso de ubicación: sin él no se puede dibujar el recorrido.',
+  'convoyTracker.denied': 'No diste permiso de ubicación: sin él no se puede dibujar el recorrido.',
   'convoyTracker.unavailable': 'No se pudo leer tu ubicación. Revisa el GPS y vuelve a intentar.',
   'convoyTracker.unsupported': 'Este dispositivo no permite compartir la ubicación.',
   'convoyTracker.pingError': 'No se pudo enviar tu última posición; se reintenta sola.',

@@ -26,13 +26,15 @@ import { MapMarker } from '../../../shared/colombia-map/colombia-map.model';
 import { Modal } from '../../../shared/modal/modal';
 import { AlertForm } from '../../alerts/alert-form/alert-form';
 import { MealServiceForm } from '../../meals/meal-service-form/meal-service-form';
+import { ReliefPointDetail } from '../relief-point-detail/relief-point-detail';
 import { ReliefPointForm } from '../relief-point-form/relief-point-form';
+import { needIcon } from '../need-icon';
 import { toMapMarker } from '../relief-point-marker';
 import { DepartmentGroup, PointAction } from './relief-points-section.model';
 
 @Component({
   selector: 'app-relief-points-section',
-  imports: [ColombiaMap, ReliefPointForm, AlertForm, MealServiceForm, Modal],
+  imports: [ColombiaMap, ReliefPointDetail, ReliefPointForm, AlertForm, MealServiceForm, Modal],
   templateUrl: './relief-points-section.html',
   styleUrl: './relief-points-section.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,6 +50,7 @@ export class ReliefPointsSection {
   protected readonly pointStatuses = RELIEF_POINT_STATUSES;
   protected readonly typeKey = reliefPointTypeKey;
   protected readonly statusKey = reliefPointStatusKey;
+  protected readonly needIcon = needIcon;
 
   readonly search = signal('');
   readonly typeFilter = signal<'' | ReliefPointType>('');
@@ -58,6 +61,8 @@ export class ReliefPointsSection {
   readonly showPointForm = signal(false);
   readonly activeAction = signal<PointAction>(null);
   readonly selectedPointId = signal<string | null>(null);
+  /** Punto cuya ficha completa está abierta en una ventana. */
+  readonly detailPointId = signal<string | null>(null);
 
   /** Puntos que pasan los filtros de la zona, texto, tipo y estado. */
   private readonly visiblePoints = computed(() => {
@@ -143,6 +148,15 @@ export class ReliefPointsSection {
     () => this.visiblePoints().find((point) => point.id === this.selectedPointId()) ?? null,
   );
 
+  /**
+   * Punto de la ficha abierta. Se busca sobre todos los puntos cargados, no sobre los
+   * filtrados: cambiar el estado del punto desde la ficha no puede cerrarla de golpe.
+   */
+  readonly detailPoint = computed(
+    () =>
+      this.reliefPointsService.points().find((point) => point.id === this.detailPointId()) ?? null,
+  );
+
   readonly directoryTitle = computed(() => {
     const department = this.region.department();
     return department
@@ -181,9 +195,17 @@ export class ReliefPointsSection {
     return this.alertsService.activeAlertsOf(pointId);
   }
 
-  needSummary(pointId: string): string {
-    const needs = this.alertsOf(pointId).map((alert) => alert.message);
-    return needs.length ? needs.join(' · ') : this.t('reliefPointCard.noNeeds');
+  /**
+   * Una alerta suele enumerar varias necesidades en una sola frase ("agua, aseo,
+   * colchones"). Separarlas deja una etiqueta por necesidad, que se lee de un
+   * vistazo mucho mejor que el texto corrido.
+   */
+  needList(pointId: string): string[] {
+    return this.alertsOf(pointId)
+      .flatMap((alert) => alert.message.split(/[,;·]/))
+      .map((need) => need.trim().replace(/\.+$/, ''))
+      .filter(Boolean)
+      .map((need) => need[0].toUpperCase() + need.slice(1));
   }
 
   directionsFor(point: ReliefPoint): string {
@@ -239,11 +261,22 @@ export class ReliefPointsSection {
     this.selectedPointId.set(marker?.id ?? null);
   }
 
+  openDetail(point: ReliefPoint): void {
+    this.detailPointId.set(point.id);
+  }
+
+  closeDetail(): void {
+    this.detailPointId.set(null);
+  }
+
+  /** Los formularios sustituyen a la ficha: nunca se apilan dos ventanas. */
   openAlertForm(point: ReliefPoint): void {
+    this.closeDetail();
     this.activeAction.set({ point, kind: 'alert' });
   }
 
   openMealForm(point: ReliefPoint): void {
+    this.closeDetail();
     this.activeAction.set({ point, kind: 'meal' });
   }
 

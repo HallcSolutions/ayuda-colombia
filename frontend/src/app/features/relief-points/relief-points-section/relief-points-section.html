@@ -27,9 +27,25 @@
         </p>
         <div class="selected-need">
           <strong>{{ t('reliefPoints.needLabel') }}</strong>
-          <p>{{ needSummary(point.id) }}</p>
+          @if (needList(point.id); as needs) {
+            @if (needs.length) {
+              <ul class="need-chips">
+                @for (need of needs; track $index) {
+                  <li>
+                    <span class="need-icon" aria-hidden="true">{{ needIcon(need) }}</span>
+                    {{ need }}
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="need-empty">{{ t('reliefPointCard.noNeeds') }}</p>
+            }
+          }
         </div>
         <div class="selected-actions">
+          <button type="button" class="detail" (click)="openDetail(point)">
+            {{ t('map.details') }}
+          </button>
           <a [href]="directionsFor(point)" target="_blank" rel="noopener">
             {{ t('common.directions') }}
           </a>
@@ -120,6 +136,19 @@
       </app-modal>
     }
 
+    @if (detailPoint(); as point) {
+      <app-modal [eyebrow]="t(typeKey(point.type))" [title]="point.name" (closed)="closeDetail()">
+        <app-relief-point-detail
+          [point]="point"
+          [meals]="mealsOf(point.id)"
+          [alerts]="alertsOf(point.id)"
+          [distanceKm]="distanceOf(point)"
+          (requestHelp)="openAlertForm($event)"
+          (registerMeal)="openMealForm($event)"
+        />
+      </app-modal>
+    }
+
     @if (activeAction(); as action) {
       <app-modal
         [eyebrow]="
@@ -182,11 +211,30 @@
                             {{ t(statusKey(point.status)) }}
                           </span>
                         </div>
-                        <h6>{{ point.name }}</h6>
+                        <h6>
+                          <button type="button" class="point-name" (click)="openDetail(point)">
+                            {{ point.name }}
+                          </button>
+                        </h6>
                         <p class="point-address">{{ point.addressReference }}</p>
                         <div class="need-line">
                           <strong>{{ t('reliefPoints.needLabel') }}</strong>
-                          <span>{{ needSummary(point.id) }}</span>
+                          @if (needList(point.id); as needs) {
+                            @if (needs.length) {
+                              <ul class="need-chips">
+                                @for (need of needs; track $index) {
+                                  <li>
+                                    <span class="need-icon" aria-hidden="true">
+                                      {{ needIcon(need) }}
+                                    </span>
+                                    {{ need }}
+                                  </li>
+                                }
+                              </ul>
+                            } @else {
+                              <p class="need-empty">{{ t('reliefPointCard.noNeeds') }}</p>
+                            }
+                          }
                         </div>
                       </div>
 
@@ -207,19 +255,14 @@
                       </dl>
 
                       <div class="row-actions">
-                        <a
-                          class="directions"
-                          [href]="directionsFor(point)"
-                          target="_blank"
-                          rel="noopener"
-                        >
+                        <button type="button" class="detail" (click)="openDetail(point)">
+                          {{ t('reliefPointCard.viewDetail') }}
+                        </button>
+                        <a [href]="directionsFor(point)" target="_blank" rel="noopener">
                           {{ t('common.directions') }}
                         </a>
                         <button type="button" (click)="openAlertForm(point)">
                           {{ t('reliefPointCard.requestHelp') }}
-                        </button>
-                        <button type="button" class="subtle" (click)="openMealForm(point)">
-                          {{ t('reliefPointCard.registerMeal') }}
                         </button>
                       </div>
                     </li>

@@ -6,10 +6,8 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { MealType } from '../common/constants/app.constants';
-import { ReporterAccessGuard } from '../common/guards/reporter-access.guard';
 import { MealService } from '../common/interfaces/meal-service.interface';
 import { CreateMealServiceDto } from './dto/create-meal-service.dto';
 import { UpdateMealServiceDto } from './dto/update-meal-service.dto';
@@ -37,13 +35,11 @@ export class MealsController {
   }
 
   @Post()
-  @UseGuards(ReporterAccessGuard)
   create(@Body() dto: CreateMealServiceDto): Promise<MealService> {
     return this.mealsService.create(dto);
   }
 
   @Patch(':id')
-  @UseGuards(ReporterAccessGuard)
   update(
     @Param('id') id: string,
     @Body() dto: UpdateMealServiceDto,
