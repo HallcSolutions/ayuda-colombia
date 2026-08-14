@@ -1,16 +1,45 @@
-<section class="convoys" id="camiones">
-  <header class="section-heading">
-    <div>
+<section class="convoys feature-page" id="camiones">
+  <header class="section-heading feature-hero">
+    <app-colombia-watermark class="feature-hero-map" />
+    <div class="feature-hero__intro">
       <span class="eyebrow">{{ t('convoys.eyebrow') }}</span>
       <h2>{{ t('convoys.title') }}</h2>
       <p>{{ t('convoys.subtitle') }}</p>
     </div>
-    <button type="button" class="register" (click)="toggleForm()">
-      {{ showForm() ? t('convoys.cancelAnnounce') : t('convoys.announce') }}
-    </button>
-  </header>
+    <aside class="feature-action-card">
+      <img
+        src="/assets/home/redayuda-aid-route.jpg"
+        [alt]="t('convoys.actionImageAlt')"
+        decoding="async"
+      />
+      <div class="feature-action-card__body">
+        <span>{{ t('convoys.actionEyebrow') }}</span>
+        <p>{{ t('convoys.actionBody') }}</p>
+        <button type="button" class="register feature-hero__action" (click)="toggleForm()">
+          {{ showForm() ? t('convoys.cancelAnnounce') : t('convoys.announce') }}
+        </button>
+      </div>
+    </aside>
 
-  <app-convoy-tracker />
+    <dl class="stats feature-hero__metrics">
+      <div>
+        <dt>{{ t('convoys.stats.enRoute') }}</dt>
+        <dd>{{ enRouteCount() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('convoys.stats.scheduled') }}</dt>
+        <dd>{{ scheduledCount() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('convoys.stats.tracked') }}</dt>
+        <dd>{{ trackedCount() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('convoys.stats.arrived') }}</dt>
+        <dd>{{ arrivedCount() }}</dd>
+      </div>
+    </dl>
+  </header>
 
   @if (showForm()) {
     <app-modal
@@ -22,64 +51,49 @@
     </app-modal>
   }
 
-  <app-colombia-map
-    [markers]="mapMarkers()"
-    [trails]="mapTrails()"
-    [selectedId]="selectedTripId()"
-    (markerSelected)="selectTrip($event)"
-  >
-    @if (selectedTrip(); as trip) {
-      <app-convoy-card [trip]="trip" [now]="now()" />
-    }
-  </app-colombia-map>
+  <div class="feature-content convoys-content">
+    <app-convoy-tracker />
 
-  <div class="toolbar">
-    <label>
-      <span class="visually-hidden">{{ t('convoys.allStatuses') }}</span>
-      <select [value]="statusFilter()" (change)="updateStatusFilter($event)">
-        <option value="">{{ t('convoys.allStatuses') }}</option>
-        @for (status of statuses; track status) {
-          <option [value]="status">{{ t(statusKey(status)) }}</option>
-        }
-      </select>
-    </label>
-  </div>
-
-  <dl class="stats">
-    <div>
-      <dt>{{ t('convoys.stats.enRoute') }}</dt>
-      <dd>{{ enRouteCount() }}</dd>
-    </div>
-    <div>
-      <dt>{{ t('convoys.stats.scheduled') }}</dt>
-      <dd>{{ scheduledCount() }}</dd>
-    </div>
-    <div>
-      <dt>{{ t('convoys.stats.tracked') }}</dt>
-      <dd>{{ trackedCount() }}</dd>
-    </div>
-    <div>
-      <dt>{{ t('convoys.stats.arrived') }}</dt>
-      <dd>{{ arrivedCount() }}</dd>
-    </div>
-  </dl>
-
-  @if (convoysService.error()) {
-    <p class="section-error" role="alert">{{ convoysService.error() }}</p>
-  }
-
-  @if (convoysService.loading()) {
-    <p class="empty">{{ t('common.loading') }}</p>
-  } @else if (!trips().length) {
-    <div class="empty-state">
-      <h3>{{ t('convoys.empty.title') }}</h3>
-      <p>{{ t('convoys.empty.body') }}</p>
-    </div>
-  } @else {
-    <div class="convoy-grid">
-      @for (trip of trips(); track trip.id) {
+    <app-colombia-map
+      [markers]="mapMarkers()"
+      [trails]="mapTrails()"
+      [selectedId]="selectedTripId()"
+      (markerSelected)="selectTrip($event)"
+    >
+      @if (selectedTrip(); as trip) {
         <app-convoy-card [trip]="trip" [now]="now()" />
       }
+    </app-colombia-map>
+
+    <div class="toolbar">
+      <label>
+        <span class="visually-hidden">{{ t('convoys.allStatuses') }}</span>
+        <select [value]="statusFilter()" (change)="updateStatusFilter($event)">
+          <option value="">{{ t('convoys.allStatuses') }}</option>
+          @for (status of statuses; track status) {
+            <option [value]="status">{{ t(statusKey(status)) }}</option>
+          }
+        </select>
+      </label>
     </div>
-  }
+
+    @if (convoysService.error()) {
+      <p class="section-error" role="alert">{{ convoysService.error() }}</p>
+    }
+
+    @if (convoysService.loading()) {
+      <p class="empty">{{ t('common.loading') }}</p>
+    } @else if (!trips().length) {
+      <div class="empty-state">
+        <h3>{{ t('convoys.empty.title') }}</h3>
+        <p>{{ t('convoys.empty.body') }}</p>
+      </div>
+    } @else {
+      <div class="convoy-grid">
+        @for (trip of trips(); track trip.id) {
+          <app-convoy-card [trip]="trip" [now]="now()" />
+        }
+      </div>
+    }
+  </div>
 </section>

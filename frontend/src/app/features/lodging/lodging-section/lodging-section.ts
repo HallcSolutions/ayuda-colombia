@@ -27,6 +27,7 @@ import { RegionService } from '../../../core/services/region.service';
 import { ReliefPointsService } from '../../../core/services/relief-points.service';
 import { ColombiaMap } from '../../../shared/colombia-map/colombia-map';
 import { MapMarker } from '../../../shared/colombia-map/colombia-map.model';
+import { ColombiaWatermark } from '../../../shared/colombia-watermark/colombia-watermark';
 import { Modal } from '../../../shared/modal/modal';
 import { ReliefPointForm } from '../../relief-points/relief-point-form/relief-point-form';
 import { CarePlaceCard } from '../care-place-card/care-place-card';
@@ -44,6 +45,13 @@ export interface PlaceFilter {
   labelKey: TranslationKey;
   group: PlaceGroup;
   kind: '' | LodgingKind;
+}
+
+interface PlaceActionCard {
+  imageSrc: string;
+  imageAltKey: TranslationKey;
+  eyebrowKey: TranslationKey;
+  bodyKey: TranslationKey;
 }
 
 /**
@@ -71,7 +79,15 @@ const PLACE_FILTERS: PlaceFilter[] = [
 
 @Component({
   selector: 'app-lodging-section',
-  imports: [CarePlaceCard, ColombiaMap, LodgingCard, LodgingForm, Modal, ReliefPointForm],
+  imports: [
+    CarePlaceCard,
+    ColombiaMap,
+    ColombiaWatermark,
+    LodgingCard,
+    LodgingForm,
+    Modal,
+    ReliefPointForm,
+  ],
   templateUrl: './lodging-section.html',
   styleUrl: './lodging-section.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -114,6 +130,31 @@ export class LodgingSection {
   readonly showForm = signal(false);
   /** Qué está buscando quien entra: dormir, atenderse o llevar a un animal. */
   readonly group = signal<PlaceGroup>('sleep');
+
+  readonly actionCard = computed<PlaceActionCard>(() => {
+    if (this.group() === 'health') {
+      return {
+        imageSrc: '/assets/actions/redayuda-health-post.jpg',
+        imageAltKey: 'lodging.actionHealthImageAlt',
+        eyebrowKey: 'lodging.actionHealthEyebrow',
+        bodyKey: 'lodging.actionHealthBody',
+      };
+    }
+    if (this.group() === 'veterinary') {
+      return {
+        imageSrc: '/assets/actions/redayuda-veterinary.jpg',
+        imageAltKey: 'lodging.actionVeterinaryImageAlt',
+        eyebrowKey: 'lodging.actionVeterinaryEyebrow',
+        bodyKey: 'lodging.actionVeterinaryBody',
+      };
+    }
+    return {
+      imageSrc: '/assets/actions/redayuda-lodging-home.jpg',
+      imageAltKey: 'lodging.actionSleepImageAlt',
+      eyebrowKey: 'lodging.actionSleepEyebrow',
+      bodyKey: 'lodging.actionSleepBody',
+    };
+  });
 
   /** El filtro marcado: la clase de dormida elegida o, si no hay ninguna, el grupo. */
   readonly selectedPlace = computed(() =>

@@ -140,6 +140,11 @@ export const ES_TRANSLATIONS = {
   'reliefPoints.allTypes': 'Todos los tipos',
   'reliefPoints.allStatuses': 'Todos los estados',
   'reliefPoints.register': 'Registrar un punto',
+  'reliefPoints.registerCardEyebrow': 'La ayuda empieza cerca',
+  'reliefPoints.registerCardBody':
+    'Comparte un lugar confiable para que más familias sepan dónde encontrar apoyo.',
+  'reliefPoints.registerImageAlt':
+    'Voluntarios registran y orientan a una familia en un punto de ayuda',
   'reliefPoints.cancelRegister': 'Cerrar formulario',
   'reliefPoints.useMyLocation': 'Ordenar por cercanía',
   'reliefPoints.locating': 'Ubicando…',
@@ -308,7 +313,24 @@ export const ES_TRANSLATIONS = {
   'reportForm.eyebrow': 'Nuevo reporte',
   'reportForm.title': 'Cuéntanos qué está pasando',
   'reportForm.subtitle':
-    'Cualquier persona afectada puede publicar. La información clara permite priorizar mejor la ayuda.',
+    'Cualquier persona afectada puede reportar. La información clara permite priorizar mejor la ayuda.',
+  'reportForm.actionEyebrow': 'Tu información activa la respuesta',
+  'reportForm.actionBody':
+    'Documenta los daños con calma. El formulario te guía para compartir únicamente lo necesario.',
+  'reportForm.actionImageAlt': 'Ilustración de una vivienda afectada que necesita ser reportada',
+  'reportForm.privacyCue': 'Reporte confidencial',
+  'reportForm.privacyEyebrow': 'Registro ciudadano y confidencial',
+  'reportForm.privacyTitle': 'Tus datos personales son privados',
+  'reportForm.privacyBody':
+    'RedAyuda es un canal ciudadano de registro; no somos una entidad de atención ni asignamos ayudas. El informe se conserva de forma reservada para facilitar la verificación del caso.',
+  'reportForm.privacyIdentity': 'Nombre, cédula y teléfono no aparecen en el listado público.',
+  'reportForm.privacyContact':
+    'El informe completo solo se entrega a una entidad competente y verificada.',
+  'reportForm.privacyPublic': 'Las entidades responsables pueden solicitarlo por nuestro WhatsApp.',
+  'reportForm.privacyWarning':
+    'Si representas una entidad responsable y necesitas verificar un caso, solicita el informe por nuestro canal de WhatsApp.',
+  'reportForm.privacyContactAction': 'Solicitar informe · WhatsApp 320 714 7271',
+  'reportForm.action': 'Empezar el reporte',
   'reportForm.step1Title': 'Persona y vivienda',
   'reportForm.step1Subtitle': 'Datos para verificar y contactar el caso.',
   'reportForm.reporterName': 'Nombre de quien reporta',
@@ -381,14 +403,15 @@ export const ES_TRANSLATIONS = {
   'reportForm.noticePlaceholder':
     'Cuenta qué partes de la vivienda fueron afectadas, si es seguro entrar y qué accesos están bloqueados…',
   'reportForm.consent':
-    'Autorizo publicar la ubicación y los datos de este reporte para coordinar ayuda humanitaria. Entiendo que no debo incluir información sensible innecesaria.',
+    'Entiendo que mis datos personales son privados. Autorizo compartir un resumen del caso —sin mi nombre, cédula ni teléfono— para coordinar ayuda humanitaria.',
   'reportForm.invalid':
     'Completa los campos, marca al menos un daño, comparte la ubicación y agrega una foto.',
   'reportForm.error':
     'No fue posible publicar el reporte. Revisa tu conexión e intenta nuevamente.',
-  'reportForm.success': 'Reporte publicado. Los equipos de ayuda ya pueden verlo.',
-  'reportForm.submit': 'Publicar reporte de vivienda',
-  'reportForm.submitting': 'Publicando reporte…',
+  'reportForm.success':
+    'Reporte enviado. Los equipos responsables ya pueden coordinar el caso y el resumen autorizado quedó disponible en la red.',
+  'reportForm.submit': 'Enviar reporte de vivienda',
+  'reportForm.submitting': 'Enviando reporte…',
 
   'needs.water': 'Agua potable',
   'needs.food': 'Alimentos',
@@ -410,6 +433,14 @@ export const ES_TRANSLATIONS = {
 
   'feed.eyebrow': 'Necesidades activas',
   'feed.title': 'Reportes de la comunidad',
+  'feed.subtitle':
+    'Consulta qué necesitan las familias, filtra por estado y acompaña cada caso hasta su solución.',
+  'feed.actionEyebrow': '¿Falta un caso en la red?',
+  'feed.actionBody':
+    'Publica la situación de una vivienda para que voluntarios y organizaciones puedan encontrarla.',
+  'feed.actionImageAlt': 'Ilustración de una vivienda afectada que necesita apoyo',
+  'feed.action': 'Reportar una vivienda',
+  'feed.stats.total': 'Reportes visibles',
   'feed.searchPlaceholder': 'Buscar ciudad o necesidad',
   'feed.filterAll': 'Todos',
   'feed.loadingTitle': 'Cargando reportes',
@@ -419,6 +450,8 @@ export const ES_TRANSLATIONS = {
   'feed.loadError': 'No fue posible cargar los reportes.',
   'feed.photoAlt': 'Vivienda reportada en {municipality}',
   'feed.noPhoto': 'Reporte sin foto',
+  'feed.illustrationAlt': 'Ilustración relacionada con una necesidad en {municipality}',
+  'feed.illustrationLabel': 'Imagen ilustrativa · no es evidencia',
   'feed.urgencyBadge': 'Urgencia {level}',
   'feed.photoCount': '{count} fotos',
   'feed.verifiedLocation': 'Ubicación verificada',
@@ -438,6 +471,10 @@ export const ES_TRANSLATIONS = {
   'missing.title': 'Ayudemos a que vuelvan a casa',
   'missing.subtitle':
     'Publica una foto, dónde se vio por última vez y a quién llamar. Cualquier persona puede publicar y consultar, sin registro ni códigos.',
+  'missing.actionEyebrow': 'Cada dato puede acercarles a casa',
+  'missing.actionBody':
+    'Comparte información clara y un contacto para que la comunidad pueda apoyar la búsqueda.',
+  'missing.actionImageAlt': 'Equipo comunitario coordina una búsqueda con un teléfono y un mapa',
   'missing.publish': 'Publicar una búsqueda',
   'missing.cancelPublish': 'Cerrar formulario',
   'missing.searchPlaceholder': 'Buscar por nombre, lugar o señas',
@@ -523,6 +560,20 @@ export const ES_TRANSLATIONS = {
   'lodging.groupHealth': 'Salud',
   'lodging.groupVeterinary': 'Veterinarias',
   'lodging.groupLabel': 'Qué estás buscando',
+  'lodging.actionSleepEyebrow': 'Una puerta abierta cambia una noche',
+  'lodging.actionSleepBody':
+    'Ofrece un espacio seguro e indica cuántas personas puedes recibir y por cuánto tiempo.',
+  'lodging.actionSleepImageAlt':
+    'Voluntarios orientan a una familia dentro de un alojamiento comunitario',
+  'lodging.actionHealthEyebrow': 'Atención cercana y confiable',
+  'lodging.actionHealthBody':
+    'Registra un puesto de salud para que las familias sepan dónde recibir atención.',
+  'lodging.actionHealthImageAlt':
+    'Profesional de salud atiende a una mujer en un puesto comunitario',
+  'lodging.actionVeterinaryEyebrow': 'Ellos también necesitan cuidado',
+  'lodging.actionVeterinaryBody':
+    'Comparte un lugar que atienda mascotas o animales desplazados por la emergencia.',
+  'lodging.actionVeterinaryImageAlt': 'Veterinaria examina a un perro acompañado por su cuidadora',
   'lodging.careEmpty': 'Todavía no hay sitios registrados de este tipo en la zona.',
   'lodging.careHint':
     'Estos sitios salen del directorio de puntos de ayuda. Si conoces uno que falta, regístralo desde Puntos de ayuda.',
@@ -613,6 +664,10 @@ export const ES_TRANSLATIONS = {
   'convoys.title': 'Quién viene en camino y a qué hora llega',
   'convoys.subtitle':
     'Cada punto de ayuda ve los camiones que se dirigen a él, por dónde van y cuánto les falta. El recorrido solo se dibuja si quien conduce lo autoriza.',
+  'convoys.actionEyebrow': 'Haz visible lo que viene en camino',
+  'convoys.actionBody':
+    'Anuncia el destino, la carga y la hora estimada para que el punto receptor pueda prepararse.',
+  'convoys.actionImageAlt': 'Equipo descarga cajas de ayuda de un camión en Colombia',
   'convoys.announce': 'Anunciar mi viaje',
   'convoys.cancelAnnounce': 'Cerrar formulario',
   'convoys.allStatuses': 'Todos los viajes',

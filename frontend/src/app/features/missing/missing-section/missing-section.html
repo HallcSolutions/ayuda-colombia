@@ -1,13 +1,44 @@
-<section class="missing" id="desaparecidos">
-  <header class="section-heading">
-    <div>
+<section class="missing feature-page" id="desaparecidos">
+  <header class="section-heading feature-hero">
+    <app-colombia-watermark class="feature-hero-map" />
+    <div class="feature-hero__intro">
       <span class="eyebrow">{{ t('missing.eyebrow') }}</span>
       <h2>{{ t('missing.title') }}</h2>
       <p>{{ t('missing.subtitle') }}</p>
     </div>
-    <button type="button" class="register" (click)="toggleForm()">
-      {{ showForm() ? t('missing.cancelPublish') : t('missing.publish') }}
-    </button>
+    <aside class="feature-action-card">
+      <img
+        src="/assets/actions/redayuda-search-team.jpg"
+        [alt]="t('missing.actionImageAlt')"
+        decoding="async"
+      />
+      <div class="feature-action-card__body">
+        <span>{{ t('missing.actionEyebrow') }}</span>
+        <p>{{ t('missing.actionBody') }}</p>
+        <button type="button" class="register feature-hero__action" (click)="toggleForm()">
+          {{ showForm() ? t('missing.cancelPublish') : t('missing.publish') }}
+        </button>
+      </div>
+    </aside>
+
+    <dl class="stats feature-hero__metrics">
+      <div>
+        <dt>{{ t('missing.stats.searching') }}</dt>
+        <dd>{{ searchingCount() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('missing.stats.people') }}</dt>
+        <dd>{{ peopleCount() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('missing.stats.animals') }}</dt>
+        <dd>{{ animalCount() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('missing.stats.found') }}</dt>
+        <dd>{{ foundCount() }}</dd>
+      </div>
+    </dl>
   </header>
 
   @if (showForm()) {
@@ -20,93 +51,76 @@
     </app-modal>
   }
 
-  <app-colombia-map
-    [markers]="mapMarkers()"
-    [selectedId]="selectedRecordId()"
-    (markerSelected)="selectRecord($event)"
-  >
-    @if (selectedRecord(); as record) {
-      <app-missing-card [record]="record" />
-    }
-  </app-colombia-map>
-
-  <div class="toolbar">
-    <label class="search">
-      <span class="visually-hidden">{{ t('missing.searchPlaceholder') }}</span>
-      <input
-        type="search"
-        [placeholder]="t('missing.searchPlaceholder')"
-        [value]="search()"
-        (input)="updateSearch($event)"
-      />
-    </label>
-    <div class="kind-tabs" role="group" [attr.aria-label]="t('missing.allKinds')">
-      <button
-        type="button"
-        [class.selected]="kindFilter() === ''"
-        [attr.aria-pressed]="kindFilter() === ''"
-        (click)="selectKind('')"
-      >
-        {{ t('missing.allKinds') }}
-      </button>
-      @for (kind of kinds; track kind) {
-        <button
-          type="button"
-          [class.selected]="kindFilter() === kind"
-          [attr.aria-pressed]="kindFilter() === kind"
-          (click)="selectKind(kind)"
-        >
-          <i aria-hidden="true">{{ kindIcons[kind] }}</i
-          >{{ t(kindKey(kind)) }}
-        </button>
-      }
-    </div>
-    <label>
-      <span class="visually-hidden">{{ t('missing.allStatuses') }}</span>
-      <select [value]="statusFilter()" (change)="updateStatusFilter($event)">
-        <option value="">{{ t('missing.allStatuses') }}</option>
-        @for (status of statuses; track status) {
-          <option [value]="status">{{ t(statusKey(status)) }}</option>
-        }
-      </select>
-    </label>
-  </div>
-
-  <dl class="stats">
-    <div>
-      <dt>{{ t('missing.stats.searching') }}</dt>
-      <dd>{{ searchingCount() }}</dd>
-    </div>
-    <div>
-      <dt>{{ t('missing.stats.people') }}</dt>
-      <dd>{{ peopleCount() }}</dd>
-    </div>
-    <div>
-      <dt>{{ t('missing.stats.animals') }}</dt>
-      <dd>{{ animalCount() }}</dd>
-    </div>
-    <div>
-      <dt>{{ t('missing.stats.found') }}</dt>
-      <dd>{{ foundCount() }}</dd>
-    </div>
-  </dl>
-
-  @if (missingService.error()) {
-    <p class="section-error" role="alert">{{ missingService.error() }}</p>
-  }
-
-  @if (missingService.loading()) {
-    <p class="empty">{{ t('common.loading') }}</p>
-  } @else if (!records().length) {
-    <div class="empty-state">
-      <h3>{{ t('missing.empty.title') }}</h3>
-      <p>{{ t('missing.empty.body') }}</p>
-    </div>
-  } @else {
-    <div class="missing-grid">
-      @for (record of records(); track record.id) {
+  <div class="feature-content missing-content">
+    <app-colombia-map
+      [markers]="mapMarkers()"
+      [selectedId]="selectedRecordId()"
+      (markerSelected)="selectRecord($event)"
+    >
+      @if (selectedRecord(); as record) {
         <app-missing-card [record]="record" />
       }
+    </app-colombia-map>
+
+    <div class="toolbar">
+      <label class="search">
+        <span class="visually-hidden">{{ t('missing.searchPlaceholder') }}</span>
+        <input
+          type="search"
+          [placeholder]="t('missing.searchPlaceholder')"
+          [value]="search()"
+          (input)="updateSearch($event)"
+        />
+      </label>
+      <div class="kind-tabs" role="group" [attr.aria-label]="t('missing.allKinds')">
+        <button
+          type="button"
+          [class.selected]="kindFilter() === ''"
+          [attr.aria-pressed]="kindFilter() === ''"
+          (click)="selectKind('')"
+        >
+          {{ t('missing.allKinds') }}
+        </button>
+        @for (kind of kinds; track kind) {
+          <button
+            type="button"
+            [class.selected]="kindFilter() === kind"
+            [attr.aria-pressed]="kindFilter() === kind"
+            (click)="selectKind(kind)"
+          >
+            <i aria-hidden="true">{{ kindIcons[kind] }}</i
+            >{{ t(kindKey(kind)) }}
+          </button>
+        }
+      </div>
+      <label>
+        <span class="visually-hidden">{{ t('missing.allStatuses') }}</span>
+        <select [value]="statusFilter()" (change)="updateStatusFilter($event)">
+          <option value="">{{ t('missing.allStatuses') }}</option>
+          @for (status of statuses; track status) {
+            <option [value]="status">{{ t(statusKey(status)) }}</option>
+          }
+        </select>
+      </label>
     </div>
-  }
+
+    @if (missingService.error()) {
+      <p class="section-error" role="alert">{{ missingService.error() }}</p>
+    }
+
+    @if (missingService.loading()) {
+      <p class="empty">{{ t('common.loading') }}</p>
+    } @else if (!records().length) {
+      <div class="empty-state">
+        <h3>{{ t('missing.empty.title') }}</h3>
+        <p>{{ t('missing.empty.body') }}</p>
+      </div>
+    } @else {
+      <div class="missing-grid">
+        @for (record of records(); track record.id) {
+          <app-missing-card [record]="record" />
+        }
+      </div>
+    }
+  </div>
 </section>

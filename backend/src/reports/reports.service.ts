@@ -110,8 +110,6 @@ export class ReportsService {
   private toContract(entity: ReportEntity): HouseReport {
     return {
       id: entity.id,
-      reporterName: entity.reporterName,
-      contactPhone: entity.contactPhone,
       department: entity.department,
       municipality: entity.municipality,
       addressReference: entity.addressReference,

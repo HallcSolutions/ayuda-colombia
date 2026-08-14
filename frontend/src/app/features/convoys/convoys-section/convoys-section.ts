@@ -16,6 +16,7 @@ import { RegionService } from '../../../core/services/region.service';
 import { ReliefPointsService } from '../../../core/services/relief-points.service';
 import { ColombiaMap } from '../../../shared/colombia-map/colombia-map';
 import { MapMarker } from '../../../shared/colombia-map/colombia-map.model';
+import { ColombiaWatermark } from '../../../shared/colombia-watermark/colombia-watermark';
 import { Modal } from '../../../shared/modal/modal';
 import { ConvoyCard } from '../convoy-card/convoy-card';
 import { ConvoyForm } from '../convoy-form/convoy-form';
@@ -36,7 +37,7 @@ const STATUS_ORDER: Record<ConvoyStatus, number> = {
 
 @Component({
   selector: 'app-convoys-section',
-  imports: [ColombiaMap, ConvoyCard, ConvoyForm, ConvoyTracker, Modal],
+  imports: [ColombiaMap, ColombiaWatermark, ConvoyCard, ConvoyForm, ConvoyTracker, Modal],
   templateUrl: './convoys-section.html',
   styleUrl: './convoys-section.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

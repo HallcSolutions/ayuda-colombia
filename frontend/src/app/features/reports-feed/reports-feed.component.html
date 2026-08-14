@@ -1,9 +1,46 @@
-<section class="feed-section" id="reportes">
-  <div class="section-heading feed-heading">
-    <div>
+<section class="feed-section feature-page" id="reportes">
+  <header class="section-heading feed-heading feature-hero">
+    <app-colombia-watermark class="feature-hero-map" />
+    <div class="feature-hero__intro">
       <span class="eyebrow">{{ t('feed.eyebrow') }}</span>
       <h2>{{ t('feed.title') }}</h2>
+      <p>{{ t('feed.subtitle') }}</p>
     </div>
+
+    <aside class="feature-action-card">
+      <img
+        src="/assets/reports/report-shelter-illustration.jpg"
+        [alt]="t('feed.actionImageAlt')"
+        decoding="async"
+      />
+      <div class="feature-action-card__body">
+        <span>{{ t('feed.actionEyebrow') }}</span>
+        <p>{{ t('feed.actionBody') }}</p>
+        <a class="feature-hero__action" routerLink="/reportar">{{ t('feed.action') }}</a>
+      </div>
+    </aside>
+
+    <dl class="feature-hero__metrics">
+      <div>
+        <dt>{{ t('feed.stats.total') }}</dt>
+        <dd>{{ filteredReports().length }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('reportStatus.open') }}</dt>
+        <dd>{{ openCount() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('reportStatus.in_progress') }}</dt>
+        <dd>{{ inProgressCount() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('reportStatus.resolved') }}</dt>
+        <dd>{{ resolvedCount() }}</dd>
+      </div>
+    </dl>
+  </header>
+
+  <div class="feature-content feed-content-shell">
     <div class="feed-tools">
       <input
         type="search"
@@ -22,87 +59,97 @@
         <option value="resolved">{{ t('reportStatus.resolved') }}</option>
       </select>
     </div>
-  </div>
 
-  @if (errorMessage()) {
-    <div class="form-message error" role="alert">{{ errorMessage() }}</div>
-  }
-  @if (reportsService.loading()) {
-    <div class="empty-state">
-      <span>•••</span>
-      <h3>{{ t('feed.loadingTitle') }}</h3>
-      <p>{{ t('feed.loadingBody') }}</p>
-    </div>
-  } @else if (!filteredReports().length) {
-    <div class="empty-state">
-      <span>⌂</span>
-      <h3>{{ t('feed.emptyTitle') }}</h3>
-      <p>{{ t('feed.emptyBody') }}</p>
-    </div>
-  } @else {
-    <div class="report-list">
-      @for (report of filteredReports(); track report.id) {
-        <article class="report-card" [class]="'report-card urgency-' + report.urgency">
-          <div class="report-photo">
-            @if (report.photos.length) {
-              <img
-                [src]="report.photos[0]"
-                [alt]="t('feed.photoAlt', { municipality: report.municipality })"
-              />
-            } @else {
-              <span class="photo-placeholder" aria-hidden="true">⌂</span>
-            }
-            <span class="urgency-badge">{{
-              t('feed.urgencyBadge', { level: urgencyLabel(report.urgency) })
-            }}</span>
-            @if (report.photos.length > 1) {
-              <span class="photo-count">{{
-                t('feed.photoCount', { count: report.photos.length })
-              }}</span>
-            }
-          </div>
-          <div class="report-content">
-            <div class="report-meta">
-              <span>{{ report.department }}</span
-              ><time [attr.datetime]="report.createdAt">{{ formatDate(report.createdAt) }}</time>
-            </div>
-            <h3>{{ report.municipality }} · {{ report.addressReference }}</h3>
-            <p>{{ report.notice }}</p>
-            <div class="need-tags">
-              @for (need of report.needs; track need) {
-                <span>{{ needLabel(need) }}</span>
+    @if (errorMessage()) {
+      <div class="form-message error" role="alert">{{ errorMessage() }}</div>
+    }
+    @if (reportsService.loading()) {
+      <div class="empty-state">
+        <span>•••</span>
+        <h3>{{ t('feed.loadingTitle') }}</h3>
+        <p>{{ t('feed.loadingBody') }}</p>
+      </div>
+    } @else if (!filteredReports().length) {
+      <div class="empty-state">
+        <span>⌂</span>
+        <h3>{{ t('feed.emptyTitle') }}</h3>
+        <p>{{ t('feed.emptyBody') }}</p>
+      </div>
+    } @else {
+      <div class="report-list">
+        @for (report of filteredReports(); track report.id) {
+          <article class="report-card" [class]="'report-card urgency-' + report.urgency">
+            <figure class="report-photo" [class.is-illustration]="!report.photos.length">
+              @if (report.photos.length) {
+                <img
+                  [src]="report.photos[0]"
+                  [alt]="t('feed.photoAlt', { municipality: report.municipality })"
+                  loading="lazy"
+                  decoding="async"
+                />
+              } @else {
+                <img
+                  [src]="illustrationFor(report)"
+                  [alt]="t('feed.illustrationAlt', { municipality: report.municipality })"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption>{{ t('feed.illustrationLabel') }}</figcaption>
               }
-            </div>
-            <div class="report-location">
-              <span>⌖</span>
-              <div>
-                <strong>{{ t('feed.verifiedLocation') }}</strong
-                ><small>{{
-                  report.location.accuracy
-                    ? t('feed.accuracy', { meters: report.location.accuracy.toFixed(0) })
-                    : t('feed.accuracyUnknown')
-                }}</small>
+              <span class="urgency-badge">{{
+                t('feed.urgencyBadge', { level: urgencyLabel(report.urgency) })
+              }}</span>
+              @if (report.photos.length > 1) {
+                <span class="photo-count">{{
+                  t('feed.photoCount', { count: report.photos.length })
+                }}</span>
+              }
+            </figure>
+            <div class="report-content">
+              <div class="report-meta">
+                <span>{{ report.department }}</span
+                ><time [attr.datetime]="report.createdAt">{{ formatDate(report.createdAt) }}</time>
               </div>
-              <a [href]="mapUrl(report)" target="_blank" rel="noopener">{{ t('feed.openMap') }}</a>
-            </div>
-            <div class="report-footer">
-              <span [class]="'status ' + report.status">{{ statusLabel(report.status) }}</span>
-              <div class="status-actions">
-                @if (report.status === reportStatus.OPEN) {
-                  <button type="button" (click)="changeStatus(report, reportStatus.IN_PROGRESS)">
-                    {{ t('feed.markInProgress') }}
-                  </button>
-                }
-                @if (report.status === reportStatus.IN_PROGRESS) {
-                  <button type="button" (click)="changeStatus(report, reportStatus.RESOLVED)">
-                    {{ t('feed.markResolved') }}
-                  </button>
+              <h3>{{ report.municipality }} · {{ report.addressReference }}</h3>
+              <p>{{ report.notice }}</p>
+              <div class="need-tags">
+                @for (need of report.needs; track need) {
+                  <span>{{ needLabel(need) }}</span>
                 }
               </div>
+              <div class="report-location">
+                <span>⌖</span>
+                <div>
+                  <strong>{{ t('feed.verifiedLocation') }}</strong
+                  ><small>{{
+                    report.location.accuracy
+                      ? t('feed.accuracy', { meters: report.location.accuracy.toFixed(0) })
+                      : t('feed.accuracyUnknown')
+                  }}</small>
+                </div>
+                <a [href]="mapUrl(report)" target="_blank" rel="noopener">{{
+                  t('feed.openMap')
+                }}</a>
+              </div>
+              <div class="report-footer">
+                <span [class]="'status ' + report.status">{{ statusLabel(report.status) }}</span>
+                <div class="status-actions">
+                  @if (report.status === reportStatus.OPEN) {
+                    <button type="button" (click)="changeStatus(report, reportStatus.IN_PROGRESS)">
+                      {{ t('feed.markInProgress') }}
+                    </button>
+                  }
+                  @if (report.status === reportStatus.IN_PROGRESS) {
+                    <button type="button" (click)="changeStatus(report, reportStatus.RESOLVED)">
+                      {{ t('feed.markResolved') }}
+                    </button>
+                  }
+                </div>
+              </div>
             </div>
-          </div>
-        </article>
-      }
-    </div>
-  }
+          </article>
+        }
+      </div>
+    }
+  </div>
 </section>

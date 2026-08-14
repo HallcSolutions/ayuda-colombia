@@ -7,14 +7,8 @@
   overflow: hidden;
 }
 
-.lodging {
-  display: grid;
-  gap: 22px;
-  width: 100%;
+.lodging-content {
   min-width: 0;
-  max-width: 100%;
-  box-sizing: border-box;
-  padding: 46px max(7vw, 28px) 80px;
 }
 
 .toolbar {
@@ -23,20 +17,6 @@
   max-width: 100%;
   box-sizing: border-box;
   overflow: hidden;
-}
-
-.section-heading {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  align-items: flex-end;
-  justify-content: space-between;
-}
-
-.section-heading p {
-  margin: 6px 0 0;
-  color: var(--muted);
-  max-width: 56ch;
 }
 
 .care-hint {
@@ -57,51 +37,6 @@
 .toolbar .kind-tabs button {
   padding-inline: 12px;
   white-space: nowrap;
-}
-
-.register {
-  border: 0;
-  border-radius: 8px;
-  padding: 12px 19px;
-  background: var(--coral);
-  color: white;
-  font-weight: 750;
-  cursor: pointer;
-  box-shadow: 0 6px 20px rgba(223, 105, 79, 0.22);
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0;
-  margin: 0;
-  border-block: 1px solid var(--line);
-}
-
-.stats div {
-  border: 0;
-  border-right: 1px solid var(--line);
-  border-radius: 0;
-  padding: 16px 20px;
-  background: transparent;
-}
-
-.stats div:last-child {
-  border-right: 0;
-}
-
-.stats dt {
-  color: var(--muted);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  font-weight: 700;
-}
-
-.stats dd {
-  margin: 6px 0 0;
-  font: 800 30px/1 var(--serif);
-  color: var(--green);
 }
 
 .section-error {
@@ -160,15 +95,6 @@
 /* En el teléfono: menos margen lateral, la acción principal a todo el ancho y las
    pestañas de dos en dos. */
 @media (max-width: 640px) {
-  .lodging {
-    gap: 18px;
-    padding: 32px 18px 62px;
-  }
-
-  .register {
-    width: 100%;
-  }
-
   .toolbar {
     gap: 8px;
     padding: 10px;
@@ -185,18 +111,6 @@
     flex: 1 1 min(8rem, 100%);
     min-height: 44px;
     padding: 6px 12px;
-  }
-
-  .stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .stats div:nth-child(2) {
-    border-right: 0;
-  }
-
-  .stats div:nth-child(-n + 2) {
-    border-bottom: 1px solid var(--line);
   }
 
   .empty-state {

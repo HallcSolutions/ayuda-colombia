@@ -70,7 +70,7 @@ describe('ReportsService', () => {
     expect(gateway.reportCreated.mock.calls[0][0]).toEqual(result);
   });
 
-  it('guarda la cédula pero no la deja salir por la API', async () => {
+  it('guarda los datos de identidad y contacto sin exponerlos por la API', async () => {
     const entity = reportEntity();
     repository.findAll.mockResolvedValue([entity]);
     repository.findById.mockResolvedValue(entity);
@@ -78,8 +78,11 @@ describe('ReportsService', () => {
     const [listed] = await service.findAll({});
     const detail = await service.findOne(entity.id);
 
-    // El listado es público: la cédula no puede viajar en él ni en el detalle.
-    expect(JSON.stringify([listed, detail])).not.toContain(entity.documentId);
+    // El listado es público: la identidad y el contacto no viajan ni en el listado ni en el detalle.
+    const publicPayload = JSON.stringify([listed, detail]);
+    expect(publicPayload).not.toContain(entity.documentId);
+    expect(publicPayload).not.toContain(entity.reporterName);
+    expect(publicPayload).not.toContain(entity.contactPhone);
   });
 
   it('devuelve los reportes ordenados por el repositorio', async () => {

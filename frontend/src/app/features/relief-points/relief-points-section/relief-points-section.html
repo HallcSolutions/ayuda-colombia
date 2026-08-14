@@ -1,13 +1,56 @@
 <section class="relief-points" id="puntos-ayuda">
   <header class="section-heading">
-    <div>
+    <svg
+      class="points-hero-map"
+      [attr.viewBox]="heroMapViewBox"
+      preserveAspectRatio="xMidYMid meet"
+      aria-hidden="true"
+      focusable="false"
+    >
+      @for (shape of heroMapShapes; track shape.name) {
+        <path [attr.d]="shape.d" />
+      }
+    </svg>
+
+    <div class="section-intro">
       <span class="eyebrow">{{ t('reliefPoints.eyebrow') }}</span>
       <h2>{{ t('reliefPoints.title') }}</h2>
       <p>{{ t('reliefPoints.subtitle') }}</p>
     </div>
-    <button type="button" class="register" (click)="openPointForm()">
-      {{ t('reliefPoints.register') }}
-    </button>
+    <aside class="hero-action-card">
+      <img
+        src="/assets/home/redayuda-shelter.jpg"
+        [alt]="t('reliefPoints.registerImageAlt')"
+        decoding="async"
+        fetchpriority="high"
+      />
+      <div class="hero-action-card__body">
+        <span>{{ t('reliefPoints.registerCardEyebrow') }}</span>
+        <p>{{ t('reliefPoints.registerCardBody') }}</p>
+        <button type="button" class="register" (click)="openPointForm()">
+          {{ t('reliefPoints.register') }} <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </aside>
+
+    <dl class="stats">
+      <div>
+        <dt>{{ t('reliefPoints.stats.points') }}</dt>
+        <dd>{{ totalPoints() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('reliefPoints.stats.kitchens') }}</dt>
+        <dd>{{ totalKitchens() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('reliefPoints.stats.portionsToday') }}</dt>
+        <dd>{{ totalPortionsToday() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('reliefPoints.stats.alerts') }}</dt>
+        <dd>{{ totalAlerts() }}</dd>
+      </div>
+    </dl>
   </header>
 
   <app-colombia-map
@@ -99,25 +142,6 @@
         {{ locating() ? t('reliefPoints.locating') : t('reliefPoints.useMyLocation') }}
       </button>
     </div>
-
-    <dl class="stats">
-      <div>
-        <dt>{{ t('reliefPoints.stats.points') }}</dt>
-        <dd>{{ totalPoints() }}</dd>
-      </div>
-      <div>
-        <dt>{{ t('reliefPoints.stats.kitchens') }}</dt>
-        <dd>{{ totalKitchens() }}</dd>
-      </div>
-      <div>
-        <dt>{{ t('reliefPoints.stats.portionsToday') }}</dt>
-        <dd>{{ totalPortionsToday() }}</dd>
-      </div>
-      <div>
-        <dt>{{ t('reliefPoints.stats.alerts') }}</dt>
-        <dd>{{ totalAlerts() }}</dd>
-      </div>
-    </dl>
 
     @if (locationError()) {
       <p class="section-error" role="alert">{{ locationError() }}</p>

@@ -3,8 +3,6 @@ import { ReportLocation } from './report-location.interface';
 
 export interface HouseReport {
   id: string;
-  reporterName: string;
-  contactPhone: string;
   department: string;
   municipality: string;
   addressReference: string;

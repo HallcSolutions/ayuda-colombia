@@ -140,6 +140,10 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'reliefPoints.allTypes': 'All types',
   'reliefPoints.allStatuses': 'All statuses',
   'reliefPoints.register': 'Register a point',
+  'reliefPoints.registerCardEyebrow': 'Help starts nearby',
+  'reliefPoints.registerCardBody':
+    'Share a trusted place so more families know where to find support.',
+  'reliefPoints.registerImageAlt': 'Volunteers register and guide a family at an aid point',
   'reliefPoints.cancelRegister': 'Close form',
   'reliefPoints.useMyLocation': 'Sort by distance',
   'reliefPoints.locating': 'Locating…',
@@ -306,7 +310,25 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
 
   'reportForm.eyebrow': 'New report',
   'reportForm.title': 'Tell us what is happening',
-  'reportForm.subtitle': 'Anyone affected can publish. Clear information helps prioritize aid.',
+  'reportForm.subtitle': 'Anyone affected can report. Clear information helps prioritize aid.',
+  'reportForm.actionEyebrow': 'Your information starts the response',
+  'reportForm.actionBody':
+    'Document the damage calmly. The form guides you to share only what is needed.',
+  'reportForm.actionImageAlt': 'Illustration of an affected home that needs to be reported',
+  'reportForm.privacyCue': 'Confidential report',
+  'reportForm.privacyEyebrow': 'Citizen and confidential record',
+  'reportForm.privacyTitle': 'Your personal details are private',
+  'reportForm.privacyBody':
+    'RedAyuda is a citizen reporting channel; we are not a response organization and we do not assign aid. The report is stored privately to support case verification.',
+  'reportForm.privacyIdentity': 'Name, ID number and phone do not appear in the public list.',
+  'reportForm.privacyContact':
+    'The full report is released only to a competent, verified organization.',
+  'reportForm.privacyPublic':
+    'Responsible organizations may request it through our WhatsApp channel.',
+  'reportForm.privacyWarning':
+    'If you represent a responsible organization and need to verify a case, request the report through our WhatsApp channel.',
+  'reportForm.privacyContactAction': 'Request report · WhatsApp 320 714 7271',
+  'reportForm.action': 'Start the report',
   'reportForm.step1Title': 'Person and home',
   'reportForm.step1Subtitle': 'Details to verify and contact the case.',
   'reportForm.reporterName': 'Reported by',
@@ -376,13 +398,14 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'reportForm.noticePlaceholder':
     'Describe which parts of the home were affected, whether it is safe to enter, and any blocked access…',
   'reportForm.consent':
-    'I authorize publishing the location and data of this report to coordinate humanitarian aid. I understand I must not include unnecessary sensitive information.',
+    'I understand that my personal details are private. I authorize sharing a case summary —without my name, ID number or phone— to coordinate humanitarian aid.',
   'reportForm.invalid':
     'Complete the fields, mark at least one damage, share the location and add a photo.',
   'reportForm.error': 'The report could not be published. Check your connection and try again.',
-  'reportForm.success': 'Report published. Aid teams can already see it.',
-  'reportForm.submit': 'Publish home report',
-  'reportForm.submitting': 'Publishing report…',
+  'reportForm.success':
+    'Report sent. The responsible teams can now coordinate the case and the authorized summary is available to the network.',
+  'reportForm.submit': 'Send home report',
+  'reportForm.submitting': 'Sending report…',
 
   'needs.water': 'Drinking water',
   'needs.food': 'Food',
@@ -404,6 +427,13 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
 
   'feed.eyebrow': 'Active needs',
   'feed.title': 'Community reports',
+  'feed.subtitle':
+    'See what families need, filter by status, and follow each case through to resolution.',
+  'feed.actionEyebrow': 'Is a case missing from the network?',
+  'feed.actionBody': 'Publish a home situation so volunteers and organizations can find it.',
+  'feed.actionImageAlt': 'Illustration of an affected home that needs support',
+  'feed.action': 'Report a home',
+  'feed.stats.total': 'Visible reports',
   'feed.searchPlaceholder': 'Search city or need',
   'feed.filterAll': 'All',
   'feed.loadingTitle': 'Loading reports',
@@ -413,6 +443,8 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'feed.loadError': 'The reports could not be loaded.',
   'feed.photoAlt': 'Home reported in {municipality}',
   'feed.noPhoto': 'Report without a photo',
+  'feed.illustrationAlt': 'Illustration related to a need in {municipality}',
+  'feed.illustrationLabel': 'Illustrative image · not evidence',
   'feed.urgencyBadge': '{level} urgency',
   'feed.photoCount': '{count} photos',
   'feed.verifiedLocation': 'Verified location',
@@ -432,6 +464,10 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'missing.title': 'Let’s help them get back home',
   'missing.subtitle':
     'Share a photo, where they were last seen and who to call. Anyone can post and browse, with no sign-up and no codes.',
+  'missing.actionEyebrow': 'Every detail can bring them closer to home',
+  'missing.actionBody':
+    'Share clear information and a contact so the community can support the search.',
+  'missing.actionImageAlt': 'Community team coordinates a search with a phone and map',
   'missing.publish': 'Publish a search',
   'missing.cancelPublish': 'Close form',
   'missing.searchPlaceholder': 'Search by name, place or description',
@@ -516,6 +552,19 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'lodging.groupHealth': 'Health',
   'lodging.groupVeterinary': 'Vets',
   'lodging.groupLabel': 'What are you looking for',
+  'lodging.actionSleepEyebrow': 'An open door can change a night',
+  'lodging.actionSleepBody':
+    'Offer a safe space and say how many people you can host and for how long.',
+  'lodging.actionSleepImageAlt': 'Volunteers guide a family inside a community shelter',
+  'lodging.actionHealthEyebrow': 'Reliable care close by',
+  'lodging.actionHealthBody':
+    'Register a health post so families know where they can receive care.',
+  'lodging.actionHealthImageAlt':
+    'Health professional cares for a woman at a community medical post',
+  'lodging.actionVeterinaryEyebrow': 'Animals need care too',
+  'lodging.actionVeterinaryBody':
+    'Share a place that treats pets or animals displaced by the emergency.',
+  'lodging.actionVeterinaryImageAlt': 'Veterinarian examines a dog accompanied by its caregiver',
   'lodging.careEmpty': 'No places of this kind registered in this area yet.',
   'lodging.careHint':
     'These places come from the aid points directory. If one is missing, register it from Aid points.',
@@ -606,6 +655,10 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'convoys.title': 'Who is on the way and when they arrive',
   'convoys.subtitle':
     'Every aid point sees the trucks heading its way, where they are and how far they still have to go. The route is only drawn if the driver allows it.',
+  'convoys.actionEyebrow': 'Make incoming aid visible',
+  'convoys.actionBody':
+    'Share the destination, cargo and estimated arrival so the receiving point can prepare.',
+  'convoys.actionImageAlt': 'Team unloads aid boxes from a truck in Colombia',
   'convoys.announce': 'Announce my trip',
   'convoys.cancelAnnounce': 'Close form',
   'convoys.allStatuses': 'All trips',

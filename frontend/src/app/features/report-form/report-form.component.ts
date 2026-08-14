@@ -38,11 +38,12 @@ import { ReportsService } from '../../core/services/reports.service';
 import { streetMapUrl } from '../../core/utils/geo.util';
 
 import { PHONE_PATTERN } from '../../core/utils/phone.util';
+import { ColombiaWatermark } from '../../shared/colombia-watermark/colombia-watermark';
 import { PhoneFieldDirective } from '../../shared/phone-field/phone-field.directive';
 
 @Component({
   selector: 'app-report-form',
-  imports: [ReactiveFormsModule, PhoneFieldDirective],
+  imports: [ReactiveFormsModule, PhoneFieldDirective, ColombiaWatermark],
   templateUrl: './report-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -232,6 +233,12 @@ export class ReportFormComponent implements OnDestroy {
     this.reverseLookupId += 1;
     this.stopLocationTracking();
     this.selectedPhotos().forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
+  }
+
+  scrollToForm(): void {
+    document
+      .getElementById('privacidad-del-reporte')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   toggleDamage(damage: string): void {

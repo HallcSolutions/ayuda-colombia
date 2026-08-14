@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { ReportStatus, UrgencyLevel } from '../../core/constants/app.constants';
 import { houseNeedKey, reportStatusKey, urgencyKey } from '../../core/i18n/domain-keys';
@@ -8,9 +9,11 @@ import { HouseReport } from '../../core/models/house-report.model';
 import { ReportsService } from '../../core/services/reports.service';
 import { colombiaDateTime } from '../../core/utils/date.util';
 import { mapUrl as directionsUrl } from '../../core/utils/geo.util';
+import { ColombiaWatermark } from '../../shared/colombia-watermark/colombia-watermark';
 
 @Component({
   selector: 'app-reports-feed',
+  imports: [ColombiaWatermark, RouterLink],
   templateUrl: './reports-feed.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -45,6 +48,17 @@ export class ReportsFeedComponent {
     });
   });
 
+  readonly openCount = computed(
+    () => this.filteredReports().filter((report) => report.status === ReportStatus.OPEN).length,
+  );
+  readonly inProgressCount = computed(
+    () =>
+      this.filteredReports().filter((report) => report.status === ReportStatus.IN_PROGRESS).length,
+  );
+  readonly resolvedCount = computed(
+    () => this.filteredReports().filter((report) => report.status === ReportStatus.RESOLVED).length,
+  );
+
   async changeStatus(report: HouseReport, status: ReportStatus): Promise<void> {
     this.errorMessageKey.set(null);
     try {
@@ -69,6 +83,22 @@ export class ReportsFeedComponent {
   needLabel(need: string): string {
     const key = houseNeedKey(need);
     return key ? this.t(key) : need;
+  }
+
+  illustrationFor(report: HouseReport): string {
+    const context = [...report.needs, report.notice]
+      .join(' ')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+
+    if (/medicin|atencion medica|aseo|higiene/.test(context)) {
+      return '/assets/reports/report-medical-illustration.jpg';
+    }
+    if (/pared|grieta|estructur|inhabitable|muro|perdida total|colaps/.test(context)) {
+      return '/assets/reports/report-damage-illustration.jpg';
+    }
+    return '/assets/reports/report-shelter-illustration.jpg';
   }
 
   formatDate(value: string): string {

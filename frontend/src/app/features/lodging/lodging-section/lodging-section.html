@@ -1,83 +1,25 @@
-<section class="lodging" id="alojamientos">
-  <header class="section-heading">
-    <div>
+<section class="lodging feature-page" id="alojamientos">
+  <header class="section-heading feature-hero">
+    <app-colombia-watermark class="feature-hero-map" />
+    <div class="feature-hero__intro">
       <span class="eyebrow">{{ t('lodging.eyebrow') }}</span>
       <h2>{{ t('lodging.title') }}</h2>
       <p>{{ t('lodging.subtitle') }}</p>
     </div>
-    <button type="button" class="register" (click)="toggleForm()">
-      {{ showForm() ? t('lodging.cancelPublish') : t(publishKey()) }}
-    </button>
-  </header>
-
-  @if (showForm()) {
-    <app-modal
-      [eyebrow]="t('lodging.eyebrow')"
-      [title]="t(publishTitleKey())"
-      (closed)="toggleForm()"
-    >
-      @if (publishType(); as pointType) {
-        <app-relief-point-form [fixedType]="pointType" (closed)="toggleForm()" />
-      } @else {
-        <app-lodging-form (closed)="toggleForm()" />
-      }
-    </app-modal>
-  }
-
-  @if (group() === 'sleep') {
-    <app-colombia-map
-      [markers]="mapMarkers()"
-      [selectedId]="selectedOfferId()"
-      (markerSelected)="selectOffer($event)"
-    >
-      @if (selectedOffer(); as offer) {
-        <app-lodging-card [offer]="offer" />
-      }
-    </app-colombia-map>
-  }
-
-  <div class="toolbar">
-    <label class="search">
-      <span class="visually-hidden">{{ t('lodging.searchPlaceholder') }}</span>
-      <input
-        type="search"
-        [placeholder]="t('lodging.searchPlaceholder')"
-        [value]="search()"
-        (input)="updateSearch($event)"
-      />
-    </label>
-    @if (group() === 'sleep') {
-      <label>
-        <span class="visually-hidden">{{ t('lodging.allStatuses') }}</span>
-        <select [value]="statusFilter()" (change)="updateStatusFilter($event)">
-          <option value="">{{ t('lodging.allStatuses') }}</option>
-          @for (status of statuses; track status) {
-            <option [value]="status">{{ t(statusKey(status)) }}</option>
-          }
-        </select>
-      </label>
+    @if (actionCard(); as card) {
+      <aside class="feature-action-card">
+        <img [src]="card.imageSrc" [alt]="t(card.imageAltKey)" decoding="async" />
+        <div class="feature-action-card__body">
+          <span>{{ t(card.eyebrowKey) }}</span>
+          <p>{{ t(card.bodyKey) }}</p>
+          <button type="button" class="register feature-hero__action" (click)="toggleForm()">
+            {{ showForm() ? t('lodging.cancelPublish') : t(publishKey()) }}
+          </button>
+        </div>
+      </aside>
     }
-    <div class="kind-tabs" role="group" [attr.aria-label]="t('lodging.groupLabel')">
-      @for (filter of placeFilters; track filter.id) {
-        <button
-          type="button"
-          [class.selected]="selectedPlace() === filter.id"
-          [attr.aria-pressed]="selectedPlace() === filter.id"
-          (click)="selectPlace(filter)"
-        >
-          <i aria-hidden="true">{{ filter.icon }}</i
-          >{{ t(filter.labelKey) }}
-        </button>
-      }
-    </div>
-  </div>
 
-  @if (group() !== 'sleep') {
-    <p class="care-hint">{{ t('lodging.careHint') }}</p>
-  }
-
-  @if (group() === 'sleep') {
-    <dl class="stats">
+    <dl class="stats feature-hero__metrics">
       <div>
         <dt>{{ t('lodging.stats.freeSpaces') }}</dt>
         <dd>{{ freeSpaces() }}</dd>
@@ -95,44 +37,112 @@
         <dd>{{ fullCount() }}</dd>
       </div>
     </dl>
+  </header>
+
+  @if (showForm()) {
+    <app-modal
+      [eyebrow]="t('lodging.eyebrow')"
+      [title]="t(publishTitleKey())"
+      (closed)="toggleForm()"
+    >
+      @if (publishType(); as pointType) {
+        <app-relief-point-form [fixedType]="pointType" (closed)="toggleForm()" />
+      } @else {
+        <app-lodging-form (closed)="toggleForm()" />
+      }
+    </app-modal>
   }
 
-  @if (group() === 'sleep') {
-    @if (lodgingService.error()) {
-      <p class="section-error" role="alert">{{ lodgingService.error() }}</p>
-    }
-
-    @if (lodgingService.loading()) {
-      <p class="empty">{{ t('common.loading') }}</p>
-    } @else if (!offers().length) {
-      <div class="empty-state">
-        <h3>{{ t('lodging.empty.title') }}</h3>
-        <p>{{ t('lodging.empty.body') }}</p>
-      </div>
-    } @else {
-      <div class="lodging-grid">
-        @for (offer of offers(); track offer.id) {
+  <div class="feature-content lodging-content">
+    @if (group() === 'sleep') {
+      <app-colombia-map
+        [markers]="mapMarkers()"
+        [selectedId]="selectedOfferId()"
+        (markerSelected)="selectOffer($event)"
+      >
+        @if (selectedOffer(); as offer) {
           <app-lodging-card [offer]="offer" />
         }
-      </div>
-    }
-  } @else {
-    @if (reliefPointsService.error()) {
-      <p class="section-error" role="alert">{{ reliefPointsService.error() }}</p>
+      </app-colombia-map>
     }
 
-    @if (reliefPointsService.loading()) {
-      <p class="empty">{{ t('common.loading') }}</p>
-    } @else if (!visibleCarePlaces().length) {
-      <div class="empty-state">
-        <p>{{ t('lodging.careEmpty') }}</p>
-      </div>
-    } @else {
-      <div class="care-list">
-        @for (place of visibleCarePlaces(); track place.id) {
-          <app-care-place-card [place]="place" />
+    <div class="toolbar">
+      <label class="search">
+        <span class="visually-hidden">{{ t('lodging.searchPlaceholder') }}</span>
+        <input
+          type="search"
+          [placeholder]="t('lodging.searchPlaceholder')"
+          [value]="search()"
+          (input)="updateSearch($event)"
+        />
+      </label>
+      @if (group() === 'sleep') {
+        <label>
+          <span class="visually-hidden">{{ t('lodging.allStatuses') }}</span>
+          <select [value]="statusFilter()" (change)="updateStatusFilter($event)">
+            <option value="">{{ t('lodging.allStatuses') }}</option>
+            @for (status of statuses; track status) {
+              <option [value]="status">{{ t(statusKey(status)) }}</option>
+            }
+          </select>
+        </label>
+      }
+      <div class="kind-tabs" role="group" [attr.aria-label]="t('lodging.groupLabel')">
+        @for (filter of placeFilters; track filter.id) {
+          <button
+            type="button"
+            [class.selected]="selectedPlace() === filter.id"
+            [attr.aria-pressed]="selectedPlace() === filter.id"
+            (click)="selectPlace(filter)"
+          >
+            <i aria-hidden="true">{{ filter.icon }}</i
+            >{{ t(filter.labelKey) }}
+          </button>
         }
       </div>
+    </div>
+
+    @if (group() !== 'sleep') {
+      <p class="care-hint">{{ t('lodging.careHint') }}</p>
     }
-  }
+
+    @if (group() === 'sleep') {
+      @if (lodgingService.error()) {
+        <p class="section-error" role="alert">{{ lodgingService.error() }}</p>
+      }
+
+      @if (lodgingService.loading()) {
+        <p class="empty">{{ t('common.loading') }}</p>
+      } @else if (!offers().length) {
+        <div class="empty-state">
+          <h3>{{ t('lodging.empty.title') }}</h3>
+          <p>{{ t('lodging.empty.body') }}</p>
+        </div>
+      } @else {
+        <div class="lodging-grid">
+          @for (offer of offers(); track offer.id) {
+            <app-lodging-card [offer]="offer" />
+          }
+        </div>
+      }
+    } @else {
+      @if (reliefPointsService.error()) {
+        <p class="section-error" role="alert">{{ reliefPointsService.error() }}</p>
+      }
+
+      @if (reliefPointsService.loading()) {
+        <p class="empty">{{ t('common.loading') }}</p>
+      } @else if (!visibleCarePlaces().length) {
+        <div class="empty-state">
+          <p>{{ t('lodging.careEmpty') }}</p>
+        </div>
+      } @else {
+        <div class="care-list">
+          @for (place of visibleCarePlaces(); track place.id) {
+            <app-care-place-card [place]="place" />
+          }
+        </div>
+      }
+    }
+  </div>
 </section>

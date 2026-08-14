@@ -23,6 +23,7 @@ import { MissingService } from '../../../core/services/missing.service';
 import { RegionService } from '../../../core/services/region.service';
 import { ColombiaMap } from '../../../shared/colombia-map/colombia-map';
 import { MapMarker } from '../../../shared/colombia-map/colombia-map.model';
+import { ColombiaWatermark } from '../../../shared/colombia-watermark/colombia-watermark';
 import { Modal } from '../../../shared/modal/modal';
 import { MissingCard } from '../missing-card/missing-card';
 import { MissingForm } from '../missing-form/missing-form';
@@ -30,7 +31,7 @@ import { toMapMarker } from '../missing-marker';
 
 @Component({
   selector: 'app-missing-section',
-  imports: [ColombiaMap, MissingCard, MissingForm, Modal],
+  imports: [ColombiaMap, ColombiaWatermark, MissingCard, MissingForm, Modal],
   templateUrl: './missing-section.html',
   styleUrl: './missing-section.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

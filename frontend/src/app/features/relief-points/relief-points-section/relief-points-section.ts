@@ -12,6 +12,10 @@ import {
   ReliefPointStatus,
   ReliefPointType,
 } from '../../../core/constants/app.constants';
+import {
+  COLOMBIA_DEPARTMENT_SHAPES,
+  COLOMBIA_MAP_VIEWBOX,
+} from '../../../core/constants/colombia-map.constants';
 import { reliefPointStatusKey, reliefPointTypeKey } from '../../../core/i18n/domain-keys';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { ReliefPoint } from '../../../core/models/relief-point.model';
@@ -54,6 +58,8 @@ export class ReliefPointsSection {
   protected readonly statusKey = reliefPointStatusKey;
   protected readonly needIcon = needIcon;
   protected readonly isVerified = isVerifiedPlace;
+  protected readonly heroMapShapes = COLOMBIA_DEPARTMENT_SHAPES;
+  protected readonly heroMapViewBox = COLOMBIA_MAP_VIEWBOX;
 
   readonly search = signal('');
   readonly typeFilter = signal<'' | ReliefPointType>('');

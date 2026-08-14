@@ -4,84 +4,8 @@
   display: block;
 }
 
-.missing {
-  display: grid;
-  gap: 22px;
-  padding: 46px max(7vw, 28px) 80px;
-}
-
-.section-heading {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  align-items: flex-end;
-  justify-content: space-between;
-}
-
-.section-heading > div {
-  flex: 1 1 min(44rem, 100%);
+.missing-content {
   min-width: 0;
-}
-
-.section-heading h2 {
-  max-width: 100%;
-  font-size: clamp(38px, 6vw, 68px);
-  line-height: 0.98;
-  text-wrap: balance;
-  overflow-wrap: break-word;
-}
-
-.section-heading p {
-  margin: 6px 0 0;
-  color: var(--muted);
-  max-width: 72ch;
-  font-size: clamp(14px, 1.4vw, 17px);
-  line-height: 1.45;
-}
-
-.register {
-  border: 0;
-  border-radius: 8px;
-  padding: 12px 19px;
-  background: var(--coral);
-  color: white;
-  font-weight: 750;
-  cursor: pointer;
-  box-shadow: 0 6px 20px rgba(223, 105, 79, 0.22);
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0;
-  margin: 0;
-  border-block: 1px solid var(--line);
-}
-
-.stats div {
-  border: 0;
-  border-right: 1px solid var(--line);
-  border-radius: 0;
-  padding: 16px 20px;
-  background: transparent;
-}
-
-.stats div:last-child {
-  border-right: 0;
-}
-
-.stats dt {
-  color: var(--muted);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  font-weight: 700;
-}
-
-.stats dd {
-  margin: 6px 0 0;
-  font: 800 30px/1 var(--serif);
-  color: var(--green);
 }
 
 .section-error {
@@ -133,46 +57,4 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
-}
-
-@media (max-width: 700px) {
-  .missing {
-    padding: 30px 16px 60px;
-    overflow-x: clip;
-  }
-
-  .section-heading {
-    display: grid;
-    width: 100%;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-    align-items: start;
-  }
-
-  .section-heading > div {
-    width: 100%;
-    min-width: 0;
-  }
-
-  .section-heading h2 {
-    font-size: clamp(36px, 11vw, 48px);
-  }
-
-  .register {
-    width: 100%;
-    min-height: 46px;
-    box-sizing: border-box;
-  }
-
-  .stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .stats div:nth-child(2) {
-    border-right: 0;
-  }
-
-  .stats div:nth-child(-n + 2) {
-    border-bottom: 1px solid var(--line);
-  }
 }

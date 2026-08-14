@@ -2,8 +2,6 @@ import { ReportStatus, UrgencyLevel } from '../constants/app.constants';
 
 export interface HouseReport {
   id: string;
-  reporterName: string;
-  contactPhone: string;
   department: string;
   municipality: string;
   addressReference: string;

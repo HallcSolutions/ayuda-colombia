@@ -1,4 +1,6 @@
 @use './app/app.scss';
+@use './app/features/relief-points/relief-points-section/relief-points-landing';
+@use './app/shared/styles/feature-page-landing';
 
 :root {
   --ink: #17231d;
@@ -35,6 +37,7 @@
 
 html {
   overflow-x: clip;
+  scrollbar-gutter: stable;
 }
 
 body {

@@ -5,7 +5,8 @@ const MINIMUM_VISIBLE_MS = 520;
 
 /**
  * Coordina la carga inicial y las peticiones posteriores sin hacer parpadear la interfaz.
- * La primera visita cubre la pantalla; las actualizaciones siguientes usan una cápsula flotante.
+ * La primera visita y las actualizaciones comparten una línea fija que no cubre ni desplaza
+ * la interfaz.
  */
 @Injectable({ providedIn: 'root' })
 export class LoadingService {

@@ -1,0 +1,10 @@
+<svg
+  [attr.viewBox]="viewBox"
+  preserveAspectRatio="xMidYMid meet"
+  aria-hidden="true"
+  focusable="false"
+>
+  @for (shape of shapes; track shape.name) {
+    <path [attr.d]="shape.d" />
+  }
+</svg>

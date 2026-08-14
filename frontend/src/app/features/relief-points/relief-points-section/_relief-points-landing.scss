@@ -1,0 +1,397 @@
+app-relief-points-section {
+  --points-cream: #fbf8f0;
+  --points-blue: #dbe9ee;
+  --points-red: #efdcd6;
+  display: block;
+
+  .relief-points {
+    display: grid;
+    gap: 0;
+    overflow: hidden;
+    padding-bottom: clamp(72px, 8vw, 112px);
+    background: #fbfaf5;
+  }
+
+  .section-heading {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    min-height: clamp(650px, 56vw, 760px);
+    grid-template-columns: minmax(0, 1fr) minmax(310px, 420px);
+    align-items: center;
+    gap: clamp(38px, 5vw, 86px);
+    overflow: hidden;
+    padding: clamp(72px, 8vw, 116px) max(7vw, 28px) clamp(58px, 6vw, 82px);
+    border-bottom: 1px solid rgba(18, 88, 64, 0.1);
+    background: linear-gradient(
+      132deg,
+      var(--points-cream) 0 52%,
+      #f1e6c3 52% 69%,
+      var(--points-blue) 69% 86%,
+      var(--points-red) 86% 100%
+    );
+  }
+
+  .points-hero-map {
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    right: clamp(120px, 17vw, 430px);
+    width: min(38vw, 650px);
+    height: 110%;
+    opacity: 0.12;
+    transform: translateY(-50%) rotate(4deg);
+    animation: points-map-drift 20s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+
+  .points-hero-map path {
+    fill: #a9c8d7;
+    stroke: rgba(255, 255, 255, 0.78);
+    stroke-width: 2.2px;
+  }
+
+  .points-hero-map path:nth-child(3n + 1) {
+    fill: #ddc369;
+  }
+
+  .points-hero-map path:nth-child(3n + 2) {
+    fill: #ce8275;
+  }
+
+  .section-intro {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+  }
+
+  .section-heading .eyebrow {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .section-heading h2 {
+    max-width: 980px;
+    margin: clamp(24px, 3vw, 34px) 0 24px;
+    font: 650 clamp(58px, 6vw, 96px) / 0.9 var(--serif);
+    letter-spacing: -0.055em;
+    text-wrap: balance;
+  }
+
+  .section-intro > p {
+    max-width: 680px;
+    margin: 0;
+    color: rgba(23, 35, 29, 0.74);
+    font-size: clamp(17px, 1.35vw, 20px);
+    line-height: 1.58;
+  }
+
+  .register {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    min-height: 58px;
+    align-items: center;
+    gap: 18px;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0;
+    padding: 0 24px;
+    border: 0;
+    border-radius: 12px;
+    color: white;
+    background: var(--ink);
+    box-shadow: 0 16px 34px rgba(23, 35, 29, 0.2);
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .register span {
+    transition: transform 180ms ease;
+  }
+
+  .register:hover span {
+    transform: translateX(4px);
+  }
+
+  .hero-action-card {
+    position: relative;
+    z-index: 1;
+    align-self: center;
+    width: 100%;
+    overflow: hidden;
+    margin: 0;
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 26px;
+    background: rgba(251, 250, 245, 0.9);
+    box-shadow: 0 28px 70px rgba(28, 49, 40, 0.18);
+    animation: points-action-enter 800ms 180ms cubic-bezier(0.18, 0.82, 0.24, 1) both;
+  }
+
+  .hero-action-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: center 44%;
+    transition: transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .hero-action-card:hover img {
+    transform: scale(1.035);
+  }
+
+  .hero-action-card__body {
+    position: relative;
+    display: grid;
+    gap: 13px;
+    padding: 22px;
+  }
+
+  .hero-action-card__body > span {
+    color: var(--green);
+    font-size: 9px;
+    font-weight: 850;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .hero-action-card__body > p {
+    margin: 0;
+    color: rgba(23, 35, 29, 0.72);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  app-colombia-map {
+    display: block;
+    width: min(86vw, 1520px);
+    margin: clamp(64px, 7vw, 96px) auto 0;
+  }
+
+  .directory {
+    scroll-margin-top: 155px;
+    display: grid;
+    gap: 28px;
+    width: min(86vw, 1520px);
+    margin: clamp(82px, 9vw, 132px) auto 0;
+    padding: clamp(46px, 5vw, 72px) 0 0;
+    border: 0;
+    border-top: 1px solid #dfe6dc;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .directory-heading {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .directory-heading p {
+    max-width: 58ch;
+    margin: 7px 0 0;
+    color: var(--muted);
+  }
+
+  .directory-heading h3 {
+    max-width: 850px;
+    margin: 14px 0 0;
+    color: var(--ink);
+    font: 700 clamp(40px, 4.5vw, 68px) / 0.98 var(--serif);
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+  }
+
+  .result-count {
+    min-width: 110px;
+    padding-block: 12px;
+    border-block: 1px solid rgba(18, 88, 64, 0.28);
+    color: var(--green);
+    font: 750 clamp(44px, 5vw, 72px) / 0.9 var(--serif);
+    text-align: center;
+  }
+
+  .stats {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    grid-column: 1 / -1;
+    width: min(100%, 960px);
+    gap: 0;
+    margin: clamp(12px, 2vw, 24px) 0 0;
+    padding: 0;
+    border-block: 1px solid rgba(23, 35, 29, 0.25);
+  }
+
+  .stats div {
+    flex: 1 1 9rem;
+    padding: 18px 22px;
+    border-right: 1px solid rgba(23, 35, 29, 0.18);
+  }
+
+  .stats div:last-child {
+    border-right: 0;
+  }
+
+  .stats dt {
+    color: rgba(23, 35, 29, 0.68);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .stats dd {
+    margin: 7px 0 0;
+    color: var(--ink);
+    font: 800 30px/1 var(--serif);
+  }
+}
+
+@keyframes points-map-drift {
+  to {
+    transform: translate(-16px, -52%) rotate(1deg) scale(1.025);
+  }
+}
+
+@keyframes points-action-enter {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+}
+
+@media (max-width: 900px) {
+  app-relief-points-section {
+    .section-heading {
+      min-height: auto;
+      grid-template-columns: 1fr;
+      align-content: end;
+      gap: 30px;
+    }
+
+    .hero-action-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(250px, 0.8fr);
+      width: min(100%, 760px);
+    }
+
+    .hero-action-card img {
+      height: 100%;
+      min-height: 220px;
+      aspect-ratio: auto;
+    }
+
+    .points-hero-map {
+      top: 44%;
+      right: -20px;
+      width: min(62vw, 500px);
+      height: 84%;
+      opacity: 0.1;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  app-relief-points-section {
+    .relief-points {
+      padding-bottom: 68px;
+    }
+
+    .section-heading {
+      min-height: auto;
+      gap: 28px;
+      padding: 68px 18px 48px;
+      background: linear-gradient(
+        165deg,
+        var(--points-cream) 0 59%,
+        #f1e6c3 59% 73%,
+        var(--points-blue) 73% 88%,
+        var(--points-red) 88% 100%
+      );
+    }
+
+    .section-heading h2 {
+      margin-block: 22px 20px;
+      font-size: clamp(46px, 14vw, 58px);
+      line-height: 0.92;
+    }
+
+    .section-intro > p {
+      font-size: 16px;
+    }
+
+    .hero-action-card {
+      display: block;
+      width: 100%;
+      border-radius: 20px;
+    }
+
+    .hero-action-card img {
+      min-height: 0;
+      aspect-ratio: 16 / 9;
+    }
+
+    .hero-action-card__body {
+      padding: 18px;
+    }
+
+    .points-hero-map {
+      top: 36%;
+      right: -92px;
+      width: 340px;
+      height: 58%;
+      opacity: 0.085;
+    }
+
+    app-colombia-map {
+      width: calc(100% - 36px);
+      margin-top: 64px;
+    }
+
+    .directory {
+      width: calc(100% - 36px);
+      margin-top: 78px;
+      padding-top: 42px;
+    }
+
+    .result-count {
+      min-width: 74px;
+      font-size: 44px;
+    }
+
+    .stats div {
+      flex-basis: 50%;
+      padding: 15px 12px;
+      border-bottom: 1px solid rgba(23, 35, 29, 0.18);
+    }
+
+    .stats div:nth-child(2) {
+      border-right: 0;
+    }
+
+    .stats div:nth-last-child(-n + 2) {
+      border-bottom: 0;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  app-relief-points-section {
+    .points-hero-map,
+    .hero-action-card {
+      animation: none;
+    }
+
+    .hero-action-card img {
+      transition: none;
+    }
+  }
+}

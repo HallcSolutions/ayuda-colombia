@@ -3,7 +3,7 @@
   --tone-warning: #c8811f;
   --tone-muted: #7b8a80;
   display: grid;
-  gap: 12px;
+  gap: 18px;
   grid-template-areas:
     'bar'
     'stage'
@@ -22,8 +22,9 @@
 
 .map-bar .zone {
   display: block;
-  font-size: 17px;
-  font-weight: 750;
+  color: var(--ink);
+  font: 700 clamp(24px, 2.6vw, 38px) / 1 var(--serif);
+  letter-spacing: -0.035em;
 }
 
 .map-bar p {
@@ -59,10 +60,10 @@
   grid-area: stage;
   position: relative;
   height: min(72vh, 560px);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: #eef2ec;
+  border-block: 1px solid rgba(18, 88, 64, 0.16);
+  background: linear-gradient(145deg, #f8eee8 0 34%, #f6f0d7 34% 57%, #e3eef1 57% 100%);
   overflow: hidden;
+  animation: map-stage-enter 720ms 80ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
 }
 
 /* En un teléfono el mapa deja ver que abajo sigue habiendo contenido. */
@@ -92,25 +93,25 @@ svg {
 }
 
 .department {
-  fill: #d7ded4;
-  stroke: #f4f6f2;
+  fill: #d4e0df;
+  stroke: rgba(255, 255, 255, 0.82);
   stroke-width: 1.4;
   cursor: pointer;
   transition: fill 0.2s ease;
 }
 
 .department.has-points {
-  fill: #b7d3bf;
+  fill: #b8d2c2;
 }
 
 .department:hover,
 .department:focus-visible {
-  fill: #9cc3a8;
+  fill: #e1cc83;
   outline: none;
 }
 
 .department.is-focused {
-  fill: #cfe3d3;
+  fill: #e6b3a9;
   stroke: var(--green);
   stroke-width: 2.4;
 }
@@ -190,7 +191,7 @@ svg {
   font-size: 22px;
   font-weight: 700;
   paint-order: stroke;
-  stroke: #eef2ec;
+  stroke: #f5f2e8;
   stroke-width: 5;
 }
 
@@ -225,6 +226,13 @@ svg {
   }
 }
 
+@keyframes map-stage-enter {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 18% 0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .canvas,
   .pin,
@@ -235,6 +243,10 @@ svg {
   .pin .halo {
     animation: none;
     opacity: 0.6;
+  }
+
+  .map-stage {
+    animation: none;
   }
 }
 
