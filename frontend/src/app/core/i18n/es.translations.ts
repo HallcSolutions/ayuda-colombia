@@ -263,6 +263,32 @@ export const ES_TRANSLATIONS = {
   'hero.reports': 'Reportes',
   'hero.imageAlt': 'Brigadas coordinan ayuda y ubican viviendas afectadas en el mapa de Colombia',
 
+  'landing.heroImageAlt':
+    'Voluntaria colombiana sostiene una caja con alimentos, agua y una manta para entregar ayuda',
+  'landing.scroll': 'Un mensaje de esperanza',
+  'landing.hopeKicker': 'Una palabra de esperanza',
+  'landing.missionRail': 'Reporta · conecta · moviliza · acompaña · Colombia se cuida',
+  'landing.storyEyebrow': 'La red en acción',
+  'landing.storyTitle': 'De una necesidad visible a una ayuda que sí llega.',
+  'landing.storyLead':
+    'Cada reporte activa una ruta: personas que verifican, transportan, alojan y acompañan con información clara.',
+  'landing.routeKicker': 'Rutas solidarias',
+  'landing.routeTitle': 'La ayuda encuentra camino.',
+  'landing.routeBody':
+    'Los viajes conectan donaciones con puntos que las necesitan y permiten seguir el recorrido hasta la entrega.',
+  'landing.routeCta': 'Ver camiones en camino',
+  'landing.routeCaption': 'Ayuda que avanza por Colombia',
+  'landing.routeImageAlt':
+    'Voluntariado descarga alimentos, agua y cobijas de un camión en una población montañosa de Colombia',
+  'landing.shelterKicker': 'Alojamiento responsable',
+  'landing.shelterTitle': 'Un lugar seguro también es ayuda.',
+  'landing.shelterBody':
+    'La red reúne alojamientos, contactos y datos de verificación para orientar a una familia antes de enviarla.',
+  'landing.shelterCta': 'Encontrar dónde alojarse',
+  'landing.shelterCaption': 'Información para recibir y acompañar',
+  'landing.shelterImageAlt':
+    'Voluntarios reciben y orientan a personas adultas en un alojamiento comunitario organizado',
+
   'process.documentStep': 'Documenta',
   'process.documentTail': 'la afectación',
   'process.locateStep': 'Ubica',
@@ -493,7 +519,7 @@ export const ES_TRANSLATIONS = {
   'lodging.title': 'A dónde ir esta noche',
   'lodging.subtitle':
     'Dormidas, atención en salud y veterinarias, con su dirección y cómo llegar. Los sitios con sello han sido comprobados por alguien de la red; los demás confírmalos por teléfono antes de ir.',
-  'lodging.groupSleep': 'Dormir',
+  'lodging.groupSleep': 'Todas las dormidas',
   'lodging.groupHealth': 'Salud',
   'lodging.groupVeterinary': 'Veterinarias',
   'lodging.groupLabel': 'Qué estás buscando',
@@ -510,7 +536,6 @@ export const ES_TRANSLATIONS = {
   'lodging.publishVeterinary': 'Registrar veterinaria',
   'lodging.cancelPublish': 'Cerrar formulario',
   'lodging.searchPlaceholder': 'Buscar por lugar, dirección o ciudad',
-  'lodging.allKinds': 'Todos los lugares',
   'lodging.allStatuses': 'Todos los estados',
   'lodging.stats.freeSpaces': 'Cupos libres',
   'lodging.stats.offers': 'Alojamientos con cupo',

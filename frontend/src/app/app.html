@@ -25,6 +25,7 @@
         }
       </span>
       <span class="loader-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="loader-progress" aria-hidden="true"></span>
     </div>
   </div>
 }
@@ -84,19 +85,29 @@
 </main>
 
 <footer class="site-footer">
-  <div class="brand">
-    <span class="brand-mark" aria-hidden="true">
-      <img src="/assets/brand/redayuda-mark-192.png" alt="" width="48" height="48" loading="lazy" />
-    </span>
-    <span
-      ><strong>{{ t('brand.name') }}</strong
-      ><small>{{ t('brand.tagline') }}</small></span
-    >
+  <div class="footer-inner">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <img
+          src="/assets/brand/redayuda-mark-192.png"
+          alt=""
+          width="48"
+          height="48"
+          loading="lazy"
+        />
+      </span>
+      <span
+        ><strong>{{ t('brand.name') }}</strong
+        ><small>{{ t('brand.tagline') }}</small></span
+      >
+    </div>
+    <p>{{ t('footer.lead') }}</p>
+    <p class="footer-support">
+      {{ t('footer.support') }}
+      <a href="https://wa.me/573207147271" target="_blank" rel="noopener">
+        WhatsApp 320 714 7271
+      </a>
+    </p>
+    <span class="footer-signature">{{ t('footer.signature') }}</span>
   </div>
-  <p>{{ t('footer.lead') }}</p>
-  <p class="footer-support">
-    {{ t('footer.support') }}
-    <a href="https://wa.me/573207147271" target="_blank" rel="noopener"> WhatsApp 320 714 7271 </a>
-  </p>
-  <span>{{ t('footer.signature') }}</span>
 </footer>

@@ -10,33 +10,6 @@
     </button>
   </header>
 
-  <div class="group-tabs" role="group" [attr.aria-label]="t('lodging.groupLabel')">
-    <button
-      type="button"
-      [class.selected]="group() === 'sleep'"
-      [attr.aria-pressed]="group() === 'sleep'"
-      (click)="selectGroup('sleep')"
-    >
-      <i aria-hidden="true">🛏️</i>{{ t('lodging.groupSleep') }}
-    </button>
-    <button
-      type="button"
-      [class.selected]="group() === 'health'"
-      [attr.aria-pressed]="group() === 'health'"
-      (click)="selectGroup('health')"
-    >
-      <i aria-hidden="true">🏥</i>{{ t('lodging.groupHealth') }}
-    </button>
-    <button
-      type="button"
-      [class.selected]="group() === 'veterinary'"
-      [attr.aria-pressed]="group() === 'veterinary'"
-      (click)="selectGroup('veterinary')"
-    >
-      <i aria-hidden="true">🐾</i>{{ t('lodging.groupVeterinary') }}
-    </button>
-  </div>
-
   @if (showForm()) {
     <app-modal
       [eyebrow]="t('lodging.eyebrow')"
@@ -74,27 +47,6 @@
       />
     </label>
     @if (group() === 'sleep') {
-      <div class="kind-tabs" role="group" [attr.aria-label]="t('lodging.allKinds')">
-        <button
-          type="button"
-          [class.selected]="kindFilter() === ''"
-          [attr.aria-pressed]="kindFilter() === ''"
-          (click)="selectKind('')"
-        >
-          {{ t('lodging.allKinds') }}
-        </button>
-        @for (kind of kinds; track kind) {
-          <button
-            type="button"
-            [class.selected]="kindFilter() === kind"
-            [attr.aria-pressed]="kindFilter() === kind"
-            (click)="selectKind(kind)"
-          >
-            <i aria-hidden="true">{{ kindIcons[kind] }}</i
-            >{{ t(kindKey(kind)) }}
-          </button>
-        }
-      </div>
       <label>
         <span class="visually-hidden">{{ t('lodging.allStatuses') }}</span>
         <select [value]="statusFilter()" (change)="updateStatusFilter($event)">
@@ -105,6 +57,19 @@
         </select>
       </label>
     }
+    <div class="kind-tabs" role="group" [attr.aria-label]="t('lodging.groupLabel')">
+      @for (filter of placeFilters; track filter.id) {
+        <button
+          type="button"
+          [class.selected]="selectedPlace() === filter.id"
+          [attr.aria-pressed]="selectedPlace() === filter.id"
+          (click)="selectPlace(filter)"
+        >
+          <i aria-hidden="true">{{ filter.icon }}</i
+          >{{ t(filter.labelKey) }}
+        </button>
+      }
+    </div>
   </div>
 
   @if (group() !== 'sleep') {

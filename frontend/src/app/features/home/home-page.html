@@ -1,16 +1,22 @@
-<section class="hero">
+<section class="hero" aria-labelledby="home-title">
+  <svg
+    class="hero-map"
+    [attr.viewBox]="homeMapViewBox"
+    preserveAspectRatio="xMidYMid meet"
+    aria-hidden="true"
+    focusable="false"
+  >
+    @for (shape of homeMapShapes; track shape.name) {
+      <path [attr.d]="shape.d" />
+    }
+  </svg>
+
   <div class="hero-copy">
     <span class="eyebrow"><i></i> {{ t('hero.eyebrow') }}</span>
-    <h1>
+    <h1 id="home-title">
       {{ t('hero.title') }}<br /><em>{{ t('hero.titleAccent') }}</em>
     </h1>
     <p>{{ t('hero.lead') }}</p>
-    <blockquote class="hero-faith">
-      <p>{{ t('hero.faithQuote') }}</p>
-      <footer>
-        <cite>{{ t('hero.faithSource') }}</cite> · {{ t('hero.faithNote') }}
-      </footer>
-    </blockquote>
     <div class="hero-actions">
       <a class="primary-button" routerLink="/reportar">
         {{ t('hero.primaryCta') }} <span aria-hidden="true">→</span>
@@ -23,20 +29,21 @@
   </div>
 
   <aside class="impact-panel" [attr.aria-label]="t('hero.panelTitle')">
-    <div class="impact-top">
-      <span>{{ t('hero.panelTitle') }}</span
-      ><span class="live-dot">{{ t('hero.live') }}</span>
-    </div>
-    <div class="impact-map impact-map-image">
+    <div class="impact-photo">
       <img
-        src="/assets/redayuda-colombia-hero.png"
-        [alt]="t('hero.imageAlt')"
-        width="1680"
-        height="945"
+        src="/assets/home/redayuda-volunteer-hero.jpg"
+        [alt]="t('landing.heroImageAlt')"
+        width="900"
+        height="1350"
+        loading="eager"
+        fetchpriority="high"
       />
-      <div class="map-callout">
-        <strong>{{ openReports() }}</strong
-        ><span>{{ t('hero.pending') }}</span>
+    </div>
+    <div class="impact-live">
+      <span class="live-dot">{{ t('hero.live') }}</span>
+      <div>
+        <strong>{{ openReports() }}</strong>
+        <span>{{ t('hero.pending') }}</span>
       </div>
     </div>
     <div class="impact-stats">
@@ -54,6 +61,97 @@
       </div>
     </div>
   </aside>
+
+  <a class="hero-scroll" href="#mensaje-esperanza">
+    {{ t('landing.scroll') }} <span aria-hidden="true">↓</span>
+  </a>
+</section>
+
+<section id="mensaje-esperanza" class="hope-section" [attr.aria-label]="t('landing.hopeKicker')">
+  <svg
+    class="hope-map"
+    [attr.viewBox]="homeMapViewBox"
+    preserveAspectRatio="xMidYMid meet"
+    aria-hidden="true"
+    focusable="false"
+  >
+    @for (shape of homeMapShapes; track shape.name) {
+      <path [attr.d]="shape.d" />
+    }
+  </svg>
+  <div class="hope-inner">
+    <span class="hope-kicker">{{ t('landing.hopeKicker') }}</span>
+    <blockquote>
+      <p>{{ t('hero.faithQuote') }}</p>
+      <footer>
+        <cite>{{ t('hero.faithSource') }}</cite>
+        <span>{{ t('hero.faithNote') }}</span>
+      </footer>
+    </blockquote>
+  </div>
+</section>
+
+<div class="mission-rail" aria-hidden="true">
+  <div>
+    <span>{{ t('landing.missionRail') }}</span>
+    <span>{{ t('landing.missionRail') }}</span>
+    <span>{{ t('landing.missionRail') }}</span>
+    <span>{{ t('landing.missionRail') }}</span>
+  </div>
+</div>
+
+<section id="red-en-accion" class="landing-story" aria-labelledby="landing-story-title">
+  <header class="story-heading">
+    <span class="section-kicker"><i></i>{{ t('landing.storyEyebrow') }}</span>
+    <div>
+      <h2 id="landing-story-title">{{ t('landing.storyTitle') }}</h2>
+      <p>{{ t('landing.storyLead') }}</p>
+    </div>
+  </header>
+
+  <div class="story-list">
+    <article class="story-row story-row--route">
+      <figure class="story-media">
+        <img
+          src="/assets/home/redayuda-aid-route.jpg"
+          [alt]="t('landing.routeImageAlt')"
+          width="1500"
+          height="710"
+          loading="lazy"
+        />
+        <figcaption><span>01</span>{{ t('landing.routeCaption') }}</figcaption>
+      </figure>
+      <div class="story-copy">
+        <span class="story-kicker">{{ t('landing.routeKicker') }}</span>
+        <h3>{{ t('landing.routeTitle') }}</h3>
+        <p>{{ t('landing.routeBody') }}</p>
+        <a class="story-link" routerLink="/camiones">
+          {{ t('landing.routeCta') }} <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </article>
+
+    <article class="story-row story-row--shelter">
+      <div class="story-copy">
+        <span class="story-kicker">{{ t('landing.shelterKicker') }}</span>
+        <h3>{{ t('landing.shelterTitle') }}</h3>
+        <p>{{ t('landing.shelterBody') }}</p>
+        <a class="story-link" routerLink="/alojamientos">
+          {{ t('landing.shelterCta') }} <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <figure class="story-media">
+        <img
+          src="/assets/home/redayuda-shelter.jpg"
+          [alt]="t('landing.shelterImageAlt')"
+          width="1400"
+          height="735"
+          loading="lazy"
+        />
+        <figcaption><span>02</span>{{ t('landing.shelterCaption') }}</figcaption>
+      </figure>
+    </article>
+  </div>
 </section>
 
 <app-needs-digest class="home-digest" />

@@ -67,6 +67,19 @@ const click = async (fixture: Awaited<ReturnType<typeof render>>, selector: stri
   await fixture.whenStable();
 };
 
+/** Los filtros son un solo renglón: se elige por su nombre, no por su posición. */
+const clickPlace = async (fixture: Awaited<ReturnType<typeof render>>, label: string) => {
+  const element = fixture.nativeElement as HTMLElement;
+  const button = [...element.querySelectorAll<HTMLButtonElement>('.kind-tabs button')].find(
+    (candidate) => candidate.textContent?.includes(label),
+  );
+  button?.click();
+  await fixture.whenStable();
+};
+
+const placesText = (fixture: Awaited<ReturnType<typeof render>>) =>
+  (fixture.nativeElement as HTMLElement).querySelector('.kind-tabs')?.textContent ?? '';
+
 const registerLabel = (fixture: Awaited<ReturnType<typeof render>>) =>
   (fixture.nativeElement as HTMLElement).querySelector('.register')?.textContent?.trim();
 
@@ -88,10 +101,19 @@ describe('LodgingSection', () => {
     expect(element.querySelector('app-relief-point-form')).toBeNull();
   });
 
+  /** Quien busca una veterinaria la encuentra en la misma fila donde filtra las dormidas. */
+  it('ofrece salud y veterinarias junto a las clases de dormida', async () => {
+    const fixture = await render();
+
+    expect(placesText(fixture)).toContain('Casa de familia');
+    expect(placesText(fixture)).toContain('Salud');
+    expect(placesText(fixture)).toContain('Veterinarias');
+  });
+
   it('en Salud se registra un puesto de salud, no un alojamiento', async () => {
     const fixture = await render();
 
-    await click(fixture, '.group-tabs button', 1);
+    await clickPlace(fixture, 'Salud');
     expect(registerLabel(fixture)).toBe('Registrar sitio de salud');
 
     await click(fixture, '.register');
@@ -106,7 +128,7 @@ describe('LodgingSection', () => {
   it('en Veterinarias se registra una veterinaria', async () => {
     const fixture = await render();
 
-    await click(fixture, '.group-tabs button', 2);
+    await clickPlace(fixture, 'Veterinarias');
     expect(registerLabel(fixture)).toBe('Registrar veterinaria');
 
     await click(fixture, '.register');
@@ -117,7 +139,7 @@ describe('LodgingSection', () => {
   it('no vuelve a preguntar el tipo de sitio', async () => {
     const fixture = await render();
 
-    await click(fixture, '.group-tabs button', 1);
+    await clickPlace(fixture, 'Salud');
     await click(fixture, '.register');
 
     expect(
@@ -134,11 +156,11 @@ describe('LodgingSection', () => {
     ]);
     const element = fixture.nativeElement as HTMLElement;
 
-    await click(fixture, '.group-tabs button', 1);
+    await clickPlace(fixture, 'Salud');
     expect(element.querySelectorAll('app-care-place-card').length).toBe(1);
     expect(element.querySelector('.care-list')?.textContent).toContain('Puesto de salud La Ceiba');
 
-    await click(fixture, '.group-tabs button', 2);
+    await clickPlace(fixture, 'Veterinarias');
     expect(element.querySelectorAll('app-care-place-card').length).toBe(1);
     expect(element.querySelector('.care-list')?.textContent).toContain('Veterinaria del Valle');
   });
@@ -147,7 +169,7 @@ describe('LodgingSection', () => {
     const fixture = await render();
 
     await click(fixture, '.register');
-    await click(fixture, '.group-tabs button', 2);
+    await clickPlace(fixture, 'Veterinarias');
 
     expect((fixture.nativeElement as HTMLElement).querySelector('.modal')).toBeNull();
   });

@@ -8,6 +8,10 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ReportStatus, UrgencyLevel } from '../../core/constants/app.constants';
+import {
+  COLOMBIA_DEPARTMENT_SHAPES,
+  COLOMBIA_MAP_VIEWBOX,
+} from '../../core/constants/colombia-map.constants';
 import { reliefPointTypeKey } from '../../core/i18n/domain-keys';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { AlertsService } from '../../core/services/alerts.service';
@@ -25,6 +29,7 @@ import { NewsFeed } from './news-feed/news-feed';
   selector: 'app-home-page',
   imports: [RouterLink, ColombiaMap, NeedsDigestPanel, NewsFeed],
   templateUrl: './home-page.html',
+  styleUrl: './home-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomePage {
@@ -35,6 +40,8 @@ export class HomePage {
   private readonly region = inject(RegionService);
   readonly t = inject(I18nService).t;
   protected readonly typeKey = reliefPointTypeKey;
+  protected readonly homeMapShapes = COLOMBIA_DEPARTMENT_SHAPES;
+  protected readonly homeMapViewBox = COLOMBIA_MAP_VIEWBOX;
 
   readonly openReports = computed(
     () =>

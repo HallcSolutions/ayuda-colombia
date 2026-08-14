@@ -39,42 +39,6 @@
   max-width: 56ch;
 }
 
-/* Lo primero que se decide al entrar: dormir, salud o veterinaria. */
-.group-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.group-tabs button {
-  display: inline-flex;
-  flex: 1 1 9rem;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  padding: 13px 18px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: white;
-  color: var(--muted);
-  font-size: 14px;
-  font-weight: 750;
-  cursor: pointer;
-}
-
-.group-tabs button.selected {
-  border-color: var(--green);
-  color: white;
-  background: var(--green);
-  box-shadow: 0 8px 20px rgba(18, 88, 64, 0.18);
-}
-
-.group-tabs i {
-  font-size: 17px;
-  font-style: normal;
-  line-height: 1;
-}
-
 .care-hint {
   margin: 0;
   color: var(--muted);
@@ -82,35 +46,17 @@
   line-height: 1.5;
 }
 
-/* Los tipos de alojamiento se comportan como filtros compactos, no como una tabla. */
+/* Son nueve: dormidas, sus clases, salud y veterinarias. No caben al lado del
+   buscador, así que se llevan su propio renglón completo. */
 .toolbar .kind-tabs {
+  flex: 1 1 100%;
   gap: 6px;
-  padding: 4px;
-  border-radius: 12px;
-  background: #f4f7f3;
+  padding: 0;
 }
 
 .toolbar .kind-tabs button {
-  border: 1px solid transparent;
-  border-radius: 9px;
   padding-inline: 12px;
   white-space: nowrap;
-  transition:
-    color 160ms ease,
-    background-color 160ms ease,
-    border-color 160ms ease,
-    box-shadow 160ms ease,
-    transform 160ms ease;
-}
-
-.toolbar .kind-tabs button:not(.selected):hover {
-  border-color: rgba(18, 88, 64, 0.12);
-  color: var(--green);
-  background: white;
-}
-
-.toolbar .kind-tabs button.selected {
-  box-shadow: 0 5px 13px rgba(18, 88, 64, 0.18);
 }
 
 .register {
@@ -126,16 +72,22 @@
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
   margin: 0;
+  border-block: 1px solid var(--line);
 }
 
 .stats div {
-  background: white;
-  border: 1px solid var(--line);
-  border-radius: 13px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  border-radius: 0;
   padding: 16px 20px;
+  background: transparent;
+}
+
+.stats div:last-child {
+  border-right: 0;
 }
 
 .stats dt {
@@ -185,9 +137,10 @@
   justify-items: center;
   text-align: center;
   padding: 48px 20px;
-  border: 1px dashed #c5cdc4;
-  border-radius: 14px;
-  background: white;
+  border: 0;
+  border-block: 1px solid #c5cdc4;
+  border-radius: 0;
+  background: transparent;
 }
 
 .empty-state h3 {
@@ -216,11 +169,6 @@
     width: 100%;
   }
 
-  .group-tabs button {
-    flex: 1 1 8rem;
-    padding: 12px 10px;
-  }
-
   .toolbar {
     gap: 8px;
     padding: 10px;
@@ -228,33 +176,27 @@
   }
 
   .toolbar .kind-tabs {
-    display: flex;
-    flex: 0 1 100%;
-    flex-wrap: nowrap;
     justify-content: flex-start;
-    width: 100%;
     min-width: 0;
     max-width: 100%;
-    min-height: 48px;
-    box-sizing: border-box;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 5px;
-    scroll-padding-inline: 5px;
-    scroll-snap-type: x proximity;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .toolbar .kind-tabs::-webkit-scrollbar {
-    display: none;
   }
 
   .toolbar .kind-tabs button {
-    flex: 0 0 auto;
-    min-height: 36px;
+    flex: 1 1 min(8rem, 100%);
+    min-height: 44px;
     padding: 6px 12px;
-    scroll-snap-align: start;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stats div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .stats div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
   }
 
   .empty-state {

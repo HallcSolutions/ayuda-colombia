@@ -22,8 +22,14 @@
     </div>
     <div class="banner-actions">
       @if (notifications.supported && notifications.permission() !== 'granted') {
-        <button type="button" class="ghost" (click)="notifications.requestPermission()">
-          {{ t('alertBanner.enableNotifications') }}
+        <button
+          type="button"
+          class="ghost notification-action"
+          (click)="notifications.requestPermission()"
+          [attr.aria-label]="t('alertBanner.enableNotifications')"
+        >
+          <span class="notification-icon" aria-hidden="true"></span>
+          <span class="notification-label">{{ t('alertBanner.enableNotifications') }}</span>
         </button>
       }
       <a class="directory-link" href="/puntos#directorio-ayuda">

@@ -263,6 +263,32 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'hero.reports': 'Reports',
   'hero.imageAlt': 'Response teams coordinate aid and locate affected homes across Colombia',
 
+  'landing.heroImageAlt':
+    'Colombian volunteer holds a box with food, water and a blanket ready for aid delivery',
+  'landing.scroll': 'A message of hope',
+  'landing.hopeKicker': 'A word of hope',
+  'landing.missionRail': 'Report · connect · mobilize · support · Colombia looks after its own',
+  'landing.storyEyebrow': 'The network in action',
+  'landing.storyTitle': 'From a visible need to aid that truly arrives.',
+  'landing.storyLead':
+    'Every report activates a route: people who verify, transport, shelter and support with clear information.',
+  'landing.routeKicker': 'Solidarity routes',
+  'landing.routeTitle': 'Aid finds a way through.',
+  'landing.routeBody':
+    'Trips connect donations with the places that need them and let people follow the route through delivery.',
+  'landing.routeCta': 'See trucks on the road',
+  'landing.routeCaption': 'Aid moving across Colombia',
+  'landing.routeImageAlt':
+    'Volunteers unload food, water and blankets from a truck in a Colombian mountain town',
+  'landing.shelterKicker': 'Responsible shelter',
+  'landing.shelterTitle': 'A safe place is also aid.',
+  'landing.shelterBody':
+    'The network brings together shelter, contacts and verification details before directing a family there.',
+  'landing.shelterCta': 'Find somewhere to stay',
+  'landing.shelterCaption': 'Information that welcomes and supports',
+  'landing.shelterImageAlt':
+    'Volunteers welcome and guide adults inside an organized community shelter',
+
   'process.documentStep': 'Document',
   'process.documentTail': 'the damage',
   'process.locateStep': 'Locate',
@@ -486,7 +512,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'lodging.title': 'Where to go tonight',
   'lodging.subtitle':
     'Beds, health care and vets, with their address and how to get there. Places with a seal were checked by someone in the network; call the rest before going.',
-  'lodging.groupSleep': 'Sleep',
+  'lodging.groupSleep': 'All places to sleep',
   'lodging.groupHealth': 'Health',
   'lodging.groupVeterinary': 'Vets',
   'lodging.groupLabel': 'What are you looking for',
@@ -503,7 +529,6 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'lodging.publishVeterinary': 'Register a vet clinic',
   'lodging.cancelPublish': 'Close form',
   'lodging.searchPlaceholder': 'Search by place, address or city',
-  'lodging.allKinds': 'All places',
   'lodging.allStatuses': 'All statuses',
   'lodging.stats.freeSpaces': 'Free beds',
   'lodging.stats.offers': 'Places with beds',

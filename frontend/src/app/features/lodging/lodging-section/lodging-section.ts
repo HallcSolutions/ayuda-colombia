@@ -37,6 +37,38 @@ import { toMapMarker } from '../lodging-marker';
 /** Los tres grupos del módulo: dónde dormir, dónde atenderse y dónde llevar animales. */
 export type PlaceGroup = 'sleep' | 'health' | 'veterinary';
 
+/** Un filtro de la fila de arriba: una clase de dormida o un tipo de atención. */
+export interface PlaceFilter {
+  id: string;
+  icon: string;
+  labelKey: TranslationKey;
+  group: PlaceGroup;
+  kind: '' | LodgingKind;
+}
+
+/**
+ * Dormidas, salud y veterinarias se eligen en la misma fila: quien llega buscando una
+ * veterinaria la encuentra donde busca, no en unas pestañas aparte más arriba.
+ */
+const PLACE_FILTERS: PlaceFilter[] = [
+  { id: 'sleep', icon: '🛏️', labelKey: 'lodging.groupSleep', group: 'sleep', kind: '' },
+  ...LODGING_KINDS.map((kind) => ({
+    id: kind,
+    icon: LODGING_KIND_ICONS[kind],
+    labelKey: lodgingKindKey(kind),
+    group: 'sleep' as const,
+    kind,
+  })),
+  { id: 'health', icon: '🏥', labelKey: 'lodging.groupHealth', group: 'health', kind: '' as const },
+  {
+    id: 'veterinary',
+    icon: '🐾',
+    labelKey: 'lodging.groupVeterinary',
+    group: 'veterinary',
+    kind: '' as const,
+  },
+];
+
 @Component({
   selector: 'app-lodging-section',
   imports: [CarePlaceCard, ColombiaMap, LodgingCard, LodgingForm, Modal, ReliefPointForm],
@@ -50,11 +82,9 @@ export class LodgingSection {
   readonly reliefPointsService = inject(ReliefPointsService);
 
   protected readonly t = inject(I18nService).t;
-  protected readonly kinds = LODGING_KINDS;
+  protected readonly placeFilters = PLACE_FILTERS;
   protected readonly statuses = LODGING_STATUSES;
-  protected readonly kindKey = lodgingKindKey;
   protected readonly statusKey = lodgingStatusKey;
-  protected readonly kindIcons = LODGING_KIND_ICONS;
 
   /** Lo que se registra en cada pestaña: una dormida, un puesto de salud o una veterinaria. */
   private readonly carePointType = computed(() =>
@@ -84,6 +114,11 @@ export class LodgingSection {
   readonly showForm = signal(false);
   /** Qué está buscando quien entra: dormir, atenderse o llevar a un animal. */
   readonly group = signal<PlaceGroup>('sleep');
+
+  /** El filtro marcado: la clase de dormida elegida o, si no hay ninguna, el grupo. */
+  readonly selectedPlace = computed(() =>
+    this.group() === 'sleep' ? this.kindFilter() || 'sleep' : this.group(),
+  );
 
   /**
    * Los sitios de salud y veterinaria son puntos de ayuda del directorio, no dormidas:
@@ -171,8 +206,8 @@ export class LodgingSection {
     });
   }
 
-  /** Cambiar de pestaña cierra el formulario: lo que se registra ya no es lo mismo. */
-  selectGroup(group: PlaceGroup): void {
+  /** Cambiar de grupo cierra el formulario: lo que se registra ya no es lo mismo. */
+  private selectGroup(group: PlaceGroup): void {
     this.group.set(group);
     this.selectedOfferId.set(null);
     this.showForm.set(false);
@@ -186,8 +221,10 @@ export class LodgingSection {
     this.selectedOfferId.set(marker?.id ?? null);
   }
 
-  selectKind(kind: '' | LodgingKind): void {
-    this.kindFilter.set(kind);
+  /** Cambiar de grupo arrastra sus efectos; quedarse dentro de las dormidas, no. */
+  selectPlace(filter: PlaceFilter): void {
+    if (filter.group !== this.group()) this.selectGroup(filter.group);
+    this.kindFilter.set(filter.kind);
   }
 
   updateStatusFilter(event: Event): void {
