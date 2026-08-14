@@ -179,6 +179,8 @@ export const ES_TRANSLATIONS = {
   'reliefPointCard.statusError': 'No se pudo cambiar el estado del punto.',
 
   'reliefPointForm.title': 'Registrar un punto de acopio o comedor',
+  'reliefPointForm.titleMedicalPost': 'Registrar un puesto de salud',
+  'reliefPointForm.titleVeterinary': 'Registrar una veterinaria',
   'reliefPointForm.name': 'Nombre del punto',
   'reliefPointForm.namePlaceholder': 'Ej. Comedor Salón Comunal',
   'reliefPointForm.type': 'Tipo de punto',
@@ -463,6 +465,8 @@ export const ES_TRANSLATIONS = {
   'place.unverifiedHint':
     'Nadie de la red ha comprobado este sitio. Llama antes de ir y, si puedes, ve acompañado.',
   'lodging.publish': 'Ofrecer alojamiento',
+  'lodging.publishHealth': 'Registrar sitio de salud',
+  'lodging.publishVeterinary': 'Registrar veterinaria',
   'lodging.cancelPublish': 'Cerrar formulario',
   'lodging.searchPlaceholder': 'Buscar por lugar, dirección o ciudad',
   'lodging.allKinds': 'Todos los lugares',

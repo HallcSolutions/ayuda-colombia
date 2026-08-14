@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { RELIEF_POINT_TYPES, ReliefPointType } from '../../../core/constants/app.constants';
@@ -18,6 +26,12 @@ export class ReliefPointForm {
   private readonly formBuilder = inject(FormBuilder);
   private readonly reliefPointsService = inject(ReliefPointsService);
   private readonly i18n = inject(I18nService);
+
+  /**
+   * Tipo ya decidido por la pantalla que abre el formulario (por ejemplo, una veterinaria
+   * desde "A dónde ir"). Si viene, no se pregunta: se registra lo que se vino a registrar.
+   */
+  readonly fixedType = input<ReliefPointType | null>(null);
 
   readonly closed = output<void>();
 
@@ -68,6 +82,13 @@ export class ReliefPointForm {
     latitude: this.formBuilder.control<number | null>(null, Validators.required),
     longitude: this.formBuilder.control<number | null>(null, Validators.required),
   });
+
+  constructor() {
+    effect(() => {
+      const type = this.fixedType();
+      if (type) this.form.controls.type.setValue(type);
+    });
+  }
 
   captureCurrentLocation(): void {
     if (!navigator.geolocation) {

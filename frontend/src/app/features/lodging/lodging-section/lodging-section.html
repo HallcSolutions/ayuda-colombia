@@ -6,7 +6,7 @@
       <p>{{ t('lodging.subtitle') }}</p>
     </div>
     <button type="button" class="register" (click)="toggleForm()">
-      {{ showForm() ? t('lodging.cancelPublish') : t('lodging.publish') }}
+      {{ showForm() ? t('lodging.cancelPublish') : t(publishKey()) }}
     </button>
   </header>
 
@@ -40,10 +40,14 @@
   @if (showForm()) {
     <app-modal
       [eyebrow]="t('lodging.eyebrow')"
-      [title]="t('lodgingForm.title')"
+      [title]="t(publishTitleKey())"
       (closed)="toggleForm()"
     >
-      <app-lodging-form (closed)="toggleForm()" />
+      @if (publishType(); as pointType) {
+        <app-relief-point-form [fixedType]="pointType" (closed)="toggleForm()" />
+      } @else {
+        <app-lodging-form (closed)="toggleForm()" />
+      }
     </app-modal>
   }
 

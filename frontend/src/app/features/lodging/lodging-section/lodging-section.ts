@@ -19,6 +19,7 @@ import {
   lodgingStatusKey,
 } from '../../../core/i18n/domain-keys';
 import { I18nService } from '../../../core/i18n/i18n.service';
+import { TranslationKey } from '../../../core/i18n/es.translations';
 import { LodgingOffer } from '../../../core/models/lodging-offer.model';
 import { ReliefPoint } from '../../../core/models/relief-point.model';
 import { LodgingService } from '../../../core/services/lodging.service';
@@ -27,6 +28,7 @@ import { ReliefPointsService } from '../../../core/services/relief-points.servic
 import { ColombiaMap } from '../../../shared/colombia-map/colombia-map';
 import { MapMarker } from '../../../shared/colombia-map/colombia-map.model';
 import { Modal } from '../../../shared/modal/modal';
+import { ReliefPointForm } from '../../relief-points/relief-point-form/relief-point-form';
 import { CarePlaceCard } from '../care-place-card/care-place-card';
 import { LodgingCard } from '../lodging-card/lodging-card';
 import { LodgingForm } from '../lodging-form/lodging-form';
@@ -37,7 +39,7 @@ export type PlaceGroup = 'sleep' | 'health' | 'veterinary';
 
 @Component({
   selector: 'app-lodging-section',
-  imports: [CarePlaceCard, ColombiaMap, LodgingCard, LodgingForm, Modal],
+  imports: [CarePlaceCard, ColombiaMap, LodgingCard, LodgingForm, Modal, ReliefPointForm],
   templateUrl: './lodging-section.html',
   styleUrl: './lodging-section.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,6 +56,28 @@ export class LodgingSection {
   protected readonly statusKey = lodgingStatusKey;
   protected readonly kindIcons = LODGING_KIND_ICONS;
 
+  /** Lo que se registra en cada pestaña: una dormida, un puesto de salud o una veterinaria. */
+  private readonly carePointType = computed(() =>
+    this.group() === 'health' ? ReliefPointType.MEDICAL_POST : ReliefPointType.VETERINARY,
+  );
+
+  /** En "Dormir" se ofrece un cupo; en las otras dos se registra el sitio de atención. */
+  readonly publishType = computed<ReliefPointType | null>(() =>
+    this.group() === 'sleep' ? null : this.carePointType(),
+  );
+
+  readonly publishKey = computed<TranslationKey>(() => {
+    if (this.group() === 'sleep') return 'lodging.publish';
+    return this.group() === 'health' ? 'lodging.publishHealth' : 'lodging.publishVeterinary';
+  });
+
+  readonly publishTitleKey = computed<TranslationKey>(() => {
+    if (this.group() === 'sleep') return 'lodgingForm.title';
+    return this.group() === 'health'
+      ? 'reliefPointForm.titleMedicalPost'
+      : 'reliefPointForm.titleVeterinary';
+  });
+
   readonly search = signal('');
   readonly kindFilter = signal<'' | LodgingKind>('');
   readonly statusFilter = signal<'' | LodgingStatus>('');
@@ -68,8 +92,7 @@ export class LodgingSection {
    */
   private readonly carePlaces = computed(() => {
     const search = this.search().trim().toLowerCase();
-    const type =
-      this.group() === 'health' ? ReliefPointType.MEDICAL_POST : ReliefPointType.VETERINARY;
+    const type = this.carePointType();
     return this.reliefPointsService
       .pointsInRegion()
       .filter((point) => point.type === type)
@@ -148,9 +171,11 @@ export class LodgingSection {
     });
   }
 
+  /** Cambiar de pestaña cierra el formulario: lo que se registra ya no es lo mismo. */
   selectGroup(group: PlaceGroup): void {
     this.group.set(group);
     this.selectedOfferId.set(null);
+    this.showForm.set(false);
   }
 
   updateSearch(event: Event): void {

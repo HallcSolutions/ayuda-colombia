@@ -179,6 +179,8 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'reliefPointCard.statusError': 'The point status could not be changed.',
 
   'reliefPointForm.title': 'Register a collection point or kitchen',
+  'reliefPointForm.titleMedicalPost': 'Register a medical post',
+  'reliefPointForm.titleVeterinary': 'Register a vet clinic',
   'reliefPointForm.name': 'Point name',
   'reliefPointForm.namePlaceholder': 'E.g. Community Hall Kitchen',
   'reliefPointForm.type': 'Point type',
@@ -455,6 +457,8 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'place.unverifiedHint':
     'Nobody in the network has checked this place. Call before going and take someone with you if you can.',
   'lodging.publish': 'Offer lodging',
+  'lodging.publishHealth': 'Register a health site',
+  'lodging.publishVeterinary': 'Register a vet clinic',
   'lodging.cancelPublish': 'Close form',
   'lodging.searchPlaceholder': 'Search by place, address or city',
   'lodging.allKinds': 'All places',

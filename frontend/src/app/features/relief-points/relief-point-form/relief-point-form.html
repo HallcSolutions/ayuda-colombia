@@ -4,14 +4,16 @@
       <span>{{ t('reliefPointForm.name') }}</span>
       <input formControlName="name" [placeholder]="t('reliefPointForm.namePlaceholder')" />
     </label>
-    <label>
-      <span>{{ t('reliefPointForm.type') }}</span>
-      <select formControlName="type">
-        @for (pointType of pointTypes; track pointType) {
-          <option [value]="pointType">{{ t(pointTypeKey(pointType)) }}</option>
-        }
-      </select>
-    </label>
+    @if (!fixedType()) {
+      <label>
+        <span>{{ t('reliefPointForm.type') }}</span>
+        <select formControlName="type">
+          @for (pointType of pointTypes; track pointType) {
+            <option [value]="pointType">{{ t(pointTypeKey(pointType)) }}</option>
+          }
+        </select>
+      </label>
+    }
     <label>
       <span>{{ t('reliefPointForm.department') }}</span>
       <select formControlName="department">
