@@ -518,19 +518,55 @@
     padding: 17px 15px;
   }
 
-  /* En pantalla pequeña la lista de necesidades es lo primero que se busca:
-     burbujas algo más grandes y con más aire para leerlas y tocarlas cómodo. */
-  .need-chips {
+  /* En móvil las píldoras de ancho variable se vuelven una cuadrícula estable. */
+  .point-row .need-line {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #edf0eb;
+  }
+
+  .point-row .need-line strong {
+    margin-bottom: 9px;
+  }
+
+  .point-row .need-chips {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 7px;
+    padding: 6px;
+    border: 1px solid #e4e9e2;
+    border-radius: 14px;
+    background: #f5f8f4;
   }
 
-  .need-chips li {
-    padding: 6px 12px 6px 9px;
+  .point-row .need-chips li {
+    display: grid;
+    grid-template-columns: 27px minmax(0, 1fr);
+    gap: 7px;
+    width: auto;
+    min-height: 42px;
+    padding: 7px 8px;
+    border: 0;
+    border-radius: 9px;
+    color: #36463e;
+    background: #fff;
+    box-shadow: 0 1px 0 rgba(18, 88, 64, 0.05);
+    font-size: 12px;
+    line-height: 1.25;
+  }
+
+  .point-row .need-chips li.is-wide {
+    grid-column: 1 / -1;
+  }
+
+  .point-row .need-icon {
+    display: grid;
+    width: 27px;
+    height: 27px;
+    place-items: center;
+    border-radius: 8px;
+    background: #fff4ee;
     font-size: 13px;
-  }
-
-  .need-icon {
-    font-size: 14px;
   }
 
   .row-actions .detail {

@@ -14,6 +14,9 @@ export const ES_TRANSLATIONS = {
 
   'brand.name': 'RedAyuda',
   'brand.tagline': 'Colombia se cuida',
+  'loading.title': 'Conectando ayuda con quienes la necesitan',
+  'loading.body': 'Estamos preparando información confiable para que puedas actuar.',
+  'loading.updating': 'Actualizando la red de ayuda…',
 
   'reliefPointType.collection_center': 'Punto de acopio',
   'reliefPointType.community_kitchen': 'Comedor comunitario',

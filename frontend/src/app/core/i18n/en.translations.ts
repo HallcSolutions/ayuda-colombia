@@ -15,6 +15,9 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
 
   'brand.name': 'RedAyuda',
   'brand.tagline': 'Colombia takes care of its own',
+  'loading.title': 'Connecting help with those who need it',
+  'loading.body': 'We are preparing reliable information so you can take action.',
+  'loading.updating': 'Updating the aid network…',
 
   'reliefPointType.collection_center': 'Collection point',
   'reliefPointType.community_kitchen': 'Community kitchen',

@@ -228,7 +228,7 @@
                             @if (needs.length) {
                               <ul class="need-chips">
                                 @for (need of needs; track $index) {
-                                  <li>
+                                  <li [class.is-wide]="need.length > 22">
                                     <span class="need-icon" aria-hidden="true">
                                       {{ needIcon(need) }}
                                     </span>

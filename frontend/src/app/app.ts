@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  afterNextRender,
   computed,
   effect,
   inject,
@@ -10,6 +11,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { NavTab } from './app.model';
 import { I18nService } from './core/i18n/i18n.service';
 import { AlertsService } from './core/services/alerts.service';
+import { LoadingService } from './core/services/loading.service';
 import { RegionService } from './core/services/region.service';
 import { ReportsService } from './core/services/reports.service';
 import { AlertBanner } from './features/alerts/alert-banner/alert-banner';
@@ -26,6 +28,7 @@ export class App {
   private readonly region = inject(RegionService);
   private readonly reportsService = inject(ReportsService);
   private readonly alertsService = inject(AlertsService);
+  readonly loading = inject(LoadingService);
   readonly t = inject(I18nService).t;
 
   readonly tabs: NavTab[] = [
@@ -57,6 +60,9 @@ export class App {
   }
 
   constructor() {
+    // La portada permanece hasta que Angular haya pintado y las peticiones iniciales terminen.
+    afterNextRender(() => this.loading.releaseInitial());
+
     // Cambiar de departamento o ciudad recarga los reportes de esa zona.
     // Las alertas y los puntos los recargan sus propias secciones.
     effect(() => {

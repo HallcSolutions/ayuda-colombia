@@ -1,3 +1,34 @@
+@if (loading.visible()) {
+  <div
+    class="app-loader"
+    [class.is-initial]="loading.isInitial()"
+    role="status"
+    aria-live="polite"
+    [attr.aria-label]="t(loading.isInitial() ? 'loading.title' : 'loading.updating')"
+  >
+    <div class="loader-card">
+      <span class="loader-emblem" aria-hidden="true">
+        <span class="loader-orbit"></span>
+        <img
+          src="/assets/brand/redayuda-mark-192.png"
+          alt=""
+          width="72"
+          height="72"
+          fetchpriority="high"
+        />
+      </span>
+      <span class="loader-copy">
+        <small>{{ t('brand.name') }}</small>
+        <strong>{{ t(loading.isInitial() ? 'loading.title' : 'loading.updating') }}</strong>
+        @if (loading.isInitial()) {
+          <span>{{ t('loading.body') }}</span>
+        }
+      </span>
+      <span class="loader-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    </div>
+  </div>
+}
+
 <header class="site-header">
   <a
     class="brand"
@@ -48,7 +79,7 @@
 
 <app-alert-banner />
 
-<main id="inicio">
+<main id="inicio" [attr.aria-busy]="loading.visible()">
   <router-outlet />
 </main>
 
