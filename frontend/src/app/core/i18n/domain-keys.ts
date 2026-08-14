@@ -43,8 +43,7 @@ export const lodgingKindKey = (kind: LodgingKind): TranslationKey => `lodgingKin
 export const lodgingStatusKey = (status: LodgingStatus): TranslationKey =>
   `lodgingStatus.${status}`;
 
-export const convoyStatusKey = (status: ConvoyStatus): TranslationKey =>
-  `convoyStatus.${status}`;
+export const convoyStatusKey = (status: ConvoyStatus): TranslationKey => `convoyStatus.${status}`;
 
 export const digestFindingKey = (kind: DigestFindingKind): TranslationKey =>
   `digestFinding.${kind}`;
@@ -65,11 +64,8 @@ export const LODGING_KIND_ICONS: Record<LodgingKind, string> = {
   [LodgingKind.OTHER]: '📍',
 };
 
-/**
- * Necesidades de vivienda: el valor viaja al backend en español (contrato de datos
- * existente) y la clave solo decide cómo se muestra.
- */
-export const HOUSE_NEED_OPTIONS: { value: string; key: TranslationKey }[] = [
+/** Categorías antiguas: se conservan para traducir reportes publicados anteriormente. */
+const LEGACY_HOUSE_NEED_OPTIONS: { value: string; key: TranslationKey }[] = [
   { value: 'Agua potable', key: 'needs.water' },
   { value: 'Alimentos', key: 'needs.food' },
   { value: 'Medicinas', key: 'needs.medicine' },
@@ -80,7 +76,24 @@ export const HOUSE_NEED_OPTIONS: { value: string; key: TranslationKey }[] = [
   { value: 'Ayuda para mascotas', key: 'needs.pets' },
 ];
 
-const HOUSE_NEED_KEYS = new Map(HOUSE_NEED_OPTIONS.map(({ value, key }) => [value, key]));
+/**
+ * Daños que pueden documentarse en las fotos de una vivienda. El valor viaja en el
+ * campo histórico `needs` de la API, pero representa la afectación visible del inmueble.
+ */
+export const HOUSE_DAMAGE_OPTIONS: { value: string; key: TranslationKey }[] = [
+  { value: 'Techo afectado', key: 'damage.roof' },
+  { value: 'Paredes o grietas', key: 'damage.walls' },
+  { value: 'Inundación o humedad', key: 'damage.flooding' },
+  { value: 'Daño estructural', key: 'damage.structure' },
+  { value: 'Servicios suspendidos', key: 'damage.utilities' },
+  { value: 'Acceso bloqueado', key: 'damage.access' },
+  { value: 'Vivienda inhabitable', key: 'damage.uninhabitable' },
+  { value: 'Pérdida total', key: 'damage.totalLoss' },
+];
+
+const HOUSE_NEED_KEYS = new Map(
+  [...LEGACY_HOUSE_NEED_OPTIONS, ...HOUSE_DAMAGE_OPTIONS].map(({ value, key }) => [value, key]),
+);
 
 /** Devuelve la clave de traducción de una necesidad conocida, o `null` si es texto libre. */
 export const houseNeedKey = (need: string): TranslationKey | null =>

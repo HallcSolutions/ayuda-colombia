@@ -7,11 +7,17 @@
     <p>{{ t('hero.lead') }}</p>
     <blockquote class="hero-faith">
       <p>{{ t('hero.faithQuote') }}</p>
-      <footer><cite>{{ t('hero.faithSource') }}</cite> · {{ t('hero.faithNote') }}</footer>
+      <footer>
+        <cite>{{ t('hero.faithSource') }}</cite> · {{ t('hero.faithNote') }}
+      </footer>
     </blockquote>
     <div class="hero-actions">
-      <a class="primary-button" routerLink="/reportar">{{ t('hero.primaryCta') }} <span>→</span></a>
-      <a class="text-button" routerLink="/puntos">{{ t('nav.points') }}</a>
+      <a class="primary-button" routerLink="/reportar">
+        {{ t('hero.primaryCta') }} <span aria-hidden="true">→</span>
+      </a>
+      <a class="text-button" routerLink="/puntos">
+        {{ t('nav.points') }} <span aria-hidden="true">↗</span>
+      </a>
     </div>
     <div class="trust-note"><span>✓</span> {{ t('hero.trust') }}</div>
   </div>

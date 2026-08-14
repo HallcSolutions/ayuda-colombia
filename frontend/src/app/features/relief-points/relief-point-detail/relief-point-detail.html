@@ -13,7 +13,9 @@
     } @else {
       <span class="unverified-badge">{{ t('place.unverified') }}</span>
     }
-    <span class="place">{{ point().municipality }}, {{ point().department }}</span>
+    <span class="place"
+      ><span aria-hidden="true">⌖</span>{{ point().municipality }}, {{ point().department }}</span
+    >
     @if (distanceKm() !== null) {
       <span class="distance">{{
         t('reliefPointCard.distance', { km: (distanceKm() ?? 0).toFixed(1) })
@@ -25,7 +27,7 @@
     <div class="detail-main">
       <!-- Lo primero que se busca en una emergencia: qué hace falta aquí. -->
       <section class="needs" aria-labelledby="detail-needs">
-        <h4 id="detail-needs">{{ t('reliefPointCard.needs') }}</h4>
+        <h4 id="detail-needs"><span aria-hidden="true">!</span>{{ t('reliefPointCard.needs') }}</h4>
         @if (alerts().length) {
           <ul class="need-list">
             @for (alert of alerts(); track alert.id) {
@@ -70,13 +72,17 @@
 
       @if (point().notes) {
         <section class="about" aria-labelledby="detail-about">
-          <h4 id="detail-about">{{ t('reliefPointCard.verifiedInformation') }}</h4>
+          <h4 id="detail-about">
+            <span aria-hidden="true">✓</span>{{ t('reliefPointCard.verifiedInformation') }}
+          </h4>
           <p>{{ point().notes }}</p>
         </section>
       }
 
       <section class="meals" aria-labelledby="detail-meals">
-        <h4 id="detail-meals">{{ t('reliefPointCard.mealsToday') }}</h4>
+        <h4 id="detail-meals">
+          <span aria-hidden="true">◷</span>{{ t('reliefPointCard.mealsToday') }}
+        </h4>
         @if (meals().length) {
           <ul class="meal-list">
             @for (meal of meals(); track meal.id) {
@@ -144,13 +150,13 @@
 
   <footer class="detail-actions">
     <a class="primary" [href]="directionsUrl()" target="_blank" rel="noopener">
-      {{ t('common.directions') }}
+      {{ t('common.directions') }} <span aria-hidden="true">↗</span>
     </a>
     <button type="button" (click)="requestHelp.emit(point())">
-      {{ t('reliefPointCard.requestHelp') }}
+      <span aria-hidden="true">＋</span>{{ t('reliefPointCard.requestHelp') }}
     </button>
     <button type="button" (click)="registerMeal.emit(point())">
-      {{ t('reliefPointCard.registerMeal') }}
+      <span aria-hidden="true">＋</span>{{ t('reliefPointCard.registerMeal') }}
     </button>
   </footer>
 

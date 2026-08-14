@@ -6,19 +6,36 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { firstValueFrom } from 'rxjs';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import {
+  catchError,
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  firstValueFrom,
+  map,
+  of,
+  startWith,
+  switchMap,
+} from 'rxjs';
 import {
   ALLOWED_IMAGE_TYPES,
   MAX_PHOTO_SIZE_BYTES,
   MAX_REPORT_PHOTOS,
   UrgencyLevel,
 } from '../../core/constants/app.constants';
-import { HOUSE_NEED_OPTIONS } from '../../core/i18n/domain-keys';
+import { COLOMBIA_DEPARTMENTS } from '../../core/constants/colombia.constants';
+import { HOUSE_DAMAGE_OPTIONS } from '../../core/i18n/domain-keys';
 import { TranslationKey } from '../../core/i18n/es.translations';
 import { I18nService, TranslationParams } from '../../core/i18n/i18n.service';
+import { AddressSuggestion } from '../../core/models/address-suggestion.model';
+import { Coordinates } from '../../core/models/coordinates.model';
 import { SelectedPhoto } from '../../core/models/selected-photo.model';
+import { GeocodingService } from '../../core/services/geocoding.service';
 import { ReportsService } from '../../core/services/reports.service';
+import { streetMapUrl } from '../../core/utils/geo.util';
 
 @Component({
   selector: 'app-report-form',
@@ -29,13 +46,32 @@ import { ReportsService } from '../../core/services/reports.service';
 export class ReportFormComponent implements OnDestroy {
   private readonly formBuilder = inject(FormBuilder);
   private readonly reportsService = inject(ReportsService);
+  private readonly geocodingService = inject(GeocodingService);
   private readonly i18n = inject(I18nService);
+  private readonly sanitizer = inject(DomSanitizer);
   private locationWatchId: number | null = null;
 
   readonly t = this.i18n.t;
-  readonly needsOptions = HOUSE_NEED_OPTIONS;
-  readonly selectedNeeds = signal<string[]>([]);
+  readonly departments = COLOMBIA_DEPARTMENTS;
+  readonly damageOptions = HOUSE_DAMAGE_OPTIONS;
+  readonly selectedDamage = signal<string[]>([]);
   readonly selectedPhotos = signal<SelectedPhoto[]>([]);
+  readonly addressSuggestions = signal<AddressSuggestion[]>([]);
+  readonly addressSearching = signal(false);
+  readonly addressSearchUnavailable = signal(false);
+  readonly addressSuggestionsOpen = signal(false);
+  readonly municipalitySuggestions = signal<string[]>([]);
+  readonly municipalitySearching = signal(false);
+  readonly municipalitySuggestionsOpen = signal(false);
+  private readonly selectedAddressLabel = signal('');
+  private readonly locationSource = signal<'address' | 'device' | null>(null);
+  private readonly coordinates = signal<Coordinates | null>(null);
+  readonly locationMap = computed<SafeResourceUrl | null>(() => {
+    const coordinates = this.coordinates();
+    return coordinates
+      ? this.sanitizer.bypassSecurityTrustResourceUrl(streetMapUrl(coordinates))
+      : null;
+  });
   private readonly locationMessageKey = signal<TranslationKey>('reportForm.locationIdle');
   private readonly locationMessageParams = signal<TranslationParams | undefined>(undefined);
   readonly locationMessage = computed(() =>
@@ -98,14 +134,105 @@ export class ReportFormComponent implements OnDestroy {
     consentToShareLocation: this.formBuilder.nonNullable.control(false, Validators.requiredTrue),
   });
 
+  constructor() {
+    const { addressReference, department, municipality } = this.reportForm.controls;
+    combineLatest([
+      addressReference.valueChanges.pipe(startWith(addressReference.value)),
+      department.valueChanges.pipe(startWith(department.value)),
+      municipality.valueChanges.pipe(startWith(municipality.value)),
+    ])
+      .pipe(
+        debounceTime(500),
+        map(([query, selectedDepartment, selectedMunicipality]) => ({
+          query: query.trim(),
+          department: selectedDepartment.trim(),
+          municipality: selectedMunicipality.trim(),
+        })),
+        distinctUntilChanged(
+          (previous, current) =>
+            previous.query === current.query &&
+            previous.department === current.department &&
+            previous.municipality === current.municipality,
+        ),
+        switchMap((search) => {
+          this.clearAddressLocationWhenEdited(search.query);
+          if (search.query.length < 3 || !search.department) {
+            return of({ suggestions: [] as AddressSuggestion[], unavailable: false });
+          }
+
+          this.addressSearching.set(true);
+          this.addressSearchUnavailable.set(false);
+          return this.geocodingService.searchAddresses(search).pipe(
+            map((suggestions) => ({ suggestions, unavailable: false })),
+            catchError(() =>
+              of({ suggestions: [] as AddressSuggestion[], unavailable: true }),
+            ),
+          );
+        }),
+        takeUntilDestroyed(),
+      )
+      .subscribe(({ suggestions, unavailable }) => {
+        this.addressSearching.set(false);
+        this.addressSearchUnavailable.set(unavailable);
+        this.addressSuggestions.set(suggestions);
+        this.addressSuggestionsOpen.set(Boolean(suggestions.length || unavailable));
+      });
+
+    combineLatest([
+      municipality.valueChanges.pipe(startWith(municipality.value)),
+      department.valueChanges.pipe(startWith(department.value)),
+    ])
+      .pipe(
+        debounceTime(450),
+        map(([query, selectedDepartment]) => ({
+          query: query.trim(),
+          department: selectedDepartment.trim(),
+        })),
+        distinctUntilChanged(
+          (previous, current) =>
+            previous.query === current.query && previous.department === current.department,
+        ),
+        switchMap((search) => {
+          if (search.query.length < 3 || !search.department) {
+            return of([] as string[]);
+          }
+          this.municipalitySearching.set(true);
+          return this.geocodingService.searchAddresses(search).pipe(
+            map((suggestions) =>
+              Array.from(
+                new Set(
+                  suggestions
+                    .map((suggestion) => suggestion.municipality)
+                    .filter(
+                      (municipality) =>
+                        municipality.length > 0 &&
+                        this.normalizeText(municipality).includes(
+                          this.normalizeText(search.query),
+                        ),
+                    ),
+                ),
+              ),
+            ),
+            catchError(() => of([] as string[])),
+          );
+        }),
+        takeUntilDestroyed(),
+      )
+      .subscribe((suggestions) => {
+        this.municipalitySearching.set(false);
+        this.municipalitySuggestions.set(suggestions);
+        this.municipalitySuggestionsOpen.set(Boolean(suggestions.length));
+      });
+  }
+
   ngOnDestroy(): void {
     this.stopLocationTracking();
     this.selectedPhotos().forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
   }
 
-  toggleNeed(need: string): void {
-    this.selectedNeeds.update((current) =>
-      current.includes(need) ? current.filter((item) => item !== need) : [...current, need],
+  toggleDamage(damage: string): void {
+    this.selectedDamage.update((current) =>
+      current.includes(damage) ? current.filter((item) => item !== damage) : [...current, damage],
     );
   }
 
@@ -137,6 +264,54 @@ export class ReportFormComponent implements OnDestroy {
     const photo = this.selectedPhotos()[index];
     if (photo) URL.revokeObjectURL(photo.previewUrl);
     this.selectedPhotos.update((current) => current.filter((_, itemIndex) => itemIndex !== index));
+  }
+
+  showAddressSuggestions(): void {
+    if (this.addressSuggestions().length || this.addressSearchUnavailable()) {
+      this.addressSuggestionsOpen.set(true);
+    }
+  }
+
+  hideAddressSuggestions(): void {
+    window.setTimeout(() => this.addressSuggestionsOpen.set(false), 140);
+  }
+
+  selectAddress(suggestion: AddressSuggestion): void {
+    const department = this.canonicalDepartment(suggestion.department);
+    this.reportForm.patchValue(
+      {
+        addressReference: suggestion.label,
+        municipality: suggestion.municipality || this.reportForm.controls.municipality.value,
+        department: department || this.reportForm.controls.department.value,
+        latitude: suggestion.latitude,
+        longitude: suggestion.longitude,
+        accuracy: null,
+      },
+      { emitEvent: false },
+    );
+    this.selectedAddressLabel.set(suggestion.label);
+    this.locationSource.set('address');
+    this.coordinates.set({
+      latitude: suggestion.latitude,
+      longitude: suggestion.longitude,
+    });
+    this.addressSuggestions.set([]);
+    this.addressSuggestionsOpen.set(false);
+    this.setLocationMessage('reportForm.locationSelectedFromAddress');
+  }
+
+  showMunicipalitySuggestions(): void {
+    if (this.municipalitySuggestions().length) this.municipalitySuggestionsOpen.set(true);
+  }
+
+  hideMunicipalitySuggestions(): void {
+    window.setTimeout(() => this.municipalitySuggestionsOpen.set(false), 140);
+  }
+
+  selectMunicipality(municipality: string): void {
+    this.reportForm.controls.municipality.setValue(municipality, { emitEvent: false });
+    this.municipalitySuggestions.set([]);
+    this.municipalitySuggestionsOpen.set(false);
   }
 
   captureCurrentLocation(): void {
@@ -183,7 +358,7 @@ export class ReportFormComponent implements OnDestroy {
     this.successMessageKey.set(null);
     this.clearError();
     this.reportForm.markAllAsTouched();
-    if (this.reportForm.invalid || !this.selectedNeeds().length || !this.selectedPhotos().length) {
+    if (this.reportForm.invalid || !this.selectedDamage().length || !this.selectedPhotos().length) {
       this.setError('reportForm.invalid');
       return;
     }
@@ -214,7 +389,8 @@ export class ReportFormComponent implements OnDestroy {
     payload.append('householdSize', String(value.householdSize));
     payload.append('urgency', value.urgency);
     payload.append('notice', value.notice);
-    payload.append('needs', JSON.stringify(this.selectedNeeds()));
+    // `needs` es el nombre histórico del campo en la API; aquí contiene daños de vivienda.
+    payload.append('needs', JSON.stringify(this.selectedDamage()));
     payload.append('latitude', String(value.latitude));
     payload.append('longitude', String(value.longitude));
     if (value.accuracy !== null) payload.append('accuracy', String(value.accuracy));
@@ -229,6 +405,11 @@ export class ReportFormComponent implements OnDestroy {
       longitude: position.coords.longitude,
       accuracy: position.coords.accuracy,
     });
+    this.locationSource.set('device');
+    this.coordinates.set({
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+    });
     this.setLocationMessage('reportForm.locationCaptured', {
       meters: Math.round(position.coords.accuracy),
     });
@@ -238,7 +419,15 @@ export class ReportFormComponent implements OnDestroy {
     this.stopLocationTracking();
     this.selectedPhotos().forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
     this.selectedPhotos.set([]);
-    this.selectedNeeds.set([]);
+    this.selectedDamage.set([]);
+    this.addressSuggestions.set([]);
+    this.addressSuggestionsOpen.set(false);
+    this.addressSearchUnavailable.set(false);
+    this.municipalitySuggestions.set([]);
+    this.municipalitySuggestionsOpen.set(false);
+    this.selectedAddressLabel.set('');
+    this.locationSource.set(null);
+    this.coordinates.set(null);
     this.setLocationMessage('reportForm.locationIdle');
     this.reportForm.reset({
       reporterName: '',
@@ -261,6 +450,37 @@ export class ReportFormComponent implements OnDestroy {
     if (error.code === error.PERMISSION_DENIED) return 'reportForm.locationDenied';
     if (error.code === error.POSITION_UNAVAILABLE) return 'reportForm.locationUnavailable';
     return 'reportForm.locationTimeout';
+  }
+
+  private clearAddressLocationWhenEdited(address: string): void {
+    if (
+      this.locationSource() !== 'address' ||
+      !this.selectedAddressLabel() ||
+      address === this.selectedAddressLabel()
+    ) {
+      return;
+    }
+    this.selectedAddressLabel.set('');
+    this.locationSource.set(null);
+    this.coordinates.set(null);
+    this.reportForm.patchValue(
+      { latitude: null, longitude: null, accuracy: null },
+      { emitEvent: false },
+    );
+    this.setLocationMessage('reportForm.locationIdle');
+  }
+
+  private canonicalDepartment(value: string): string {
+    const normalized = this.normalizeText(value);
+    return this.departments.find((department) => this.normalizeText(department) === normalized) ?? '';
+  }
+
+  private normalizeText(value: string): string {
+    return value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .toLowerCase();
   }
 
   private readApiErrorKey(_error: unknown): TranslationKey {

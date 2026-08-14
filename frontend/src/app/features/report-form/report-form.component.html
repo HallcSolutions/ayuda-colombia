@@ -40,22 +40,105 @@
         /></label>
         <label
           ><span>{{ t('reportForm.department') }}</span
-          ><input
-            formControlName="department"
-            [placeholder]="t('reportForm.departmentPlaceholder')"
-        /></label>
-        <label
+          ><select formControlName="department">
+            <option value="" disabled>{{ t('reportForm.departmentPlaceholder') }}</option>
+            @for (department of departments; track department) {
+              <option [value]="department">{{ department }}</option>
+            }
+          </select></label
+        >
+        <label class="municipality-field"
           ><span>{{ t('reportForm.municipality') }}</span
-          ><input
-            formControlName="municipality"
-            [placeholder]="t('reportForm.municipalityPlaceholder')"
-        /></label>
-        <label class="wide"
+          ><div class="address-combobox">
+            <input
+              formControlName="municipality"
+              autocomplete="address-level2"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-controls="report-municipality-suggestions"
+              [attr.aria-expanded]="municipalitySuggestionsOpen()"
+              [placeholder]="t('reportForm.municipalityPlaceholder')"
+              (focus)="showMunicipalitySuggestions()"
+              (blur)="hideMunicipalitySuggestions()"
+            />
+            @if (municipalitySearching()) {
+              <span class="address-search-spinner" aria-hidden="true"></span>
+            }
+            @if (municipalitySuggestionsOpen()) {
+              <div
+                class="address-suggestions municipality-suggestions"
+                id="report-municipality-suggestions"
+                role="listbox"
+              >
+                @for (municipality of municipalitySuggestions(); track municipality) {
+                  <button
+                    type="button"
+                    role="option"
+                    (mousedown)="$event.preventDefault()"
+                    (click)="selectMunicipality(municipality)"
+                  >
+                    <span aria-hidden="true">⌖</span>
+                    <span><strong>{{ municipality }}</strong></span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+          <small class="field-hint">{{ t('reportForm.municipalitySearchHint') }}</small></label
+        >
+        <label class="address-field"
           ><span>{{ t('reportForm.address') }}</span
-          ><input
-            formControlName="addressReference"
-            [placeholder]="t('reportForm.addressPlaceholder')"
-        /></label>
+          ><div class="address-combobox">
+            <input
+              formControlName="addressReference"
+              autocomplete="off"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-controls="report-address-suggestions"
+              [attr.aria-expanded]="addressSuggestionsOpen()"
+              [placeholder]="t('reportForm.addressPlaceholder')"
+              (focus)="showAddressSuggestions()"
+              (blur)="hideAddressSuggestions()"
+            />
+            @if (addressSearching()) {
+              <span class="address-search-spinner" aria-hidden="true"></span>
+            }
+            @if (addressSuggestionsOpen()) {
+              <div
+                class="address-suggestions"
+                id="report-address-suggestions"
+                role="listbox"
+              >
+                @for (suggestion of addressSuggestions(); track suggestion.id) {
+                  <button
+                    type="button"
+                    role="option"
+                    (mousedown)="$event.preventDefault()"
+                    (click)="selectAddress(suggestion)"
+                  >
+                    <span aria-hidden="true">⌖</span>
+                    <span>
+                      <strong>{{ suggestion.label }}</strong>
+                      @if (suggestion.municipality || suggestion.department) {
+                        <small>
+                          {{ suggestion.municipality }}
+                          @if (suggestion.municipality && suggestion.department) {
+                            ·
+                          }
+                          {{ suggestion.department }}
+                        </small>
+                      }
+                    </span>
+                  </button>
+                }
+                @if (addressSearchUnavailable()) {
+                  <p class="address-search-message">{{ t('reportForm.addressSearchUnavailable') }}</p>
+                }
+              </div>
+            }
+          </div>
+          <small class="field-hint">{{ t('reportForm.addressSearchHint') }}</small></label
+        >
         <label
           ><span>{{ t('reportForm.householdSize') }}</span
           ><input formControlName="householdSize" type="number" min="1" max="50"
@@ -132,6 +215,22 @@
           {{ t('reliefPointForm.useCurrentLocation') }}
         </button>
       </div>
+      @if (locationMap(); as map) {
+        <div class="report-location-map">
+          <iframe
+            [src]="map"
+            [title]="t('reportForm.locationMapTitle')"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+          <span>{{ t('reportForm.locationMapReady') }}</span>
+        </div>
+      } @else {
+        <div class="report-location-map empty">
+          <span class="map-placeholder-pin" aria-hidden="true">⌖</span>
+          <p>{{ t('reportForm.locationMapPending') }}</p>
+        </div>
+      }
       <button
         type="button"
         class="tracking-toggle"
@@ -152,14 +251,14 @@
         </div>
       </div>
       <div class="needs-grid">
-        @for (need of needsOptions; track need.value) {
+        @for (damage of damageOptions; track damage.value) {
           <button
             type="button"
-            [class.selected]="selectedNeeds().includes(need.value)"
-            (click)="toggleNeed(need.value)"
+            [class.selected]="selectedDamage().includes(damage.value)"
+            (click)="toggleDamage(damage.value)"
           >
-            <span>{{ selectedNeeds().includes(need.value) ? '✓' : '+' }}</span
-            >{{ t(need.key) }}
+            <span>{{ selectedDamage().includes(damage.value) ? '✓' : '+' }}</span
+            >{{ t(damage.key) }}
           </button>
         }
       </div>

@@ -5,7 +5,11 @@
     aria-live="polite"
     [attr.aria-label]="t('alertBanner.title', { count: alerts().length })"
   >
-    <div class="alert-signal" aria-hidden="true"><span></span></div>
+    <div class="alert-signal" aria-hidden="true">
+      <span class="signal-ripple signal-ripple--outer"></span>
+      <span class="signal-ripple signal-ripple--inner"></span>
+      <span class="signal-core"></span>
+    </div>
     <div class="alert-copy">
       <strong>{{ t('alertBanner.title', { count: alerts().length }) }}</strong>
       <p>

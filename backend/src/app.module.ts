@@ -9,6 +9,7 @@ import { join } from 'node:path';
 import { buildDatabaseOptions } from './common/database/database.config';
 import { AlertsModule } from './alerts/alerts.module';
 import { ConvoysModule } from './convoys/convoys.module';
+import { GeocodingModule } from './geocoding/geocoding.module';
 import { LodgingModule } from './lodging/lodging.module';
 import { MealsModule } from './meals/meals.module';
 import { MissingModule } from './missing/missing.module';
@@ -57,6 +58,7 @@ const serveClient = existsSync(CLIENT_PATH)
     MissingModule,
     LodgingModule,
     ConvoysModule,
+    GeocodingModule,
     MonitoringModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

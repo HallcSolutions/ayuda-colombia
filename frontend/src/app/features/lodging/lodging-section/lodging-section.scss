@@ -2,12 +2,27 @@
 
 :host {
   display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .lodging {
   display: grid;
   gap: 22px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 46px max(7vw, 28px) 80px;
+}
+
+.toolbar {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .section-heading {
@@ -65,6 +80,37 @@
   color: var(--muted);
   font-size: 13px;
   line-height: 1.5;
+}
+
+/* Los tipos de alojamiento se comportan como filtros compactos, no como una tabla. */
+.toolbar .kind-tabs {
+  gap: 6px;
+  padding: 4px;
+  border-radius: 12px;
+  background: #f4f7f3;
+}
+
+.toolbar .kind-tabs button {
+  border: 1px solid transparent;
+  border-radius: 9px;
+  padding-inline: 12px;
+  white-space: nowrap;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.toolbar .kind-tabs button:not(.selected):hover {
+  border-color: rgba(18, 88, 64, 0.12);
+  color: var(--green);
+  background: white;
+}
+
+.toolbar .kind-tabs button.selected {
+  box-shadow: 0 5px 13px rgba(18, 88, 64, 0.18);
 }
 
 .register {
@@ -173,6 +219,42 @@
   .group-tabs button {
     flex: 1 1 8rem;
     padding: 12px 10px;
+  }
+
+  .toolbar {
+    gap: 8px;
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  .toolbar .kind-tabs {
+    display: flex;
+    flex: 0 1 100%;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 48px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 5px;
+    scroll-padding-inline: 5px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .toolbar .kind-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .toolbar .kind-tabs button {
+    flex: 0 0 auto;
+    min-height: 36px;
+    padding: 6px 12px;
+    scroll-snap-align: start;
   }
 
   .empty-state {

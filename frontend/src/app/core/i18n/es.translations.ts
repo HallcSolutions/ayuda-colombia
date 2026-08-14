@@ -281,11 +281,16 @@ export const ES_TRANSLATIONS = {
   'reportForm.contactPhone': 'Teléfono de contacto',
   'reportForm.contactPhonePlaceholder': 'Ej. 300 123 4567',
   'reportForm.department': 'Departamento',
-  'reportForm.departmentPlaceholder': 'Ej. Chocó',
+  'reportForm.departmentPlaceholder': 'Selecciona…',
   'reportForm.municipality': 'Municipio o ciudad',
   'reportForm.municipalityPlaceholder': 'Ej. San José del Palmar',
+  'reportForm.municipalitySearchHint': 'Escribe y elige el municipio sugerido.',
   'reportForm.address': 'Dirección o punto de referencia',
   'reportForm.addressPlaceholder': 'Barrio, vereda, vía o lugar cercano',
+  'reportForm.addressSearchHint':
+    'Escribe al menos 3 letras y elige una sugerencia para ubicar la vivienda en el mapa.',
+  'reportForm.addressSearchUnavailable':
+    'No pudimos buscar direcciones ahora. Puedes usar tu ubicación actual más abajo.',
   'reportForm.householdSize': 'Personas en la vivienda',
   'reportForm.urgency': 'Nivel de urgencia',
   'reportForm.urgencyCritical': 'Crítica — riesgo inmediato',
@@ -306,6 +311,11 @@ export const ES_TRANSLATIONS = {
   'reportForm.locationIdle': 'Aún no has compartido tu ubicación.',
   'reportForm.locationLoading': 'Obteniendo ubicación segura…',
   'reportForm.locationCaptured': 'Ubicación capturada con precisión aproximada de {meters} m.',
+  'reportForm.locationSelectedFromAddress': 'Ubicación tomada de la dirección seleccionada.',
+  'reportForm.locationMapTitle': 'Mapa de la vivienda reportada',
+  'reportForm.locationMapReady': 'Punto seleccionado en el mapa',
+  'reportForm.locationMapPending':
+    'El mapa aparecerá al elegir una dirección o compartir tu ubicación actual.',
   'reportForm.locationUnsupported': 'Este dispositivo no permite obtener la ubicación.',
   'reportForm.trackingUnsupported': 'Este dispositivo no permite seguimiento de ubicación.',
   'reportForm.trackingActive':
@@ -317,15 +327,15 @@ export const ES_TRANSLATIONS = {
   'reportForm.locationUnavailable': 'No pudimos determinar la ubicación en este momento.',
   'reportForm.locationTimeout':
     'La ubicación tardó demasiado. Intenta de nuevo cerca de una ventana o al aire libre.',
-  'reportForm.step4Title': '¿Qué necesitan?',
-  'reportForm.step4Subtitle': 'Selecciona todas las opciones que correspondan.',
-  'reportForm.notice': 'Noticia o descripción de la necesidad',
+  'reportForm.step4Title': 'Estado de la vivienda',
+  'reportForm.step4Subtitle': 'Marca los daños visibles que aparecen en las fotos.',
+  'reportForm.notice': 'Descripción de los daños',
   'reportForm.noticePlaceholder':
-    'Describe daños, personas vulnerables, accesos bloqueados y qué ayuda es más urgente…',
+    'Cuenta qué partes de la vivienda fueron afectadas, si es seguro entrar y qué accesos están bloqueados…',
   'reportForm.consent':
     'Autorizo publicar la ubicación y los datos de este reporte para coordinar ayuda humanitaria. Entiendo que no debo incluir información sensible innecesaria.',
   'reportForm.invalid':
-    'Completa los campos, selecciona una necesidad, comparte la ubicación y agrega una foto.',
+    'Completa los campos, marca al menos un daño, comparte la ubicación y agrega una foto.',
   'reportForm.error':
     'No fue posible publicar el reporte. Revisa tu conexión e intenta nuevamente.',
   'reportForm.success': 'Reporte publicado. Los equipos de ayuda ya pueden verlo.',
@@ -340,6 +350,15 @@ export const ES_TRANSLATIONS = {
   'needs.clothing': 'Ropa y cobijas',
   'needs.hygiene': 'Elementos de aseo',
   'needs.pets': 'Ayuda para mascotas',
+
+  'damage.roof': 'Techo afectado',
+  'damage.walls': 'Paredes o grietas',
+  'damage.flooding': 'Inundación o humedad',
+  'damage.structure': 'Daño estructural',
+  'damage.utilities': 'Servicios suspendidos',
+  'damage.access': 'Acceso bloqueado',
+  'damage.uninhabitable': 'Vivienda inhabitable',
+  'damage.totalLoss': 'Pérdida total',
 
   'feed.eyebrow': 'Necesidades activas',
   'feed.title': 'Reportes de la comunidad',
