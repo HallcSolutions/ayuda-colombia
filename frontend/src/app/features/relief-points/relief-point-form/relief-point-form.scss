@@ -37,3 +37,8 @@
   border: 1px solid var(--green);
   cursor: pointer;
 }
+
+.location-row button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}

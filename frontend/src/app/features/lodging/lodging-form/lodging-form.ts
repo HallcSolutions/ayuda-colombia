@@ -14,6 +14,7 @@ import { LODGING_KIND_ICONS, lodgingKindKey } from '../../../core/i18n/domain-ke
 import { TranslationKey } from '../../../core/i18n/es.translations';
 import { I18nService, TranslationParams } from '../../../core/i18n/i18n.service';
 import { NewLodgingOffer } from '../../../core/models/lodging-offer.model';
+import { GeocodingService } from '../../../core/services/geocoding.service';
 import { LodgingService } from '../../../core/services/lodging.service';
 
 @Component({
@@ -26,6 +27,7 @@ import { LodgingService } from '../../../core/services/lodging.service';
 export class LodgingForm {
   private readonly formBuilder = inject(FormBuilder);
   private readonly lodgingService = inject(LodgingService);
+  private readonly geocodingService = inject(GeocodingService);
   private readonly i18n = inject(I18nService);
 
   protected readonly t = this.i18n.t;
@@ -37,6 +39,7 @@ export class LodgingForm {
   readonly closed = output<void>();
 
   readonly submitting = signal(false);
+  readonly resolvingAddress = signal(false);
   /** PIN devuelto al publicar; se muestra una sola vez y no se guarda en ningún sitio. */
   readonly publishedPin = signal('');
   readonly pinCopied = signal(false);
@@ -111,9 +114,7 @@ export class LodgingForm {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         });
-        this.setLocationMessage('reliefPointForm.locationReady', {
-          meters: Math.round(position.coords.accuracy),
-        });
+        void this.fillAddressFromPosition(position);
       },
       (error) =>
         this.setLocationMessage(
@@ -123,6 +124,68 @@ export class LodgingForm {
         ),
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
     );
+  }
+
+  private async fillAddressFromPosition(position: GeolocationPosition): Promise<void> {
+    this.resolvingAddress.set(true);
+    this.setLocationMessage('reliefPointForm.locationResolvingAddress', {
+      meters: Math.round(position.coords.accuracy),
+    });
+
+    try {
+      const suggestion = await firstValueFrom(
+        this.geocodingService.reverseLocation(
+          position.coords.latitude,
+          position.coords.longitude,
+        ),
+      );
+      if (!suggestion) {
+        this.setLocationMessage('reliefPointForm.locationAddressNotFound');
+        return;
+      }
+
+      const department = this.canonicalDepartment(suggestion.department);
+      this.form.patchValue({
+        department: department || this.form.controls.department.value,
+        municipality: suggestion.municipality || this.form.controls.municipality.value,
+        addressReference: suggestion.address || suggestion.label,
+      });
+      this.setLocationMessage('reliefPointForm.locationReadyAndAddress', {
+        meters: Math.round(position.coords.accuracy),
+      });
+    } catch {
+      this.setLocationMessage('reliefPointForm.locationAddressUnavailable');
+    } finally {
+      this.resolvingAddress.set(false);
+    }
+  }
+
+  private canonicalDepartment(value: string): string {
+    const normalized = this.normalizeText(value);
+    const exact = this.departments.find(
+      (department) => this.normalizeText(department) === normalized,
+    );
+    if (exact) return exact;
+    if (normalized.includes('bogota') && normalized.includes('distrito')) return 'Bogotá D.C.';
+    if (normalized.includes('sanandres') && normalized.includes('providencia')) {
+      return 'San Andrés y Providencia';
+    }
+    return (
+      [...this.departments]
+        .sort(
+          (left, right) =>
+            this.normalizeText(right).length - this.normalizeText(left).length,
+        )
+        .find((department) => normalized.includes(this.normalizeText(department))) ?? ''
+    );
+  }
+
+  private normalizeText(value: string): string {
+    return value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .toLowerCase();
   }
 
   async submit(): Promise<void> {
@@ -179,6 +242,7 @@ export class LodgingForm {
   }
 
   private resetForm(): void {
+    this.resolvingAddress.set(false);
     this.setLocationMessage('lodgingForm.locationPending');
     this.form.reset({
       placeName: '',

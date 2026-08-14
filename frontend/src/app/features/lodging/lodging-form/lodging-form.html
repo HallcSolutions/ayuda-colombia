@@ -87,8 +87,17 @@
       <strong>{{ t('lodgingForm.location', { optional: t('common.optional') }) }}</strong>
       <p>{{ locationMessage() }}</p>
     </div>
-    <button type="button" class="secondary" (click)="captureCurrentLocation()">
-      {{ t('reliefPointForm.useCurrentLocation') }}
+    <button
+      type="button"
+      class="secondary"
+      [disabled]="resolvingAddress()"
+      (click)="captureCurrentLocation()"
+    >
+      {{
+        resolvingAddress()
+          ? t('reliefPointForm.resolvingCurrentAddress')
+          : t('reliefPointForm.useCurrentLocation')
+      }}
     </button>
   </div>
 
