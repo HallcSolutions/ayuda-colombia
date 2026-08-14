@@ -63,9 +63,12 @@ export class ReportFormComponent implements OnDestroy {
   readonly municipalitySuggestions = signal<string[]>([]);
   readonly municipalitySearching = signal(false);
   readonly municipalitySuggestionsOpen = signal(false);
+  readonly resolvingCurrentAddress = signal(false);
   private readonly selectedAddressLabel = signal('');
   private readonly locationSource = signal<'address' | 'device' | null>(null);
   private readonly coordinates = signal<Coordinates | null>(null);
+  private reverseLookupId = 0;
+  private destroyed = false;
   readonly locationMap = computed<SafeResourceUrl | null>(() => {
     const coordinates = this.coordinates();
     return coordinates
@@ -226,6 +229,8 @@ export class ReportFormComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.destroyed = true;
+    this.reverseLookupId += 1;
     this.stopLocationTracking();
     this.selectedPhotos().forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
   }
@@ -278,9 +283,10 @@ export class ReportFormComponent implements OnDestroy {
 
   selectAddress(suggestion: AddressSuggestion): void {
     const department = this.canonicalDepartment(suggestion.department);
+    const address = suggestion.address || suggestion.label;
     this.reportForm.patchValue(
       {
-        addressReference: suggestion.label,
+        addressReference: address,
         municipality: suggestion.municipality || this.reportForm.controls.municipality.value,
         department: department || this.reportForm.controls.department.value,
         latitude: suggestion.latitude,
@@ -289,7 +295,7 @@ export class ReportFormComponent implements OnDestroy {
       },
       { emitEvent: false },
     );
-    this.selectedAddressLabel.set(suggestion.label);
+    this.selectedAddressLabel.set(address);
     this.locationSource.set('address');
     this.coordinates.set({
       latitude: suggestion.latitude,
@@ -321,7 +327,10 @@ export class ReportFormComponent implements OnDestroy {
     }
     this.setLocationMessage('reportForm.locationLoading');
     navigator.geolocation.getCurrentPosition(
-      (position) => this.applyPosition(position),
+      (position) => {
+        this.applyPosition(position);
+        void this.fillAddressFromPosition(position);
+      },
       (error) => this.setLocationMessage(this.geolocationErrorKey(error)),
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
     );
@@ -415,6 +424,58 @@ export class ReportFormComponent implements OnDestroy {
     });
   }
 
+  private async fillAddressFromPosition(position: GeolocationPosition): Promise<void> {
+    const lookupId = ++this.reverseLookupId;
+    this.resolvingCurrentAddress.set(true);
+    this.setLocationMessage('reportForm.locationResolvingAddress', {
+      meters: Math.round(position.coords.accuracy),
+    });
+
+    try {
+      const suggestion = await firstValueFrom(
+        this.geocodingService.reverseLocation(
+          position.coords.latitude,
+          position.coords.longitude,
+        ),
+      );
+      if (this.destroyed || lookupId !== this.reverseLookupId) return;
+
+      if (!suggestion) {
+        this.setLocationMessage('reportForm.locationAddressNotFound');
+        return;
+      }
+
+      const department = this.canonicalDepartment(suggestion.department);
+      const address = suggestion.address || suggestion.label;
+      this.reportForm.patchValue(
+        {
+          department: department || this.reportForm.controls.department.value,
+          municipality:
+            suggestion.municipality || this.reportForm.controls.municipality.value,
+          addressReference:
+            address || this.reportForm.controls.addressReference.value,
+        },
+        { emitEvent: false },
+      );
+      this.selectedAddressLabel.set(address);
+      this.addressSuggestions.set([]);
+      this.addressSuggestionsOpen.set(false);
+      this.municipalitySuggestions.set([]);
+      this.municipalitySuggestionsOpen.set(false);
+      this.setLocationMessage('reportForm.locationCapturedAndAddress', {
+        meters: Math.round(position.coords.accuracy),
+      });
+    } catch {
+      if (!this.destroyed && lookupId === this.reverseLookupId) {
+        this.setLocationMessage('reportForm.locationAddressUnavailable');
+      }
+    } finally {
+      if (!this.destroyed && lookupId === this.reverseLookupId) {
+        this.resolvingCurrentAddress.set(false);
+      }
+    }
+  }
+
   private resetForm(): void {
     this.stopLocationTracking();
     this.selectedPhotos().forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
@@ -428,6 +489,8 @@ export class ReportFormComponent implements OnDestroy {
     this.selectedAddressLabel.set('');
     this.locationSource.set(null);
     this.coordinates.set(null);
+    this.resolvingCurrentAddress.set(false);
+    this.reverseLookupId += 1;
     this.setLocationMessage('reportForm.locationIdle');
     this.reportForm.reset({
       reporterName: '',
@@ -472,7 +535,22 @@ export class ReportFormComponent implements OnDestroy {
 
   private canonicalDepartment(value: string): string {
     const normalized = this.normalizeText(value);
-    return this.departments.find((department) => this.normalizeText(department) === normalized) ?? '';
+    const exact = this.departments.find(
+      (department) => this.normalizeText(department) === normalized,
+    );
+    if (exact) return exact;
+    if (normalized.includes('bogota') && normalized.includes('distrito')) return 'Bogotá D.C.';
+    if (normalized.includes('sanandres') && normalized.includes('providencia')) {
+      return 'San Andrés y Providencia';
+    }
+    return (
+      [...this.departments]
+        .sort(
+          (left, right) =>
+            this.normalizeText(right).length - this.normalizeText(left).length,
+        )
+        .find((department) => normalized.includes(this.normalizeText(department))) ?? ''
+    );
   }
 
   private normalizeText(value: string): string {

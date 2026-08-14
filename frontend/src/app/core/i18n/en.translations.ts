@@ -309,6 +309,15 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'reportForm.locationIdle': 'You have not shared your location yet.',
   'reportForm.locationLoading': 'Getting a secure location…',
   'reportForm.locationCaptured': 'Location captured with about {meters} m accuracy.',
+  'reportForm.locationResolvingAddress':
+    'Location captured with {meters} m accuracy. Looking up the address…',
+  'reportForm.locationCapturedAndAddress':
+    'Location and address filled automatically · about {meters} m accuracy.',
+  'reportForm.locationAddressNotFound':
+    'The exact location was saved, but this point has no registered map address.',
+  'reportForm.locationAddressUnavailable':
+    'The exact location was saved. We could not fill the address right now.',
+  'reportForm.resolvingCurrentAddress': 'Looking up address…',
   'reportForm.locationSelectedFromAddress': 'Location taken from the selected address.',
   'reportForm.locationMapTitle': 'Map of the reported home',
   'reportForm.locationMapReady': 'Point selected on the map',

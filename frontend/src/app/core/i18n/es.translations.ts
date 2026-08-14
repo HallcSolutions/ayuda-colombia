@@ -311,6 +311,15 @@ export const ES_TRANSLATIONS = {
   'reportForm.locationIdle': 'Aún no has compartido tu ubicación.',
   'reportForm.locationLoading': 'Obteniendo ubicación segura…',
   'reportForm.locationCaptured': 'Ubicación capturada con precisión aproximada de {meters} m.',
+  'reportForm.locationResolvingAddress':
+    'Ubicación capturada con precisión de {meters} m. Buscando la dirección…',
+  'reportForm.locationCapturedAndAddress':
+    'Ubicación y dirección completadas automáticamente · precisión aproximada de {meters} m.',
+  'reportForm.locationAddressNotFound':
+    'Guardamos la ubicación exacta, pero este punto no tiene una dirección registrada en el mapa.',
+  'reportForm.locationAddressUnavailable':
+    'Guardamos la ubicación exacta. No pudimos completar la dirección en este momento.',
+  'reportForm.resolvingCurrentAddress': 'Buscando dirección…',
   'reportForm.locationSelectedFromAddress': 'Ubicación tomada de la dirección seleccionada.',
   'reportForm.locationMapTitle': 'Mapa de la vivienda reportada',
   'reportForm.locationMapReady': 'Punto seleccionado en el mapa',

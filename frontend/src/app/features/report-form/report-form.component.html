@@ -211,8 +211,17 @@
           }}</strong>
           <p>{{ locationMessage() }}</p>
         </div>
-        <button type="button" class="secondary-button" (click)="captureCurrentLocation()">
-          {{ t('reliefPointForm.useCurrentLocation') }}
+        <button
+          type="button"
+          class="secondary-button"
+          [disabled]="resolvingCurrentAddress()"
+          (click)="captureCurrentLocation()"
+        >
+          {{
+            resolvingCurrentAddress()
+              ? t('reportForm.resolvingCurrentAddress')
+              : t('reliefPointForm.useCurrentLocation')
+          }}
         </button>
       </div>
       @if (locationMap(); as map) {

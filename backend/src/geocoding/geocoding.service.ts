@@ -61,6 +61,37 @@ export class GeocodingService {
     }
   }
 
+  async reverse(latitude: number, longitude: number): Promise<AddressSuggestion | null> {
+    const cacheKey = `reverse:${latitude.toFixed(5)}:${longitude.toFixed(5)}`;
+    const cached = this.cache.get(cacheKey);
+    if (cached && cached.expiresAt > Date.now()) return cached.suggestions[0] ?? null;
+
+    const url = new URL(this.endpoint);
+    url.pathname = url.pathname.replace(/\/api\/?$/, '/reverse');
+    url.search = '';
+    url.searchParams.set('lat', String(latitude));
+    url.searchParams.set('lon', String(longitude));
+    url.searchParams.set('limit', '1');
+    url.searchParams.set('radius', '2');
+
+    try {
+      const response = await fetch(url, {
+        headers: { 'user-agent': 'RedAyuda-Colombia/1.0 reverse-geocoding' },
+        signal: AbortSignal.timeout(7_000),
+      });
+      if (!response.ok) throw new Error(`Geocoder responded ${response.status}`);
+
+      const body = (await response.json()) as PhotonResponse;
+      const suggestions = this.normalize(body.features ?? []).slice(0, 1);
+      this.remember(cacheKey, suggestions);
+      return suggestions[0] ?? null;
+    } catch {
+      throw new ServiceUnavailableException(
+        'La dirección de esta ubicación no está disponible en este momento.',
+      );
+    }
+  }
+
   private composeQuery(dto: SearchAddressDto): string {
     return [dto.query, dto.municipality, dto.department, 'Colombia']
       .map((part) => part?.trim())
@@ -87,9 +118,9 @@ export class GeocodingService {
       const houseNumber = this.firstText(properties, 'housenumber');
       const name = this.firstText(properties, 'name');
       const streetAddress = [street, houseNumber].filter(Boolean).join(' ');
+      const address = this.uniqueParts([name, streetAddress]).join(', ');
       const label = this.uniqueParts([
-        name,
-        streetAddress,
+        address,
         municipality,
         department,
       ]).join(', ');
@@ -101,6 +132,7 @@ export class GeocodingService {
       suggestions.push({
         id: `${osmType}:${osmId}`,
         label,
+        address: address || label,
         municipality,
         department,
         latitude,
