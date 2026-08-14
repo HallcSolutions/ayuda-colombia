@@ -35,8 +35,12 @@
     <p class="form-error" role="alert">{{ errorMessage() }}</p>
   }
 
+  @if (form.invalid) {
+    <p class="required-hint">{{ t('common.requiredMissing') }}</p>
+  }
+
   <div class="form-buttons">
-    <button type="submit" [disabled]="submitting()">
+    <button type="submit" [disabled]="submitting() || form.invalid">
       {{ submitting() ? t('mealForm.submitting') : t('mealForm.submit') }}
     </button>
     <button type="button" class="secondary" (click)="closed.emit()">

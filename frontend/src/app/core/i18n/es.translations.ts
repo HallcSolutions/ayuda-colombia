@@ -6,6 +6,7 @@ export const ES_TRANSLATIONS = {
   'common.directions': 'Cómo llegar ↗',
   'common.yes': 'Sí',
   'common.no': 'No',
+  'common.requiredMissing': 'Faltan datos obligatorios: complétalos para poder enviar.',
 
   'language.label': 'Idioma',
   'language.es': 'Español',

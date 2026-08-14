@@ -28,3 +28,13 @@ select {
   background: #c6dfcf;
   color: var(--ink);
 }
+/* Aviso junto a un botón deshabilitado: nunca se apaga un botón sin decir qué falta. */
+.required-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.submit-button:disabled {
+  cursor: not-allowed;
+}

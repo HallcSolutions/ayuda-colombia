@@ -7,6 +7,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'common.directions': 'Get directions ↗',
   'common.yes': 'Yes',
   'common.no': 'No',
+  'common.requiredMissing': 'Some required details are missing: fill them in to send.',
 
   'language.label': 'Language',
   'language.es': 'Spanish',

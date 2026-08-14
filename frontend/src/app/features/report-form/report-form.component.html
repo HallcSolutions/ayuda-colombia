@@ -183,7 +183,10 @@
       @if (successMessage()) {
         <div class="form-message success" role="status">{{ successMessage() }}</div>
       }
-      <button class="submit-button" type="submit" [disabled]="submitting()">
+      @if (reportForm.invalid) {
+        <p class="required-hint">{{ t('common.requiredMissing') }}</p>
+      }
+      <button class="submit-button" type="submit" [disabled]="submitting() || reportForm.invalid">
         {{ submitting() ? t('reportForm.submitting') : t('reportForm.submit') }} <span>→</span>
       </button>
     </div>

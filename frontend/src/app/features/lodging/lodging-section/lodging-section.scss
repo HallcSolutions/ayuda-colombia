@@ -80,7 +80,7 @@
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr));
   gap: 14px;
   margin: 0;
 }
@@ -115,10 +115,12 @@
   color: #8c2f1c;
 }
 
+/* El mínimo nunca puede pasarse del ancho de la pantalla: en un teléfono la columna
+   se queda en una sola y no se desborda. */
 .lodging-grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
 }
 
 /* Salud y veterinarias van en filas separadas por línea, no en cuadrícula de recuadros. */
@@ -154,6 +156,28 @@
 
 .empty {
   color: var(--muted);
+}
+
+/* En el teléfono: menos margen lateral, la acción principal a todo el ancho y las
+   pestañas de dos en dos. */
+@media (max-width: 640px) {
+  .lodging {
+    gap: 18px;
+    padding: 32px 18px 62px;
+  }
+
+  .register {
+    width: 100%;
+  }
+
+  .group-tabs button {
+    flex: 1 1 8rem;
+    padding: 12px 10px;
+  }
+
+  .empty-state {
+    padding: 34px 16px;
+  }
 }
 
 .visually-hidden {

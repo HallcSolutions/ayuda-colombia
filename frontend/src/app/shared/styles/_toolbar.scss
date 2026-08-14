@@ -21,7 +21,6 @@
 
 .toolbar input,
 .toolbar select,
-.toolbar .kind-tabs,
 .toolbar .ghost {
   height: var(--control-height);
   box-sizing: border-box;
@@ -38,7 +37,7 @@
 }
 
 .toolbar select {
-  min-width: 11rem;
+  min-width: min(11rem, 100%);
 }
 
 .toolbar input:focus-visible,
@@ -48,11 +47,15 @@
   border-color: var(--green);
 }
 
-/* Grupo de pestañas: persona/animal, tipo de alojamiento. */
+/* Grupo de pestañas: persona/animal, tipo de alojamiento. Envuelven en cuanto no caben:
+   son seis etiquetas largas y en un teléfono no entran en una sola fila. */
 .toolbar .kind-tabs {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 4px;
+  min-height: var(--control-height);
+  box-sizing: border-box;
   padding: 3px;
   border: 1px solid var(--line);
   border-radius: 9px;
@@ -62,16 +65,16 @@
 .toolbar .kind-tabs button {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  height: 100%;
-  padding: 0 14px;
+  min-height: 34px;
+  padding: 4px 14px;
   border: 0;
   border-radius: 7px;
   background: transparent;
   color: var(--muted);
   font-size: 13px;
   font-weight: 700;
-  white-space: nowrap;
   cursor: pointer;
 }
 

@@ -65,6 +65,31 @@ La emergencia es de todo el país: **ninguna vista puede quedar amarrada a un so
 - Los listados se muestran **agrupados por departamento → ciudad** (ver `relief-points-section`).
 - Al añadir una entidad nueva con ubicación: expón `department` y `municipality` en el modelo y respeta lo anterior.
 
+## 📱 Responsive (obligatorio)
+
+**Ninguna pantalla se da por terminada si no funciona en un teléfono.** Se entra desde la calle,
+con un celular en la mano y datos malos: el teléfono es la medida, no el escritorio.
+
+- Se diseña primero a **360 px de ancho** y se revisa a 360, 768 y 1280 antes de dar algo por hecho.
+- **Cero scroll horizontal.** Si la página se mueve de lado, está mal, sin excepciones.
+- Nada de anchos mínimos mayores que la pantalla: en las rejillas usa
+  `repeat(auto-fit, minmax(min(20rem, 100%), 1fr))`, nunca `minmax(20rem, 1fr)` a secas.
+- Toda fila de botones, pestañas o filtros lleva `flex-wrap: wrap`. `white-space: nowrap`
+  solo en etiquetas cortas que siempre caben; nunca en una fila entera de botones.
+- Alturas: `min-height`, no `height` fija, en cualquier cosa que envuelva texto traducible
+  (una etiqueta en inglés o en español no mide lo mismo).
+- Zona de toque mínima de 44 px de alto y, en el teléfono, la acción principal ocupa el ancho.
+- Puntos de corte del proyecto: **900 px** (tableta) y **640 px** (teléfono). Usa esos dos,
+  no inventes otros salvo que un bloque concreto lo pida.
+- Las medidas laterales van con `max(7vw, 28px)` en escritorio y bajan a `18px` en el teléfono.
+
+## 🧾 Formularios
+
+- El botón de enviar está **deshabilitado mientras el formulario no sea válido** y mientras se
+  envía: no se ofrece un botón que no va a funcionar.
+- Al lado del botón deshabilitado va siempre el aviso de qué falta (`common.requiredMissing`),
+  para que se entienda por qué no se puede publicar todavía.
+
 ## 🚫 Nada de tarjetas (obligatorio)
 
 **No se diseñan más tarjetas.** Ni recuadros con borde y sombra, ni cajas dentro de cajas,

@@ -59,26 +59,27 @@
   letter-spacing: 0.09em;
 }
 
-.status {
+/* Sello de estado y viñeta de verificado: la misma píldora, distinto color. Quien mira
+   la fila sabe de un vistazo si el sitio está abierto y si está comprobado. */
+.status,
+.verified-badge {
   border-radius: 999px;
-  padding: 4px 8px;
-  color: #496058;
-  background: #edf2ec;
+  padding: 4px 9px;
   font-size: 9px;
   letter-spacing: 0.06em;
 }
 
-/* Viñeta de verificado: quien mira la fila sabe de un vistazo si el sitio está comprobado. */
+.status {
+  color: #496058;
+  background: #edf2ec;
+}
+
 .verified-badge {
   display: inline-flex;
   gap: 4px;
   align-items: center;
-  border-radius: 999px;
-  padding: 4px 9px;
   color: white;
   background: var(--green);
-  font-size: 9px;
-  letter-spacing: 0.06em;
 }
 
 .status-full {
@@ -164,19 +165,27 @@
   gap: 8px;
 }
 
+/* Los botones de la vista previa del mapa y los de cada fila son el mismo botón:
+   solo cambian de tamaño. */
 .selected-actions a,
-.selected-actions button {
-  flex: 1 1 8rem;
+.selected-actions button,
+.row-actions a,
+.row-actions button {
   border: 1px solid var(--green);
   border-radius: 8px;
-  padding: 10px 12px;
   text-align: center;
   color: var(--green);
   background: white;
-  font-size: 12px;
   font-weight: 750;
   text-decoration: none;
   cursor: pointer;
+}
+
+.selected-actions a,
+.selected-actions button {
+  flex: 1 1 8rem;
+  padding: 10px 12px;
+  font-size: 12px;
 }
 
 /* Abrir la ficha completa es la acción principal de la vista previa del mapa. */
@@ -419,16 +428,8 @@
 .row-actions a,
 .row-actions button {
   flex: 1 1 8.5rem;
-  border: 1px solid var(--green);
-  border-radius: 8px;
   padding: 10px 11px;
-  color: var(--green);
-  background: white;
   font-size: 11px;
-  font-weight: 750;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
 }
 
 .section-error {
