@@ -21,6 +21,7 @@ import { RegionService } from '../../../core/services/region.service';
 import { ReliefPointsService } from '../../../core/services/relief-points.service';
 import { Coordinates } from '../../../core/models/coordinates.model';
 import { distanceInKm, mapUrl } from '../../../core/utils/geo.util';
+import { alertNeeds } from '../../../core/utils/needs.util';
 import { ColombiaMap } from '../../../shared/colombia-map/colombia-map';
 import { MapMarker } from '../../../shared/colombia-map/colombia-map.model';
 import { Modal } from '../../../shared/modal/modal';
@@ -197,17 +198,9 @@ export class ReliefPointsSection {
     return this.alertsService.activeAlertsOf(pointId);
   }
 
-  /**
-   * Una alerta suele enumerar varias necesidades en una sola frase ("agua, aseo,
-   * colchones"). Separarlas deja una etiqueta por necesidad, que se lee de un
-   * vistazo mucho mejor que el texto corrido.
-   */
+  /** Una etiqueta por necesidad; la misma lista que se retira desde la ficha. */
   needList(pointId: string): string[] {
-    return this.alertsOf(pointId)
-      .flatMap((alert) => alert.message.split(/[,;·]/))
-      .map((need) => need.trim().replace(/\.+$/, ''))
-      .filter(Boolean)
-      .map((need) => need[0].toUpperCase() + need.slice(1));
+    return this.alertsOf(pointId).flatMap(alertNeeds);
   }
 
   directionsFor(point: ReliefPoint): string {

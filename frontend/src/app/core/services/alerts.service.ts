@@ -52,6 +52,7 @@ export class AlertsService {
   constructor(realtime: RealtimeService) {
     realtime.listen<AidAlert>('/alerts', {
       'alert.created': (alert) => this.upsert(alert),
+      'alert.updated': (alert) => this.upsert(alert),
       'alert.resolved': (alert) => this.upsert(alert),
     });
   }
@@ -84,6 +85,19 @@ export class AlertsService {
       map((response) => response.data),
       tap((alert) => this.upsert(alert)),
     );
+  }
+
+  /**
+   * Retira una sola necesidad de la alerta: lo demás se sigue pidiendo. Si era la
+   * última, el servidor cierra la alerta y vuelve como atendida.
+   */
+  removeNeed(id: string, need: string): Observable<AidAlert> {
+    return this.http
+      .patch<ApiResponse<AidAlert>>(`${ENDPOINT}/${id}/needs/remove`, { need })
+      .pipe(
+        map((response) => response.data),
+        tap((alert) => this.upsert(alert)),
+      );
   }
 
   /** Alertas activas de un punto concreto. */

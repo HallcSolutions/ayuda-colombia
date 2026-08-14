@@ -13,6 +13,7 @@ import { CreateAidAlertDto } from './dto/create-aid-alert.dto';
 import { AidAlertEntity } from './infrastructure/entities/aid-alert.entity';
 import { AidAlertFilters } from './interfaces/aid-alert-filters.interface';
 import { AlertsGateway } from './alerts.gateway';
+import { splitNeeds, withoutNeed } from './needs.util';
 
 @Injectable()
 export class AlertsService {
@@ -61,6 +62,27 @@ export class AlertsService {
     });
     const alert = this.toContract(await this.repository.save(entity));
     this.gateway.alertCreated(alert);
+    return alert;
+  }
+
+  /**
+   * Quien atiende el punto retira solo lo que ya no hace falta ("los guantes ya
+   * llegaron") y lo demás sigue pidiéndose. Cuando se retira lo último, la alerta
+   * se cierra sola: no queda una petición vacía en el mapa.
+   */
+  async removeNeed(id: string, need: string): Promise<AidAlert> {
+    const entity = await this.findEntity(id);
+    if (entity.status === AlertStatus.RESOLVED) return this.toContract(entity);
+
+    const needs = splitNeeds(entity);
+    const remaining = withoutNeed(needs, need);
+    // Otra brigada pudo retirarla antes: sin cambios se devuelve la alerta tal cual.
+    if (remaining.length === needs.length) return this.toContract(entity);
+    if (!remaining.length) return this.resolve(id);
+
+    entity.message = remaining.join(', ');
+    const alert = this.toContract(await this.repository.save(entity));
+    this.gateway.alertUpdated(alert);
     return alert;
   }
 

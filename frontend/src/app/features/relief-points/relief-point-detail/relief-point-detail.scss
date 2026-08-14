@@ -212,7 +212,6 @@
 }
 
 .need-quantity,
-.need-message,
 .need-meta {
   margin: 7px 0 0;
   overflow-wrap: anywhere;
@@ -232,12 +231,33 @@
   font-weight: 700;
 }
 
-/* La descripción que escribe quien pide: se lee corrida, sin recortar. */
-.need-message {
+/* Lo que hace falta, una línea por cosa: se separan con línea fina, sin recuadros. */
+.need-items {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.need-items li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: center;
+  min-height: 44px;
+  padding: 6px 0;
+  border-top: 1px solid rgba(223, 105, 79, 0.16);
+}
+
+.need-items li:first-child {
+  border-top: 0;
+}
+
+.need-name {
+  flex: 1 1 auto;
   color: var(--ink);
   font-size: 15px;
-  line-height: 1.6;
-  white-space: pre-line;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .need-meta {
@@ -245,27 +265,27 @@
   font-size: 11.5px;
 }
 
-/* Cerrar la petición cuando la ayuda ya llegó: acción tranquila, no destructiva. */
-.need-covered {
+/* Retirar lo que ya llegó: acción tranquila, no destructiva. */
+.need-remove {
   display: inline-flex;
   align-items: center;
-  margin-top: 10px;
-  padding: 7px 10px;
+  min-height: 34px;
+  padding: 6px 11px;
   border: 1px solid rgba(18, 88, 64, 0.15);
   border-radius: 8px;
   background: rgba(232, 241, 233, 0.65);
   color: #7d3421;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 750;
   cursor: pointer;
 }
 
-.need-covered:hover:not(:disabled) {
+.need-remove:hover:not(:disabled) {
   color: var(--green);
   background: #e8f1e9;
 }
 
-.need-covered:disabled {
+.need-remove:disabled {
   opacity: 0.6;
   cursor: progress;
 }

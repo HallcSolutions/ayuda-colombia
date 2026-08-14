@@ -33,35 +33,43 @@
             @for (alert of alerts(); track alert.id) {
               <li [class]="'severity-' + alert.severity">
                 <p class="need-head">
-                  <span class="need-icon" aria-hidden="true">{{ alertIcon(alert) }}</span>
                   <strong>{{ t(categoryKey(alert.category)) }}</strong>
                   <span class="severity">{{ t(urgencyKey(alert.severity)) }}</span>
                 </p>
+                <!-- Una línea por necesidad: se retira la que ya llegó y el resto sigue en pie. -->
+                <ul class="need-items">
+                  @for (need of needsOf(alert); track need) {
+                    <li>
+                      <span class="need-icon" aria-hidden="true">{{
+                        needIconOf(alert, need)
+                      }}</span>
+                      <span class="need-name">{{ need }}</span>
+                      <button
+                        type="button"
+                        class="need-remove"
+                        [disabled]="removingNeed() === needKey(alert, need)"
+                        [attr.aria-label]="t('reliefPointCard.needRemoveLabel', { need })"
+                        (click)="removeNeed(alert, need)"
+                      >
+                        {{
+                          removingNeed() === needKey(alert, need)
+                            ? t('reliefPointCard.needRemoving')
+                            : t('reliefPointCard.needRemove')
+                        }}
+                      </button>
+                    </li>
+                  }
+                </ul>
                 @if (alert.requestedQuantity) {
                   <p class="need-quantity">
                     <span>{{ t('reliefPointCard.requestedQuantity') }}</span>
                     {{ alert.requestedQuantity }}
                   </p>
                 }
-                @if (alert.message) {
-                  <p class="need-message">{{ alert.message }}</p>
-                }
                 <p class="need-meta">
                   {{ t('reliefPointCard.reportedBy', { name: alert.createdBy }) }} ·
                   {{ alert.createdAt | date: 'd MMM, h:mm a' : undefined : i18n.locale() }}
                 </p>
-                <button
-                  type="button"
-                  class="need-covered"
-                  [disabled]="resolvingAlertId() === alert.id"
-                  (click)="markNeedCovered(alert)"
-                >
-                  {{
-                    resolvingAlertId() === alert.id
-                      ? t('reliefPointCard.needCovering')
-                      : t('reliefPointCard.needCovered')
-                  }}
-                </button>
               </li>
             }
           </ul>

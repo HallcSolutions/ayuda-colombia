@@ -11,6 +11,7 @@ import { AlertStatus, SupplyCategory } from '../common/constants/app.constants';
 import { AidAlert } from '../common/interfaces/aid-alert.interface';
 import { AlertsService } from './alerts.service';
 import { CreateAidAlertDto } from './dto/create-aid-alert.dto';
+import { RemoveNeedDto } from './dto/remove-need.dto';
 
 @Controller('alerts')
 export class AlertsController {
@@ -41,5 +42,13 @@ export class AlertsController {
   @Patch(':id/resolve')
   resolve(@Param('id') id: string): Promise<AidAlert> {
     return this.alertsService.resolve(id);
+  }
+
+  @Patch(':id/needs/remove')
+  removeNeed(
+    @Param('id') id: string,
+    @Body() dto: RemoveNeedDto,
+  ): Promise<AidAlert> {
+    return this.alertsService.removeNeed(id, dto.need);
   }
 }

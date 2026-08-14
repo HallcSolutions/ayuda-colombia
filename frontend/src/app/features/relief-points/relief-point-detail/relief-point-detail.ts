@@ -24,6 +24,7 @@ import { ReliefPoint } from '../../../core/models/relief-point.model';
 import { AlertsService } from '../../../core/services/alerts.service';
 import { ReliefPointsService } from '../../../core/services/relief-points.service';
 import { mapUrl, streetMapUrl } from '../../../core/utils/geo.util';
+import { alertNeeds } from '../../../core/utils/needs.util';
 import { needIcon } from '../need-icon';
 import { isVerifiedPlace } from '../verification';
 
@@ -59,8 +60,8 @@ export class ReliefPointDetail {
   protected readonly pointStatus = ReliefPointStatus;
 
   readonly errorMessage = signal('');
-  /** Alerta que se está cerrando ahora mismo, para no repetir el envío. */
-  readonly resolvingAlertId = signal<string | null>(null);
+  /** Necesidad que se está retirando ahora mismo, para no repetir el envío. */
+  readonly removingNeed = signal<string | null>(null);
 
   readonly directionsUrl = computed(() => mapUrl(this.point()));
 
@@ -75,28 +76,37 @@ export class ReliefPointDetail {
 
   readonly isVerified = computed(() => isVerifiedPlace(this.point()));
 
-  /**
-   * Icono de la necesidad. Se mira la categoría, el titular y el mensaje juntos porque
-   * quien reporta escribe libremente: el detalle ("pañales") suele ir en el texto, no
-   * en la categoría.
-   */
-  alertIcon(alert: AidAlert): string {
-    return needIcon(`${alert.category} ${alert.title} ${alert.message}`);
+  /** Lo que hace falta aquí, una necesidad por línea. */
+  needsOf(alert: AidAlert): string[] {
+    return alertNeeds(alert);
   }
 
   /**
-   * Cuando la ayuda ya llegó, quien atiende el punto cierra la petición y deja de
-   * aparecer como necesidad abierta: así nadie vuelve a cargar con lo mismo.
+   * Icono de la necesidad. Se mira también la categoría porque quien reporta escribe
+   * libremente y el detalle ("pañales") suele ir en el texto, no en la categoría.
    */
-  async markNeedCovered(alert: AidAlert): Promise<void> {
+  needIconOf(alert: AidAlert, need: string): string {
+    return needIcon(`${need} ${alert.category}`);
+  }
+
+  /** Identifica la fila que se está retirando: la misma necesidad puede repetirse. */
+  needKey(alert: AidAlert, need: string): string {
+    return `${alert.id}|${need}`;
+  }
+
+  /**
+   * Cuando algo ya llegó se retira solo eso y lo demás sigue pidiéndose. Retirar lo
+   * último cierra la alerta: así nadie vuelve a cargar con lo que ya está resuelto.
+   */
+  async removeNeed(alert: AidAlert, need: string): Promise<void> {
     this.errorMessage.set('');
-    this.resolvingAlertId.set(alert.id);
+    this.removingNeed.set(this.needKey(alert, need));
     try {
-      await firstValueFrom(this.alertsService.resolveAlert(alert.id));
+      await firstValueFrom(this.alertsService.removeNeed(alert.id, need));
     } catch {
-      this.errorMessage.set(this.t('reliefPointCard.needCoveredError'));
+      this.errorMessage.set(this.t('reliefPointCard.needRemoveError'));
     } finally {
-      this.resolvingAlertId.set(null);
+      this.removingNeed.set(null);
     }
   }
 

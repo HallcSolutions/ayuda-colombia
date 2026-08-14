@@ -56,7 +56,11 @@ const alertEntity = (
 describe('AlertsService', () => {
   let service: AlertsService;
   let repository: jest.Mocked<Repository<AidAlertEntity>>;
-  let gateway: { alertCreated: jest.Mock; alertResolved: jest.Mock };
+  let gateway: {
+    alertCreated: jest.Mock;
+    alertUpdated: jest.Mock;
+    alertResolved: jest.Mock;
+  };
   let reliefPointsService: { findEntity: jest.Mock; toSummary: jest.Mock };
 
   beforeEach(async () => {
@@ -68,7 +72,11 @@ describe('AlertsService', () => {
       findOne: jest.fn(),
       createQueryBuilder: jest.fn(),
     } as unknown as jest.Mocked<Repository<AidAlertEntity>>;
-    gateway = { alertCreated: jest.fn(), alertResolved: jest.fn() };
+    gateway = {
+      alertCreated: jest.fn(),
+      alertUpdated: jest.fn(),
+      alertResolved: jest.fn(),
+    };
     reliefPointsService = {
       findEntity: jest.fn().mockResolvedValue(reliefPoint()),
       toSummary: jest.fn((entity: ReliefPointEntity) => ({
@@ -168,6 +176,68 @@ describe('AlertsService', () => {
       await expect(service.resolve('ghost')).rejects.toBeInstanceOf(
         NotFoundException,
       );
+    });
+  });
+
+  describe('removeNeed', () => {
+    const withNeeds = () =>
+      alertEntity({
+        message: 'Guantes de construcción, gafas de seguridad, cascos',
+      });
+
+    it('retira solo lo que ya llegó y deja pedido el resto', async () => {
+      repository.findOne.mockResolvedValue(withNeeds());
+
+      const alert = await service.removeNeed(
+        'alert-1',
+        'Guantes de construcción',
+      );
+
+      expect(alert.message).toBe('gafas de seguridad, cascos');
+      expect(alert.status).toBe(AlertStatus.ACTIVE);
+      expect(gateway.alertUpdated).toHaveBeenCalledWith(alert);
+      expect(gateway.alertResolved).not.toHaveBeenCalled();
+    });
+
+    it('compara sin acentos ni mayúsculas, como se ve en pantalla', async () => {
+      repository.findOne.mockResolvedValue(withNeeds());
+
+      const alert = await service.removeNeed('alert-1', 'GAFAS DE SEGURIDAD');
+
+      expect(alert.message).toBe('Guantes de construcción, cascos');
+    });
+
+    it('cierra la alerta cuando se retira la última necesidad', async () => {
+      repository.findOne.mockResolvedValue(alertEntity({ message: 'Cascos' }));
+
+      const alert = await service.removeNeed('alert-1', 'Cascos');
+
+      expect(alert.status).toBe(AlertStatus.RESOLVED);
+      expect(gateway.alertResolved).toHaveBeenCalledWith(alert);
+      expect(gateway.alertUpdated).not.toHaveBeenCalled();
+    });
+
+    it('no cambia nada si otra brigada ya la había retirado', async () => {
+      repository.findOne.mockResolvedValue(withNeeds());
+
+      const alert = await service.removeNeed('alert-1', 'Pañales');
+
+      expect(alert.message).toBe(
+        'Guantes de construcción, gafas de seguridad, cascos',
+      );
+      expect(repository.save.mock.calls).toHaveLength(0);
+      expect(gateway.alertUpdated).not.toHaveBeenCalled();
+    });
+
+    it('deja retirar la alerta que no enumera nada, por su titular', async () => {
+      repository.findOne.mockResolvedValue(alertEntity({ message: '' }));
+
+      const alert = await service.removeNeed(
+        'alert-1',
+        'Sin alimentos para el almuerzo',
+      );
+
+      expect(alert.status).toBe(AlertStatus.RESOLVED);
     });
   });
 });

@@ -170,9 +170,10 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'reliefPointCard.requestHelp': 'Request help',
   'reliefPointCard.registerMeal': 'Log a meal',
   'reliefPointCard.updateStatus': 'Has the situation changed?',
-  'reliefPointCard.needCovered': 'We no longer need this',
-  'reliefPointCard.needCovering': 'Withdrawing…',
-  'reliefPointCard.needCoveredError': 'The need could not be withdrawn. Try again.',
+  'reliefPointCard.needRemove': 'We no longer need it',
+  'reliefPointCard.needRemoveLabel': 'Withdraw {need}: no longer needed here',
+  'reliefPointCard.needRemoving': 'Withdrawing…',
+  'reliefPointCard.needRemoveError': 'The need could not be withdrawn. Try again.',
   'reliefPointCard.markFull': 'Mark at capacity',
   'reliefPointCard.markActive': 'Mark open',
   'reliefPointCard.markClosed': 'Mark closed',
@@ -197,6 +198,15 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'reliefPointForm.location': 'Point location',
   'reliefPointForm.locationPending': 'You have not shared the location of this point yet.',
   'reliefPointForm.locationReady': 'Location captured with {meters} m accuracy.',
+  'reliefPointForm.locationResolvingAddress':
+    'Location captured with {meters} m accuracy. Looking up the address…',
+  'reliefPointForm.locationReadyAndAddress':
+    'Location, department, town and address completed · {meters} m accuracy.',
+  'reliefPointForm.locationAddressNotFound':
+    'The exact location was saved, but this point has no registered address.',
+  'reliefPointForm.locationAddressUnavailable':
+    'The exact location was saved. We could not complete the address right now.',
+  'reliefPointForm.resolvingCurrentAddress': 'Looking up address…',
   'reliefPointForm.locationDenied':
     'Location permission denied. You can enable it in your browser.',
   'reliefPointForm.locationUnavailable': 'We could not determine the location right now.',

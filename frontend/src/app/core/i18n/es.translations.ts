@@ -170,9 +170,10 @@ export const ES_TRANSLATIONS = {
   'reliefPointCard.requestHelp': 'Pedir ayuda',
   'reliefPointCard.registerMeal': 'Registrar comida',
   'reliefPointCard.updateStatus': '¿Cambió la situación?',
-  'reliefPointCard.needCovered': 'Ya no la necesitamos',
-  'reliefPointCard.needCovering': 'Retirando…',
-  'reliefPointCard.needCoveredError': 'No se pudo retirar la necesidad. Intenta de nuevo.',
+  'reliefPointCard.needRemove': 'Ya no la necesitamos',
+  'reliefPointCard.needRemoveLabel': 'Retirar {need}: aquí ya no hace falta',
+  'reliefPointCard.needRemoving': 'Retirando…',
+  'reliefPointCard.needRemoveError': 'No se pudo retirar la necesidad. Intenta de nuevo.',
   'reliefPointCard.markFull': 'Marcar sin capacidad',
   'reliefPointCard.markActive': 'Marcar abierto',
   'reliefPointCard.markClosed': 'Marcar cerrado',
@@ -197,6 +198,15 @@ export const ES_TRANSLATIONS = {
   'reliefPointForm.location': 'Ubicación del punto',
   'reliefPointForm.locationPending': 'Aún no has compartido la ubicación del punto.',
   'reliefPointForm.locationReady': 'Ubicación capturada con precisión de {meters} m.',
+  'reliefPointForm.locationResolvingAddress':
+    'Ubicación capturada con precisión de {meters} m. Buscando la dirección…',
+  'reliefPointForm.locationReadyAndAddress':
+    'Ubicación, departamento, municipio y dirección completados · precisión de {meters} m.',
+  'reliefPointForm.locationAddressNotFound':
+    'Guardamos la ubicación exacta, pero este punto no tiene una dirección registrada.',
+  'reliefPointForm.locationAddressUnavailable':
+    'Guardamos la ubicación exacta. No pudimos completar la dirección en este momento.',
+  'reliefPointForm.resolvingCurrentAddress': 'Buscando dirección…',
   'reliefPointForm.locationDenied':
     'Permiso de ubicación rechazado. Puedes habilitarlo en el navegador.',
   'reliefPointForm.locationUnavailable': 'No pudimos determinar la ubicación en este momento.',
