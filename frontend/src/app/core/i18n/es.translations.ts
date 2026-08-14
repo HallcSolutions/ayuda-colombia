@@ -170,9 +170,9 @@ export const ES_TRANSLATIONS = {
   'reliefPointCard.requestHelp': 'Pedir ayuda',
   'reliefPointCard.registerMeal': 'Registrar comida',
   'reliefPointCard.updateStatus': '¿Cambió la situación?',
-  'reliefPointCard.needRemove': 'Ya no la necesitamos',
+  'reliefPointCard.needRemove': 'Ya llegó',
   'reliefPointCard.needRemoveLabel': 'Retirar {need}: aquí ya no hace falta',
-  'reliefPointCard.needRemoving': 'Retirando…',
+  'reliefPointCard.needRemoving': 'Guardando…',
   'reliefPointCard.needRemoveError': 'No se pudo retirar la necesidad. Intenta de nuevo.',
   'reliefPointCard.markFull': 'Marcar sin capacidad',
   'reliefPointCard.markActive': 'Marcar abierto',
@@ -545,7 +545,7 @@ export const ES_TRANSLATIONS = {
 
   'lodgingForm.title': 'Ofrecer alojamiento',
   'lodgingForm.hint':
-    'No necesitas código de brigadista. Publica los cupos que puedes recibir y guarda el PIN: con él irás descontando los que se ocupen.',
+    'Publica los cupos que puedes recibir y guarda el PIN: con él irás descontando los que se ocupen.',
   'lodgingForm.kind': '¿Qué lugar ofreces?',
   'lodgingForm.placeName': 'Nombre del lugar',
   'lodgingForm.placeNamePlaceholder': 'Ej. Hotel La Ceiba o Casa de la familia Ríos',
@@ -621,7 +621,7 @@ export const ES_TRANSLATIONS = {
 
   'convoyForm.title': 'Anunciar un viaje',
   'convoyForm.hint':
-    'No necesitas código de brigadista. Al terminar recibirás un PIN de 6 dígitos: es la llave para compartir tu ubicación y marcar la llegada.',
+    'Al terminar recibirás un PIN de 6 dígitos: es la llave para compartir tu ubicación y marcar la llegada.',
   'convoyForm.driverName': 'Nombre de quien conduce',
   'convoyForm.contactPhone': 'Teléfono de contacto',
   'convoyForm.contactPhonePlaceholder': '3001234567',

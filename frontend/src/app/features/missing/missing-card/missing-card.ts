@@ -10,6 +10,7 @@ import {
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { MissingRecord } from '../../../core/models/missing-record.model';
 import { MissingService } from '../../../core/services/missing.service';
+import { colombiaDateTime } from '../../../core/utils/date.util';
 import { mapUrl } from '../../../core/utils/geo.util';
 import { whatsappUrl } from '../../../core/utils/phone.util';
 
@@ -86,11 +87,6 @@ export class MissingCard {
   }
 
   private formatDate(value: string): string {
-    return new Intl.DateTimeFormat(this.i18n.locale() === 'es' ? 'es-CO' : 'en-US', {
-      day: 'numeric',
-      month: 'short',
-      hour: 'numeric',
-      minute: '2-digit',
-    }).format(new Date(value));
+    return colombiaDateTime(value, this.i18n.locale());
   }
 }

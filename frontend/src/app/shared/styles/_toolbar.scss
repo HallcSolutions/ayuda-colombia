@@ -32,12 +32,15 @@
   padding: 0 12px;
   border: 1px solid var(--line);
   border-radius: 9px;
-  background: #fbfcfa;
+  /* Solo el color: el atajo `background` borraría la flecha del desplegable. */
+  background-color: #fbfcfa;
   color: var(--ink);
 }
 
 .toolbar select {
   min-width: min(11rem, 100%);
+  /* Hueco para la flecha, que la pinta la regla global de `select`. */
+  padding-right: 32px;
 }
 
 .toolbar input:focus-visible,

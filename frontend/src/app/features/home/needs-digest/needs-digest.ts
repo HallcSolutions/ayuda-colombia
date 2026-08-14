@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { DigestFindingKind } from '../../../core/constants/app.constants';
 import { digestFindingKey, supplyCategoryKey, urgencyKey } from '../../../core/i18n/domain-keys';
 import { I18nService } from '../../../core/i18n/i18n.service';
+import { COLOMBIA_UTC_OFFSET } from '../../../core/utils/date.util';
 import { MonitoringService } from '../../../core/services/monitoring.service';
 import { RegionService } from '../../../core/services/region.service';
 
@@ -32,6 +33,8 @@ export class NeedsDigestPanel {
   readonly i18n = inject(I18nService);
 
   protected readonly t = this.i18n.t;
+  /** Todas las horas de la app se leen en hora de Colombia, no en la del aparato. */
+  protected readonly colombiaTime = COLOMBIA_UTC_OFFSET;
   protected readonly categoryKey = supplyCategoryKey;
   protected readonly severityKey = urgencyKey;
   protected readonly findingKey = digestFindingKey;

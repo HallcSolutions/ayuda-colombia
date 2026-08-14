@@ -51,8 +51,14 @@
   padding: 11px 13px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fbfcfa;
+  /* Solo el color: el atajo `background` borraría la flecha del desplegable. */
+  background-color: #fbfcfa;
   color: var(--ink);
+}
+
+/* Hueco para la flecha, que la pinta la regla global de `select`. */
+.inline-form select {
+  padding-right: 34px;
 }
 
 .inline-form input:focus-visible,
@@ -104,6 +110,7 @@
   font: 800 40px/1 var(--serif);
   letter-spacing: 0.22em;
   color: var(--ink);
+  -webkit-user-select: all;
   user-select: all;
 }
 

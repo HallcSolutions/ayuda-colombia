@@ -11,12 +11,15 @@
   place-items: center;
   padding: 32px;
   background: rgba(13, 29, 22, 0.62);
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   animation: backdrop-in 0.18s ease-out;
 }
 
 .modal {
   width: min(920px, 100%);
+  /* Reserva para Safari antiguo, que no entiende dvh. */
+  max-height: calc(100vh - 64px);
   max-height: calc(100dvh - 64px);
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
@@ -78,6 +81,8 @@
 
 .modal-content {
   overflow: auto;
+  /* Safari en iPhone: sin esto el formulario largo se arrastra a tirones. */
+  -webkit-overflow-scrolling: touch;
   padding: 24px 26px 28px;
   overscroll-behavior: contain;
 }
@@ -104,6 +109,7 @@
 
   .modal {
     width: 100%;
+    max-height: 100vh;
     max-height: 100dvh;
     border: 0;
     border-radius: 0;

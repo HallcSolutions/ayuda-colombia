@@ -17,15 +17,19 @@ import {
   MissingSubjectKind,
 } from '../../../core/constants/app.constants';
 import { COLOMBIA_DEPARTMENTS } from '../../../core/constants/colombia.constants';
+import { colombiaInputToIso } from '../../../core/utils/date.util';
 import { MISSING_KIND_ICONS, missingKindKey } from '../../../core/i18n/domain-keys';
 import { TranslationKey } from '../../../core/i18n/es.translations';
 import { I18nService, TranslationParams } from '../../../core/i18n/i18n.service';
 import { SelectedPhoto } from '../../../core/models/selected-photo.model';
 import { MissingService } from '../../../core/services/missing.service';
 
+import { PHONE_PATTERN } from '../../../core/utils/phone.util';
+import { PhoneFieldDirective } from '../../../shared/phone-field/phone-field.directive';
+
 @Component({
   selector: 'app-missing-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, PhoneFieldDirective],
   templateUrl: './missing-form.html',
   styleUrl: './missing-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -69,10 +73,7 @@ export class MissingForm implements OnDestroy {
 
   readonly form = this.formBuilder.group({
     kind: this.formBuilder.nonNullable.control(MissingSubjectKind.PERSON, Validators.required),
-    name: this.formBuilder.nonNullable.control('', [
-      Validators.required,
-      Validators.maxLength(80),
-    ]),
+    name: this.formBuilder.nonNullable.control('', [Validators.required, Validators.maxLength(80)]),
     ageYears: this.formBuilder.control<number | null>(null, [
       Validators.min(0),
       Validators.max(120),
@@ -97,7 +98,7 @@ export class MissingForm implements OnDestroy {
     ]),
     contactPhone: this.formBuilder.nonNullable.control('', [
       Validators.required,
-      Validators.pattern(/^[0-9+()\s-]{7,20}$/),
+      Validators.pattern(PHONE_PATTERN),
     ]),
     latitude: this.formBuilder.control<number | null>(null),
     longitude: this.formBuilder.control<number | null>(null),
@@ -177,9 +178,7 @@ export class MissingForm implements OnDestroy {
 
     this.submitting.set(true);
     try {
-      const published = await firstValueFrom(
-        this.missingService.createRecord(this.buildPayload()),
-      );
+      const published = await firstValueFrom(this.missingService.createRecord(this.buildPayload()));
       this.resetForm();
       this.publishedPin.set(published.editPin);
       this.pinCopied.set(false);
@@ -201,7 +200,7 @@ export class MissingForm implements OnDestroy {
     payload.append('municipality', value.municipality);
     payload.append('lastSeenPlace', value.lastSeenPlace);
     // El input entrega hora local; se envía en ISO para que el servidor no la reinterprete.
-    payload.append('lastSeenAt', new Date(value.lastSeenAt).toISOString());
+    payload.append('lastSeenAt', colombiaInputToIso(value.lastSeenAt));
     payload.append('contactName', value.contactName);
     payload.append('contactPhone', value.contactPhone);
     payload.append('consentToPublish', String(value.consentToPublish));

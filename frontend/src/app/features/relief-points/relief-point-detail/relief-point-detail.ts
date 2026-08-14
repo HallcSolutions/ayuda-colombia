@@ -23,6 +23,7 @@ import { MealService } from '../../../core/models/meal-service.model';
 import { ReliefPoint } from '../../../core/models/relief-point.model';
 import { AlertsService } from '../../../core/services/alerts.service';
 import { ReliefPointsService } from '../../../core/services/relief-points.service';
+import { COLOMBIA_UTC_OFFSET } from '../../../core/utils/date.util';
 import { mapUrl, streetMapUrl } from '../../../core/utils/geo.util';
 import { alertNeeds } from '../../../core/utils/needs.util';
 import { needIcon } from '../need-icon';
@@ -53,6 +54,8 @@ export class ReliefPointDetail {
   readonly registerMeal = output<ReliefPoint>();
 
   protected readonly t = this.i18n.t;
+  /** Todas las horas de la app se leen en hora de Colombia, no en la del aparato. */
+  protected readonly colombiaTime = COLOMBIA_UTC_OFFSET;
   protected readonly statusKey = reliefPointStatusKey;
   protected readonly mealTypeKey = mealTypeKey;
   protected readonly categoryKey = supplyCategoryKey;
@@ -79,6 +82,19 @@ export class ReliefPointDetail {
   /** Lo que hace falta aquí, una necesidad por línea. */
   needsOf(alert: AidAlert): string[] {
     return alertNeeds(alert);
+  }
+
+  /**
+   * Algunas fuentes externas guardaron el texto de su botón como si fuera una cantidad.
+   * No mostramos ese ruido; una cantidad real (por ejemplo, "200 botellones") sí aparece.
+   */
+  requestedQuantityOf(alert: AidAlert): string | null {
+    const quantity = alert.requestedQuantity.trim();
+    const normalized = quantity.toLocaleLowerCase().replaceAll(/[.:…]/g, '').trim();
+    const isImportedAction =
+      normalized.startsWith('ver detalle') || normalized.startsWith('view detail');
+
+    return quantity && !isImportedAction ? quantity : null;
   }
 
   /**

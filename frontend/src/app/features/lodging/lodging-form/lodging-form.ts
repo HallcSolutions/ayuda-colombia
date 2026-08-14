@@ -17,9 +17,12 @@ import { NewLodgingOffer } from '../../../core/models/lodging-offer.model';
 import { GeocodingService } from '../../../core/services/geocoding.service';
 import { LodgingService } from '../../../core/services/lodging.service';
 
+import { PHONE_PATTERN } from '../../../core/utils/phone.util';
+import { PhoneFieldDirective } from '../../../shared/phone-field/phone-field.directive';
+
 @Component({
   selector: 'app-lodging-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, PhoneFieldDirective],
   templateUrl: './lodging-form.html',
   styleUrl: './lodging-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -72,7 +75,7 @@ export class LodgingForm {
     ]),
     contactPhone: this.formBuilder.nonNullable.control('', [
       Validators.required,
-      Validators.pattern(/^[0-9+()\s-]{7,20}$/),
+      Validators.pattern(PHONE_PATTERN),
     ]),
     department: this.formBuilder.nonNullable.control('', Validators.required),
     municipality: this.formBuilder.nonNullable.control('', [
@@ -134,10 +137,7 @@ export class LodgingForm {
 
     try {
       const suggestion = await firstValueFrom(
-        this.geocodingService.reverseLocation(
-          position.coords.latitude,
-          position.coords.longitude,
-        ),
+        this.geocodingService.reverseLocation(position.coords.latitude, position.coords.longitude),
       );
       if (!suggestion) {
         this.setLocationMessage('reliefPointForm.locationAddressNotFound');
@@ -172,10 +172,7 @@ export class LodgingForm {
     }
     return (
       [...this.departments]
-        .sort(
-          (left, right) =>
-            this.normalizeText(right).length - this.normalizeText(left).length,
-        )
+        .sort((left, right) => this.normalizeText(right).length - this.normalizeText(left).length)
         .find((department) => normalized.includes(this.normalizeText(department))) ?? ''
     );
   }

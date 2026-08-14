@@ -16,17 +16,14 @@ import { I18nService } from '../../../core/i18n/i18n.service';
 import { ConvoyTrackerService } from '../../../core/services/convoy-tracker.service';
 import { ConvoysService } from '../../../core/services/convoys.service';
 import { ReliefPointsService } from '../../../core/services/relief-points.service';
+import { colombiaInputToIso, colombiaInputValue } from '../../../core/utils/date.util';
 
-/** Valor inicial del campo de salida: ahora mismo, en la hora del dispositivo. */
-function localDateTimeValue(): string {
-  const now = new Date();
-  const minutesOffset = now.getTimezoneOffset();
-  return new Date(now.getTime() - minutesOffset * 60_000).toISOString().slice(0, 16);
-}
+import { PHONE_PATTERN } from '../../../core/utils/phone.util';
+import { PhoneFieldDirective } from '../../../shared/phone-field/phone-field.directive';
 
 @Component({
   selector: 'app-convoy-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, PhoneFieldDirective],
   templateUrl: './convoy-form.html',
   styleUrl: './convoy-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -73,7 +70,7 @@ export class ConvoyForm {
     ]),
     contactPhone: this.formBuilder.nonNullable.control('', [
       Validators.required,
-      Validators.pattern(/^[0-9+()\s-]{7,20}$/),
+      Validators.pattern(PHONE_PATTERN),
     ]),
     vehicleDescription: this.formBuilder.nonNullable.control('', [
       Validators.required,
@@ -87,7 +84,7 @@ export class ConvoyForm {
       Validators.maxLength(80),
     ]),
     destinationPointId: this.formBuilder.nonNullable.control('', Validators.required),
-    departureAt: this.formBuilder.nonNullable.control(localDateTimeValue(), Validators.required),
+    departureAt: this.formBuilder.nonNullable.control(colombiaInputValue(), Validators.required),
     shareLocation: this.formBuilder.nonNullable.control(true),
   });
 
@@ -123,7 +120,7 @@ export class ConvoyForm {
           originMunicipality: value.originMunicipality,
           destinationPointId: value.destinationPointId,
           // El campo entrega hora local; se envía en ISO para que el servidor no la reinterprete.
-          departureAt: new Date(value.departureAt).toISOString(),
+          departureAt: colombiaInputToIso(value.departureAt),
           shareLocation: value.shareLocation,
         }),
       );
@@ -161,7 +158,7 @@ export class ConvoyForm {
       originDepartment: '',
       originMunicipality: '',
       destinationPointId: '',
-      departureAt: localDateTimeValue(),
+      departureAt: colombiaInputValue(),
       shareLocation: true,
     });
   }

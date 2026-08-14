@@ -8,7 +8,7 @@
           <span aria-hidden="true">✓</span>
           {{ t('place.verified', { name: place().verifiedBy }) }}
           @if (place().verifiedAt) {
-            · {{ place().verifiedAt | date: 'd MMM' : undefined : i18n.locale() }}
+            · {{ place().verifiedAt | date: 'd MMM' : colombiaTime : i18n.locale() }}
           }
         </span>
       } @else {

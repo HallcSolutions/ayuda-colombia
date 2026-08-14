@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@a
 import { RouterLink } from '@angular/router';
 import { MissingStatus } from '../../../core/constants/app.constants';
 import { I18nService } from '../../../core/i18n/i18n.service';
+import { COLOMBIA_UTC_OFFSET } from '../../../core/utils/date.util';
 import { AlertsService } from '../../../core/services/alerts.service';
 import { MealsService } from '../../../core/services/meals.service';
 import { MissingService } from '../../../core/services/missing.service';
@@ -36,6 +37,8 @@ export class NewsFeed {
   readonly i18n = inject(I18nService);
 
   protected readonly t = this.i18n.t;
+  /** Todas las horas de la app se leen en hora de Colombia, no en la del aparato. */
+  protected readonly colombiaTime = COLOMBIA_UTC_OFFSET;
 
   /**
    * Todo lo que ha pasado en la zona, en una sola línea de tiempo. Se arma con los

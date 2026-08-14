@@ -37,9 +37,12 @@ import { GeocodingService } from '../../core/services/geocoding.service';
 import { ReportsService } from '../../core/services/reports.service';
 import { streetMapUrl } from '../../core/utils/geo.util';
 
+import { PHONE_PATTERN } from '../../core/utils/phone.util';
+import { PhoneFieldDirective } from '../../shared/phone-field/phone-field.directive';
+
 @Component({
   selector: 'app-report-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, PhoneFieldDirective],
   templateUrl: './report-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -107,7 +110,7 @@ export class ReportFormComponent implements OnDestroy {
     ]),
     contactPhone: this.formBuilder.nonNullable.control('', [
       Validators.required,
-      Validators.pattern(/^[0-9+()\s-]{7,20}$/),
+      Validators.pattern(PHONE_PATTERN),
     ]),
     department: this.formBuilder.nonNullable.control('', [
       Validators.required,
@@ -167,9 +170,7 @@ export class ReportFormComponent implements OnDestroy {
           this.addressSearchUnavailable.set(false);
           return this.geocodingService.searchAddresses(search).pipe(
             map((suggestions) => ({ suggestions, unavailable: false })),
-            catchError(() =>
-              of({ suggestions: [] as AddressSuggestion[], unavailable: true }),
-            ),
+            catchError(() => of({ suggestions: [] as AddressSuggestion[], unavailable: true })),
           );
         }),
         takeUntilDestroyed(),
@@ -209,9 +210,7 @@ export class ReportFormComponent implements OnDestroy {
                     .filter(
                       (municipality) =>
                         municipality.length > 0 &&
-                        this.normalizeText(municipality).includes(
-                          this.normalizeText(search.query),
-                        ),
+                        this.normalizeText(municipality).includes(this.normalizeText(search.query)),
                     ),
                 ),
               ),
@@ -433,10 +432,7 @@ export class ReportFormComponent implements OnDestroy {
 
     try {
       const suggestion = await firstValueFrom(
-        this.geocodingService.reverseLocation(
-          position.coords.latitude,
-          position.coords.longitude,
-        ),
+        this.geocodingService.reverseLocation(position.coords.latitude, position.coords.longitude),
       );
       if (this.destroyed || lookupId !== this.reverseLookupId) return;
 
@@ -450,10 +446,8 @@ export class ReportFormComponent implements OnDestroy {
       this.reportForm.patchValue(
         {
           department: department || this.reportForm.controls.department.value,
-          municipality:
-            suggestion.municipality || this.reportForm.controls.municipality.value,
-          addressReference:
-            address || this.reportForm.controls.addressReference.value,
+          municipality: suggestion.municipality || this.reportForm.controls.municipality.value,
+          addressReference: address || this.reportForm.controls.addressReference.value,
         },
         { emitEvent: false },
       );
@@ -545,10 +539,7 @@ export class ReportFormComponent implements OnDestroy {
     }
     return (
       [...this.departments]
-        .sort(
-          (left, right) =>
-            this.normalizeText(right).length - this.normalizeText(left).length,
-        )
+        .sort((left, right) => this.normalizeText(right).length - this.normalizeText(left).length)
         .find((department) => normalized.includes(this.normalizeText(department))) ?? ''
     );
   }

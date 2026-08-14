@@ -6,6 +6,7 @@ import { TranslationKey } from '../../core/i18n/es.translations';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { HouseReport } from '../../core/models/house-report.model';
 import { ReportsService } from '../../core/services/reports.service';
+import { colombiaDateTime } from '../../core/utils/date.util';
 import { mapUrl as directionsUrl } from '../../core/utils/geo.util';
 
 @Component({
@@ -71,12 +72,7 @@ export class ReportsFeedComponent {
   }
 
   formatDate(value: string): string {
-    return new Intl.DateTimeFormat(this.i18n.locale() === 'es' ? 'es-CO' : 'en-US', {
-      day: 'numeric',
-      month: 'short',
-      hour: 'numeric',
-      minute: '2-digit',
-    }).format(new Date(value));
+    return colombiaDateTime(value, this.i18n.locale());
   }
 
   updateSearch(event: Event): void {

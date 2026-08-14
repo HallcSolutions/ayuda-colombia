@@ -35,7 +35,7 @@
           ><span>{{ t('reportForm.contactPhone') }}</span
           ><input
             formControlName="contactPhone"
-            inputmode="tel"
+            appPhoneField
             [placeholder]="t('reportForm.contactPhonePlaceholder')"
         /></label>
         <label
@@ -48,8 +48,8 @@
           </select></label
         >
         <label class="municipality-field"
-          ><span>{{ t('reportForm.municipality') }}</span
-          ><div class="address-combobox">
+          ><span>{{ t('reportForm.municipality') }}</span>
+          <div class="address-combobox">
             <input
               formControlName="municipality"
               autocomplete="address-level2"
@@ -78,7 +78,9 @@
                     (click)="selectMunicipality(municipality)"
                   >
                     <span aria-hidden="true">⌖</span>
-                    <span><strong>{{ municipality }}</strong></span>
+                    <span
+                      ><strong>{{ municipality }}</strong></span
+                    >
                   </button>
                 }
               </div>
@@ -87,8 +89,8 @@
           <small class="field-hint">{{ t('reportForm.municipalitySearchHint') }}</small></label
         >
         <label class="address-field"
-          ><span>{{ t('reportForm.address') }}</span
-          ><div class="address-combobox">
+          ><span>{{ t('reportForm.address') }}</span>
+          <div class="address-combobox">
             <input
               formControlName="addressReference"
               autocomplete="off"
@@ -104,11 +106,7 @@
               <span class="address-search-spinner" aria-hidden="true"></span>
             }
             @if (addressSuggestionsOpen()) {
-              <div
-                class="address-suggestions"
-                id="report-address-suggestions"
-                role="listbox"
-              >
+              <div class="address-suggestions" id="report-address-suggestions" role="listbox">
                 @for (suggestion of addressSuggestions(); track suggestion.id) {
                   <button
                     type="button"
@@ -132,7 +130,9 @@
                   </button>
                 }
                 @if (addressSearchUnavailable()) {
-                  <p class="address-search-message">{{ t('reportForm.addressSearchUnavailable') }}</p>
+                  <p class="address-search-message">
+                    {{ t('reportForm.addressSearchUnavailable') }}
+                  </p>
                 }
               </div>
             }

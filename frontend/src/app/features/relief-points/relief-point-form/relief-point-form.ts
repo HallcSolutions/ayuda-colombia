@@ -16,9 +16,12 @@ import { I18nService } from '../../../core/i18n/i18n.service';
 import { GeocodingService } from '../../../core/services/geocoding.service';
 import { ReliefPointsService } from '../../../core/services/relief-points.service';
 
+import { PHONE_PATTERN } from '../../../core/utils/phone.util';
+import { PhoneFieldDirective } from '../../../shared/phone-field/phone-field.directive';
+
 @Component({
   selector: 'app-relief-point-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, PhoneFieldDirective],
   templateUrl: './relief-point-form.html',
   styleUrl: './relief-point-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -74,7 +77,7 @@ export class ReliefPointForm {
     ]),
     contactPhone: this.formBuilder.nonNullable.control('', [
       Validators.required,
-      Validators.pattern(/^[0-9+()\s-]{7,20}$/),
+      Validators.pattern(PHONE_PATTERN),
     ]),
     schedule: this.formBuilder.nonNullable.control('', [
       Validators.required,
@@ -126,10 +129,7 @@ export class ReliefPointForm {
 
     try {
       const suggestion = await firstValueFrom(
-        this.geocodingService.reverseLocation(
-          position.coords.latitude,
-          position.coords.longitude,
-        ),
+        this.geocodingService.reverseLocation(position.coords.latitude, position.coords.longitude),
       );
       if (!suggestion) {
         this.locationMessage.set(this.t('reliefPointForm.locationAddressNotFound'));
@@ -166,10 +166,7 @@ export class ReliefPointForm {
     }
     return (
       [...this.departments]
-        .sort(
-          (left, right) =>
-            this.normalizeText(right).length - this.normalizeText(left).length,
-        )
+        .sort((left, right) => this.normalizeText(right).length - this.normalizeText(left).length)
         .find((department) => normalized.includes(this.normalizeText(department))) ?? ''
     );
   }

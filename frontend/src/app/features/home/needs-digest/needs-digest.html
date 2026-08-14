@@ -7,7 +7,7 @@
         <p>
           {{ t('digest.lead') }}
           <time [attr.datetime]="summary.ranAt">
-            {{ summary.ranAt | date: 'd MMM · h:mm a' : undefined : i18n.locale() }}
+            {{ summary.ranAt | date: 'd MMM · h:mm a' : colombiaTime : i18n.locale() }}
           </time>
         </p>
       </div>
@@ -43,7 +43,7 @@
               @if (finding.since) {
                 <time [attr.datetime]="finding.since">
                   {{ t('digest.since') }}
-                  {{ finding.since | date: 'd MMM' : undefined : i18n.locale() }}
+                  {{ finding.since | date: 'd MMM' : colombiaTime : i18n.locale() }}
                 </time>
               }
             </li>

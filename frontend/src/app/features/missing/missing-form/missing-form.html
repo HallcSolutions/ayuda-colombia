@@ -68,7 +68,7 @@
       <span>{{ t('missingForm.contactPhone') }}</span>
       <input
         formControlName="contactPhone"
-        inputmode="tel"
+        appPhoneField
         [placeholder]="t('missingForm.contactPhonePlaceholder')"
       />
     </label>
@@ -91,7 +91,10 @@
       <div class="photo-previews">
         @for (photo of selectedPhotos(); track photo.previewUrl; let index = $index) {
           <figure>
-            <img [src]="photo.previewUrl" [alt]="t('missingForm.photoPreview', { index: index + 1 })" />
+            <img
+              [src]="photo.previewUrl"
+              [alt]="t('missingForm.photoPreview', { index: index + 1 })"
+            />
             <button
               type="button"
               (click)="removePhoto(index)"

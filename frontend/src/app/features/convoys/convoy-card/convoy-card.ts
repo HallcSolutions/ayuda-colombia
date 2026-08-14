@@ -3,6 +3,7 @@ import { ConvoyStatus, RouteSource } from '../../../core/constants/app.constants
 import { convoyStatusKey, supplyCategoryKey } from '../../../core/i18n/domain-keys';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { ConvoyTrip } from '../../../core/models/convoy-trip.model';
+import { colombiaDateTime } from '../../../core/utils/date.util';
 import { durationLabel } from '../../../core/utils/duration.util';
 import { mapUrl } from '../../../core/utils/geo.util';
 import { whatsappUrl } from '../../../core/utils/phone.util';
@@ -74,11 +75,6 @@ export class ConvoyCard {
   readonly whatsappLink = computed(() => whatsappUrl(this.trip().contactPhone));
 
   private formatTime(value: string): string {
-    return new Intl.DateTimeFormat(this.i18n.locale() === 'es' ? 'es-CO' : 'en-US', {
-      day: 'numeric',
-      month: 'short',
-      hour: 'numeric',
-      minute: '2-digit',
-    }).format(new Date(value));
+    return colombiaDateTime(value, this.i18n.locale());
   }
 }

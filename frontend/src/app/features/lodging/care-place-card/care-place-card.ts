@@ -4,6 +4,7 @@ import { reliefPointStatusKey, reliefPointTypeKey } from '../../../core/i18n/dom
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { ReliefPoint } from '../../../core/models/relief-point.model';
 import { mapUrl } from '../../../core/utils/geo.util';
+import { COLOMBIA_UTC_OFFSET } from '../../../core/utils/date.util';
 
 /**
  * Un sitio al que se va a ser atendido: puesto de salud o veterinaria. Enseña la
@@ -23,6 +24,8 @@ export class CarePlaceCard {
   readonly place = input.required<ReliefPoint>();
 
   protected readonly t = this.i18n.t;
+  /** Todas las horas de la app se leen en hora de Colombia, no en la del aparato. */
+  protected readonly colombiaTime = COLOMBIA_UTC_OFFSET;
   protected readonly typeKey = reliefPointTypeKey;
   protected readonly statusKey = reliefPointStatusKey;
 

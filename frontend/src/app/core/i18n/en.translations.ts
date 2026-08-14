@@ -170,9 +170,9 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'reliefPointCard.requestHelp': 'Request help',
   'reliefPointCard.registerMeal': 'Log a meal',
   'reliefPointCard.updateStatus': 'Has the situation changed?',
-  'reliefPointCard.needRemove': 'We no longer need it',
+  'reliefPointCard.needRemove': 'Received',
   'reliefPointCard.needRemoveLabel': 'Withdraw {need}: no longer needed here',
-  'reliefPointCard.needRemoving': 'Withdrawing…',
+  'reliefPointCard.needRemoving': 'Saving…',
   'reliefPointCard.needRemoveError': 'The need could not be withdrawn. Try again.',
   'reliefPointCard.markFull': 'Mark at capacity',
   'reliefPointCard.markActive': 'Mark open',
@@ -538,7 +538,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
 
   'lodgingForm.title': 'Offer lodging',
   'lodgingForm.hint':
-    'No brigade code needed. Publish the beds you can offer and keep the PIN: you will use it to subtract the ones that get taken.',
+    'Publish the beds you can offer and keep the PIN: you will use it to subtract the ones that get taken.',
   'lodgingForm.kind': 'What place are you offering?',
   'lodgingForm.placeName': 'Name of the place',
   'lodgingForm.placeNamePlaceholder': 'E.g. Hotel La Ceiba or the Ríos family home',
@@ -614,7 +614,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
 
   'convoyForm.title': 'Announce a trip',
   'convoyForm.hint':
-    'No brigade code needed. When you finish you will get a 6-digit PIN: it is the key to share your location and mark your arrival.',
+    'When you finish you will get a 6-digit PIN: it is the key to share your location and mark your arrival.',
   'convoyForm.driverName': 'Driver name',
   'convoyForm.contactPhone': 'Contact phone',
   'convoyForm.contactPhonePlaceholder': '3001234567',
