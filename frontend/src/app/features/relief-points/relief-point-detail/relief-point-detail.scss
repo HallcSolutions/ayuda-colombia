@@ -1,16 +1,18 @@
+/* Ficha sin tarjetas: los bloques se separan con aire y una línea fina, y la jerarquía
+   la marcan el texto y los rótulos. Ver "Nada de tarjetas" en CLAUDE.md. */
 :host {
   display: block;
 }
 
 .detail {
   display: grid;
-  gap: 18px;
+  gap: 22px;
 }
 
 .detail-head {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 8px 10px;
   align-items: center;
 }
 
@@ -36,6 +38,34 @@
   background: #e9ece9;
 }
 
+/* La viñeta de verificado: lo primero que mira quien decide si va a ese sitio. */
+.verified-badge,
+.unverified-badge {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.verified-badge {
+  color: white;
+  background: var(--green);
+}
+
+.verified-badge > span:first-child {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.unverified-badge {
+  color: #7a5320;
+  background: #fdf1dd;
+}
+
 .detail-head .place,
 .distance {
   color: var(--muted);
@@ -45,30 +75,21 @@
   text-transform: uppercase;
 }
 
-.detail-head .place::after {
-  content: '·';
-  margin-left: 8px;
-}
-
-.detail-head .place:last-child::after {
-  content: none;
-}
-
 .detail-body {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-  gap: 22px;
+  gap: 30px;
   align-items: start;
 }
 
 .detail-main {
   display: grid;
-  gap: 18px;
+  gap: 22px;
   min-width: 0;
 }
 
 .detail h4 {
-  margin: 0 0 9px;
+  margin: 0 0 10px;
   color: var(--muted);
   font-size: 11px;
   font-weight: 800;
@@ -76,99 +97,67 @@
   text-transform: uppercase;
 }
 
-/* Las necesidades son el motivo de abrir la ficha: van primero y con más peso. */
 .needs h4 {
   color: #8b3824;
 }
 
-.need-cards {
+/* Cada necesidad es una entrada de lista con su línea de color, no un recuadro. */
+.need-list {
   display: grid;
-  gap: 10px;
+  gap: 18px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.need-cards li {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 12px;
-  padding: 13px 15px;
-  border: 1px solid #f2d3c3;
-  border-left: 4px solid var(--coral);
-  border-radius: 13px;
-  background: #fff8f4;
+.need-list li {
+  padding-left: 15px;
+  border-left: 3px solid var(--coral);
 }
 
-.need-cards li.severity-critical {
+.need-list li.severity-critical {
   border-left-color: #c53a1c;
-  background: #fff2ed;
 }
 
-.need-cards li.severity-low {
+.need-list li.severity-low {
   border-left-color: #e6b58f;
-}
-
-.need-icon {
-  font-size: 22px;
-  line-height: 1.2;
-}
-
-.need-body {
-  min-width: 0;
 }
 
 .need-head {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
+  gap: 9px;
+  align-items: baseline;
   margin: 0;
 }
 
+.need-icon {
+  font-size: 19px;
+  line-height: 1;
+}
+
 .need-head strong {
-  color: #7d3421;
-  font-size: 15px;
-  font-weight: 800;
+  color: var(--ink);
+  font: 700 19px/1.2 var(--serif);
 }
 
 .severity {
-  border-radius: 999px;
-  padding: 3px 9px;
-  border: 1px solid #eec5b1;
   color: #96442d;
-  background: white;
   font-size: 10px;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .severity-critical .severity {
-  border-color: transparent;
-  color: white;
-  background: #c53a1c;
+  color: #c53a1c;
 }
 
-.need-title,
 .need-quantity,
 .need-message,
 .need-meta {
-  margin: 5px 0 0;
+  margin: 7px 0 0;
   overflow-wrap: anywhere;
-}
-
-.need-title {
-  color: var(--ink);
-  font-size: 14px;
-  font-weight: 650;
-  line-height: 1.35;
-}
-
-.need-quantity {
-  color: #7d3421;
-  font-size: 13px;
-  font-weight: 700;
 }
 
 .need-quantity span {
@@ -179,11 +168,17 @@
   text-transform: uppercase;
 }
 
+.need-quantity {
+  color: #7d3421;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
 /* La descripción que escribe quien pide: se lee corrida, sin recortar. */
 .need-message {
-  color: #4a3b35;
-  font-size: 13.5px;
-  line-height: 1.55;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.6;
   white-space: pre-line;
 }
 
@@ -195,18 +190,17 @@
 /* Cerrar la petición cuando la ayuda ya llegó: acción tranquila, no destructiva. */
 .need-covered {
   margin-top: 10px;
-  border: 1px solid #cfa08c;
-  border-radius: 999px;
-  padding: 8px 15px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid currentcolor;
+  background: none;
   color: #7d3421;
-  background: white;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 750;
   cursor: pointer;
 }
 
 .need-covered:hover:not(:disabled) {
-  border-color: var(--green);
   color: var(--green);
 }
 
@@ -215,25 +209,24 @@
   cursor: progress;
 }
 
-.about {
-  padding: 14px 16px;
-  border: 1px solid #dce8de;
-  border-radius: 13px;
-  background: #f4f8f3;
+.about,
+.meals {
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
 }
 
 .about p {
   margin: 0;
-  color: #435349;
-  font-size: 13.5px;
-  line-height: 1.55;
+  color: var(--ink);
+  font-size: 14.5px;
+  line-height: 1.65;
   overflow-wrap: anywhere;
   white-space: pre-line;
 }
 
 .meal-list {
   display: grid;
-  gap: 7px;
+  gap: 0;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -241,11 +234,14 @@
 
 .meal-list li {
   display: grid;
-  gap: 2px;
-  padding: 10px 13px;
-  border-radius: 11px;
-  background: #f4f7f2;
-  font-size: 13px;
+  gap: 3px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+}
+
+.meal-list li:last-child {
+  border-bottom: 0;
 }
 
 .meal-list small {
@@ -254,25 +250,30 @@
 
 .detail-aside {
   display: grid;
-  gap: 14px;
-  padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: 15px;
-  background: #fbfcfa;
+  gap: 18px;
 }
 
 .street-map {
   display: block;
   width: 100%;
-  height: 190px;
+  height: 200px;
   border: 0;
-  border-radius: 11px;
+  border-radius: 12px;
 }
 
 .facts {
   display: grid;
-  gap: 12px;
+  gap: 0;
   margin: 0;
+}
+
+.facts > div {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.facts > div:last-child {
+  border-bottom: 0;
 }
 
 .facts dt {
@@ -284,8 +285,8 @@
 }
 
 .facts dd {
-  margin: 3px 0 0;
-  font-size: 13.5px;
+  margin: 4px 0 0;
+  font-size: 14px;
   line-height: 1.45;
   overflow-wrap: anywhere;
 }
@@ -299,7 +300,7 @@
 .muted {
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 13.5px;
 }
 
 .detail-error {
@@ -312,21 +313,21 @@
   display: flex;
   flex-wrap: wrap;
   gap: 9px;
-  padding-top: 16px;
+  padding-top: 20px;
   border-top: 1px solid var(--line);
 }
 
 .detail-actions a,
 .detail-actions button {
   flex: 1 1 11rem;
-  text-align: center;
   border: 1px solid var(--green);
   border-radius: 10px;
-  padding: 11px 18px;
+  padding: 12px 18px;
   color: var(--green);
   background: white;
   font-size: 13.5px;
   font-weight: 750;
+  text-align: center;
   text-decoration: none;
   cursor: pointer;
 }
@@ -334,46 +335,47 @@
 .detail-actions .primary {
   color: white;
   background: var(--green);
-  box-shadow: 0 8px 20px rgba(18, 88, 64, 0.18);
 }
 
 .status-switch {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 8px 12px;
   align-items: center;
   color: var(--muted);
   font-size: 12px;
 }
 
 .status-switch button {
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 6px 13px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid currentcolor;
+  background: none;
   color: var(--muted);
-  background: white;
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
 }
 
 .status-switch button:hover {
-  border-color: var(--green);
   color: var(--green);
 }
 
 @media (max-width: 780px) {
   .detail-body {
     grid-template-columns: 1fr;
+    gap: 22px;
   }
 
   /* En el teléfono manda lo que necesitan; el callejero y los datos quedan debajo. */
   .detail-aside {
     order: 2;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
   }
 
   .street-map {
-    height: 160px;
+    height: 170px;
   }
 
   .detail-actions a,

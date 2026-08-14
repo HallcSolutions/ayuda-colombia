@@ -5,7 +5,9 @@
       <span class="verified-badge">
         <span aria-hidden="true">✓</span>
         {{
-          point().verifiedBy ? t('place.verified', { name: point().verifiedBy }) : t('place.checked')
+          point().verifiedBy
+            ? t('place.verified', { name: point().verifiedBy })
+            : t('place.checked')
         }}
       </span>
     } @else {

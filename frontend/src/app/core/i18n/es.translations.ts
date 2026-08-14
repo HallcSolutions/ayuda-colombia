@@ -457,6 +457,7 @@ export const ES_TRANSLATIONS = {
   'lodging.careHint':
     'Estos sitios salen del directorio de puntos de ayuda. Si conoces uno que falta, regístralo desde Puntos de ayuda.',
   'place.verified': 'Verificado por {name}',
+  'place.checked': 'Verificado',
   'place.unverified': 'Sin confirmar',
   'place.unverifiedHint':
     'Nadie de la red ha comprobado este sitio. Llama antes de ir y, si puedes, ve acompañado.',

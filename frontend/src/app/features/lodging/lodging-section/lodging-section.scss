@@ -121,6 +121,16 @@
   grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
 }
 
+/* Salud y veterinarias van en filas separadas por línea, no en cuadrícula de recuadros. */
+.care-list {
+  display: block;
+  border-top: 1px solid var(--line);
+}
+
+.care-list app-care-place-card:last-child {
+  border-bottom: 0;
+}
+
 .empty-state {
   display: grid;
   gap: 6px;

@@ -1,26 +1,20 @@
+/* Fila, no tarjeta: sin marco ni sombra, separada por una línea fina. Ver "Nada de
+   tarjetas" en CLAUDE.md. */
 :host {
   display: block;
+  border-bottom: 1px solid var(--line);
 }
 
 .care-place {
   display: grid;
-  gap: 12px;
-  height: 100%;
-  padding: 18px 20px;
-  border: 1px solid var(--line);
-  border-left: 4px solid var(--green);
-  border-radius: 16px;
-  background: white;
-  box-shadow: 0 10px 30px rgba(38, 62, 48, 0.05);
-}
-
-.care-place.status-full {
-  border-left-color: #d58c38;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
+  gap: 12px 26px;
+  align-items: start;
+  padding: 20px 0;
 }
 
 .care-place.status-closed {
-  border-left-color: #aab4ad;
-  opacity: 0.82;
+  opacity: 0.78;
 }
 
 .kicker {
@@ -60,7 +54,7 @@
 }
 
 .care-place h3 {
-  margin: 7px 0 4px;
+  margin: 8px 0 4px;
   font: 700 20px/1.2 var(--serif);
 }
 
@@ -77,57 +71,40 @@
   font-size: 12.5px;
 }
 
-/* El sello dice si alguien fue y comprobó el sitio; sin él, la tarjeta lo advierte. */
+/* El sello es una viñeta junto al nombre, no un bloque aparte. */
 .seal {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 9px;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
   margin: 0;
-  padding: 10px 12px;
-  border-radius: 11px;
-  font-size: 12.5px;
-  line-height: 1.45;
-}
-
-.seal > span:first-child {
-  display: grid;
-  width: 20px;
-  height: 20px;
-  place-items: center;
-  border-radius: 50%;
-  font-size: 12px;
+  border-radius: 999px;
+  padding: 5px 11px;
+  font-size: 11px;
   font-weight: 800;
+  letter-spacing: 0.03em;
 }
 
 .seal.verified {
-  border: 1px solid #cfe3d3;
-  background: #f1f8f2;
-  color: #2b6146;
-}
-
-.seal.verified > span:first-child {
   color: white;
   background: var(--green);
 }
 
 .seal.unverified {
-  border: 1px solid #f0d7bd;
-  background: #fdf6ec;
   color: #7a5320;
+  background: #fdf1dd;
 }
 
-.seal.unverified > span:first-child {
-  color: white;
-  background: #d08b2c;
-}
-
-.seal strong {
-  display: block;
+/* La advertencia de "sin confirmar" se lee entera, pero en gris y pequeña. */
+.seal-hint {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .facts {
   display: grid;
-  gap: 10px;
+  gap: 11px;
   margin: 0;
 }
 
@@ -161,8 +138,7 @@
 }
 
 .directions {
-  align-self: end;
-  padding: 11px 16px;
+  padding: 11px 18px;
   border-radius: 10px;
   color: white;
   background: var(--green);
@@ -170,4 +146,16 @@
   font-weight: 750;
   text-align: center;
   text-decoration: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .care-place {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .directions {
+    justify-self: stretch;
+  }
 }

@@ -210,6 +210,11 @@
                           <span [class]="'status status-' + point.status">
                             {{ t(statusKey(point.status)) }}
                           </span>
+                          @if (isVerified(point)) {
+                            <span class="verified-badge">
+                              <span aria-hidden="true">✓</span>{{ t('place.checked') }}
+                            </span>
+                          }
                         </div>
                         <h6>
                           <button type="button" class="point-name" (click)="openDetail(point)">

@@ -29,6 +29,7 @@ import { MealServiceForm } from '../../meals/meal-service-form/meal-service-form
 import { ReliefPointDetail } from '../relief-point-detail/relief-point-detail';
 import { ReliefPointForm } from '../relief-point-form/relief-point-form';
 import { needIcon } from '../need-icon';
+import { isVerifiedPlace } from '../verification';
 import { toMapMarker } from '../relief-point-marker';
 import { DepartmentGroup, PointAction } from './relief-points-section.model';
 
@@ -51,6 +52,7 @@ export class ReliefPointsSection {
   protected readonly typeKey = reliefPointTypeKey;
   protected readonly statusKey = reliefPointStatusKey;
   protected readonly needIcon = needIcon;
+  protected readonly isVerified = isVerifiedPlace;
 
   readonly search = signal('');
   readonly typeFilter = signal<'' | ReliefPointType>('');

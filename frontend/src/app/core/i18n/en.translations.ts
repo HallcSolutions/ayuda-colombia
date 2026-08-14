@@ -449,6 +449,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'lodging.careHint':
     'These places come from the aid points directory. If one is missing, register it from Aid points.',
   'place.verified': 'Checked by {name}',
+  'place.checked': 'Checked',
   'place.unverified': 'Not confirmed',
   'place.unverifiedHint':
     'Nobody in the network has checked this place. Call before going and take someone with you if you can.',

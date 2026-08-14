@@ -159,7 +159,7 @@
         <p>{{ t('lodging.careEmpty') }}</p>
       </div>
     } @else {
-      <div class="lodging-grid">
+      <div class="care-list">
         @for (place of visibleCarePlaces(); track place.id) {
           <app-care-place-card [place]="place" />
         }

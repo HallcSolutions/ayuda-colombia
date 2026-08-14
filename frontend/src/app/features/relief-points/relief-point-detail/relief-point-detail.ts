@@ -25,6 +25,7 @@ import { AlertsService } from '../../../core/services/alerts.service';
 import { ReliefPointsService } from '../../../core/services/relief-points.service';
 import { mapUrl, streetMapUrl } from '../../../core/utils/geo.util';
 import { needIcon } from '../need-icon';
+import { isVerifiedPlace } from '../verification';
 
 /**
  * Ficha completa de un punto: qué necesita, qué contó quien lo registró y cómo llegar.
@@ -72,14 +73,7 @@ export class ReliefPointDetail {
     () => (this.point().contactPhone.match(/\d/g)?.length ?? 0) >= 7,
   );
 
-  /**
-   * Buena parte de los puntos se cargaron con la verificación escrita dentro de las notas
-   * ("Verificado: 2026-08-13. …") antes de que existiera el campo, así que el sello también
-   * la reconoce ahí: si no, sitios ya comprobados aparecerían como dudosos.
-   */
-  readonly isVerified = computed(
-    () => !!this.point().verifiedBy || /^\s*verificad/i.test(this.point().notes),
-  );
+  readonly isVerified = computed(() => isVerifiedPlace(this.point()));
 
   /**
    * Icono de la necesidad. Se mira la categoría, el titular y el mensaje juntos porque
