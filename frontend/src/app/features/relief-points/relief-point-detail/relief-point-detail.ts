@@ -73,6 +73,15 @@ export class ReliefPointDetail {
   );
 
   /**
+   * Buena parte de los puntos se cargaron con la verificación escrita dentro de las notas
+   * ("Verificado: 2026-08-13. …") antes de que existiera el campo, así que el sello también
+   * la reconoce ahí: si no, sitios ya comprobados aparecerían como dudosos.
+   */
+  readonly isVerified = computed(
+    () => !!this.point().verifiedBy || /^\s*verificad/i.test(this.point().notes),
+  );
+
+  /**
    * Icono de la necesidad. Se mira la categoría, el titular y el mensaje juntos porque
    * quien reporta escribe libremente: el detalle ("pañales") suele ir en el texto, no
    * en la categoría.

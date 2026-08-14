@@ -65,16 +65,34 @@ La emergencia es de todo el país: **ninguna vista puede quedar amarrada a un so
 - Los listados se muestran **agrupados por departamento → ciudad** (ver `relief-points-section`).
 - Al añadir una entidad nueva con ubicación: expón `department` y `municipality` en el modelo y respeta lo anterior.
 
-## 🔑 Código de brigadista
+## 🚫 Nada de tarjetas (obligatorio)
 
-- Vive en `ReporterAccessService` y se adjunta solo por `reporterKeyInterceptor`.
-  **No** construyas cabeceras `x-reporter-key` a mano ni pases el código por parámetros.
-- Para pedirlo en un formulario usa `<app-reporter-code-field />`.
+**No se diseñan más tarjetas.** Ni recuadros con borde y sombra, ni cajas dentro de cajas,
+ni rejillas de *cards*. Es una decisión explícita del producto: la pantalla se llenaba de
+marcos que compiten entre sí y el contenido dejaba de leerse.
+
+- Para separar bloques usa **aire y una línea fina** (`border-top: 1px solid var(--line)`),
+  no un contenedor con fondo, borde y sombra.
+- Para listas usa **filas** separadas por línea, no una cuadrícula de recuadros.
+- La jerarquía la marcan el tamaño y el peso del texto, y los rótulos en versalitas
+  (`font-size: 10px; text-transform: uppercase; letter-spacing`), no el marco.
+- El color de fondo se reserva para lo que de verdad es una alerta o un sello; nunca para
+  "agrupar" información que ya está agrupada por su título.
+- Un dato importante se destaca con una **viñeta** o una línea vertical de color a la
+  izquierda, no metiéndolo en una caja.
+
+## 🛡️ Sitios verificados
+
+- `verifiedBy` y `verifiedAt` (puntos de ayuda y alojamientos) dicen quién comprobó el
+  sitio y cuándo. Vacío significa **sin confirmar** y la interfaz lo advierte: a una
+  dirección que nadie ha comprobado no se manda a una familia de noche.
+- Muéstralo siempre como **viñeta de verificado** junto al nombre, no como un bloque de
+  texto aparte.
 
 ## 📡 Tiempo real
 
 - Un solo socket por namespace mediante `RealtimeService.listen(namespace, handlers)`.
-- Namespaces: `/reports`, `/relief-points`, `/meals`, `/alerts`, `/missing`, `/lodging`, `/convoys`.
-  Eventos: `<entidad>.<acción>`.
+- Namespaces: `/reports`, `/relief-points`, `/meals`, `/alerts`, `/missing`, `/lodging`, `/convoys`,
+  `/monitoring`. Eventos: `<entidad>.<acción>`.
 - Los servicios de `core/services` se suscriben en su constructor y hacen *upsert* sobre su signal;
   los componentes nunca abren sockets.

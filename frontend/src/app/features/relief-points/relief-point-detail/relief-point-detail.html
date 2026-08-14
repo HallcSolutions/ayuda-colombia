@@ -1,6 +1,16 @@
 <article class="detail">
   <header class="detail-head">
     <span [class]="'status status-' + point().status">{{ t(statusKey(point().status)) }}</span>
+    @if (isVerified()) {
+      <span class="verified-badge">
+        <span aria-hidden="true">✓</span>
+        {{
+          point().verifiedBy ? t('place.verified', { name: point().verifiedBy }) : t('place.checked')
+        }}
+      </span>
+    } @else {
+      <span class="unverified-badge">{{ t('place.unverified') }}</span>
+    }
     <span class="place">{{ point().municipality }}, {{ point().department }}</span>
     @if (distanceKm() !== null) {
       <span class="distance">{{
@@ -15,42 +25,39 @@
       <section class="needs" aria-labelledby="detail-needs">
         <h4 id="detail-needs">{{ t('reliefPointCard.needs') }}</h4>
         @if (alerts().length) {
-          <ul class="need-cards">
+          <ul class="need-list">
             @for (alert of alerts(); track alert.id) {
               <li [class]="'severity-' + alert.severity">
-                <span class="need-icon" aria-hidden="true">{{ alertIcon(alert) }}</span>
-                <div class="need-body">
-                  <p class="need-head">
-                    <strong>{{ t(categoryKey(alert.category)) }}</strong>
-                    <span class="severity">{{ t(urgencyKey(alert.severity)) }}</span>
+                <p class="need-head">
+                  <span class="need-icon" aria-hidden="true">{{ alertIcon(alert) }}</span>
+                  <strong>{{ t(categoryKey(alert.category)) }}</strong>
+                  <span class="severity">{{ t(urgencyKey(alert.severity)) }}</span>
+                </p>
+                @if (alert.requestedQuantity) {
+                  <p class="need-quantity">
+                    <span>{{ t('reliefPointCard.requestedQuantity') }}</span>
+                    {{ alert.requestedQuantity }}
                   </p>
-                  <p class="need-title">{{ alert.title }}</p>
-                  @if (alert.requestedQuantity) {
-                    <p class="need-quantity">
-                      <span>{{ t('reliefPointCard.requestedQuantity') }}</span>
-                      {{ alert.requestedQuantity }}
-                    </p>
-                  }
-                  @if (alert.message) {
-                    <p class="need-message">{{ alert.message }}</p>
-                  }
-                  <p class="need-meta">
-                    {{ t('reliefPointCard.reportedBy', { name: alert.createdBy }) }} ·
-                    {{ alert.createdAt | date: 'd MMM, h:mm a' : undefined : i18n.locale() }}
-                  </p>
-                  <button
-                    type="button"
-                    class="need-covered"
-                    [disabled]="resolvingAlertId() === alert.id"
-                    (click)="markNeedCovered(alert)"
-                  >
-                    {{
-                      resolvingAlertId() === alert.id
-                        ? t('reliefPointCard.needCovering')
-                        : t('reliefPointCard.needCovered')
-                    }}
-                  </button>
-                </div>
+                }
+                @if (alert.message) {
+                  <p class="need-message">{{ alert.message }}</p>
+                }
+                <p class="need-meta">
+                  {{ t('reliefPointCard.reportedBy', { name: alert.createdBy }) }} ·
+                  {{ alert.createdAt | date: 'd MMM, h:mm a' : undefined : i18n.locale() }}
+                </p>
+                <button
+                  type="button"
+                  class="need-covered"
+                  [disabled]="resolvingAlertId() === alert.id"
+                  (click)="markNeedCovered(alert)"
+                >
+                  {{
+                    resolvingAlertId() === alert.id
+                      ? t('reliefPointCard.needCovering')
+                      : t('reliefPointCard.needCovered')
+                  }}
+                </button>
               </li>
             }
           </ul>

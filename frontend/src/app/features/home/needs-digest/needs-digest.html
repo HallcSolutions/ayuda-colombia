@@ -18,15 +18,15 @@
     } @else {
       <div class="digest-metrics">
         <div>
-          <span class="metric-label"><i></i>{{ t('digest.newPoints') }}</span>
+          <span class="metric-label">{{ t('digest.newPoints') }}</span>
           <strong>{{ newPoints() }}</strong>
         </div>
         <div>
-          <span class="metric-label"><i></i>{{ t('digest.activeAlerts') }}</span>
+          <span class="metric-label">{{ t('digest.activeAlerts') }}</span>
           <strong>{{ activeAlerts() }}</strong>
         </div>
         <div [class.urgent]="criticalAlerts() > 0">
-          <span class="metric-label"><i></i>{{ t('digest.criticalAlerts') }}</span>
+          <span class="metric-label">{{ t('digest.criticalAlerts') }}</span>
           <strong>{{ criticalAlerts() }}</strong>
         </div>
       </div>
