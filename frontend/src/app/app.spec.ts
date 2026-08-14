@@ -37,7 +37,7 @@ describe('App', () => {
     expect(tabLabels()).toEqual([
       'Inicio',
       'Puntos de ayuda',
-      'Dónde dormir',
+      'A dónde ir',
       'Camiones',
       'Desaparecidos',
       'Reportar vivienda',
@@ -51,7 +51,7 @@ describe('App', () => {
     expect(tabLabels()).toEqual([
       'Home',
       'Aid points',
-      'Where to sleep',
+      'Where to go',
       'Trucks',
       'Missing',
       'Report a home',

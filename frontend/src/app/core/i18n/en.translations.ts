@@ -19,6 +19,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'reliefPointType.community_kitchen': 'Community kitchen',
   'reliefPointType.shelter': 'Shelter',
   'reliefPointType.medical_post': 'Medical post',
+  'reliefPointType.veterinary': 'Veterinary care',
 
   'reliefPointStatus.active': 'Open',
   'reliefPointStatus.full': 'At capacity',
@@ -168,6 +169,9 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'reliefPointCard.requestHelp': 'Request help',
   'reliefPointCard.registerMeal': 'Log a meal',
   'reliefPointCard.updateStatus': 'Has the situation changed?',
+  'reliefPointCard.needCovered': 'We no longer need this',
+  'reliefPointCard.needCovering': 'Withdrawing…',
+  'reliefPointCard.needCoveredError': 'The need could not be withdrawn. Try again.',
   'reliefPointCard.markFull': 'Mark at capacity',
   'reliefPointCard.markActive': 'Mark open',
   'reliefPointCard.markClosed': 'Mark closed',
@@ -217,7 +221,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'nav.report': 'Report a home',
   'nav.needs': 'Needs',
   'nav.points': 'Aid points',
-  'nav.lodging': 'Where to sleep',
+  'nav.lodging': 'Where to go',
   'nav.missing': 'Missing',
   'nav.convoys': 'Trucks',
   'nav.cta': 'Create report',
@@ -433,10 +437,21 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'missingForm.submitting': 'Publishing…',
 
   'lodging.loadError': 'Published lodging could not be loaded.',
-  'lodging.eyebrow': 'Beds offered by people',
-  'lodging.title': 'A roof for tonight',
+  'lodging.eyebrow': 'Places you can go to',
+  'lodging.title': 'Where to go tonight',
   'lodging.subtitle':
-    'Families, hotels, motels and farms offer beds to sleep in. Every host subtracts the beds that get taken, so what you see here is what is still free.',
+    'Beds, health care and vets, with their address and how to get there. Places with a seal were checked by someone in the network; call the rest before going.',
+  'lodging.groupSleep': 'Sleep',
+  'lodging.groupHealth': 'Health',
+  'lodging.groupVeterinary': 'Vets',
+  'lodging.groupLabel': 'What are you looking for',
+  'lodging.careEmpty': 'No places of this kind registered in this area yet.',
+  'lodging.careHint':
+    'These places come from the aid points directory. If one is missing, register it from Aid points.',
+  'place.verified': 'Checked by {name}',
+  'place.unverified': 'Not confirmed',
+  'place.unverifiedHint':
+    'Nobody in the network has checked this place. Call before going and take someone with you if you can.',
   'lodging.publish': 'Offer lodging',
   'lodging.cancelPublish': 'Close form',
   'lodging.searchPlaceholder': 'Search by place, address or city',
@@ -611,4 +626,20 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
 
   'notification.title': '{point} needs help',
   'notification.body': '{category}{quantity} · {severity} urgency',
+
+  'digest.eyebrow': 'Checked every 6 hours',
+  'digest.title': 'What changed and what is still missing',
+  'digest.lead': 'Network last reviewed:',
+  'digest.empty': 'No new relief points or unmet needs in this area.',
+  'digest.newPoints': 'New relief points',
+  'digest.activeAlerts': 'Active needs',
+  'digest.criticalAlerts': 'Critical',
+  'digest.needsTitle': 'What they are asking for',
+  'digest.since': 'since',
+  'digest.moreFindings': 'and {count} more signals in the full summary.',
+
+  'digestFinding.critical_stale': 'Critical need unattended',
+  'digestFinding.no_activity': 'No news for days',
+  'digestFinding.kitchen_without_service': 'Kitchen with no meals scheduled',
+  'digestFinding.status_outdated': 'Status out of date',
 };

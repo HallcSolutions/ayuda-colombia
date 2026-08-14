@@ -36,6 +36,9 @@ export class LodgingOfferEntity {
   @Column({ default: true }) freeOfCharge!: boolean;
   @Column({ default: false }) acceptsPets!: boolean;
   @Column({ type: 'varchar', length: 400, default: '' }) notes!: string;
+  /** Quién comprobó la dormida y cuándo; vacío es "sin confirmar" y así se avisa. */
+  @Column({ type: 'varchar', length: 120, default: '' }) verifiedBy!: string;
+  @Column({ type: 'timestamptz', nullable: true }) verifiedAt!: Date | null;
   @Column({
     type: 'enum',
     enum: LodgingStatus,

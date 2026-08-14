@@ -72,6 +72,58 @@
   color: #8c2f1c;
 }
 
+.inline-form .form-success {
+  margin: 0;
+  padding: 11px 14px;
+  border-radius: 9px;
+  background: #e9f4ec;
+  border: 1px solid #bcdcc5;
+  color: #1b5b3a;
+}
+
+/* Panel del PIN que se entrega una sola vez al publicar. */
+.inline-form .pin-panel {
+  display: grid;
+  justify-items: center;
+  gap: 9px;
+  text-align: center;
+  padding: 20px;
+  border: 2px dashed var(--green);
+  border-radius: 12px;
+  background: #eef4ef;
+}
+
+.inline-form .pin-panel strong {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--green);
+}
+
+.inline-form .pin-value {
+  font: 800 40px/1 var(--serif);
+  letter-spacing: 0.22em;
+  color: var(--ink);
+  user-select: all;
+}
+
+.inline-form .pin-panel p {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.inline-form .pin-panel button {
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-weight: 700;
+  background: transparent;
+  color: var(--green);
+  border: 1px solid var(--green);
+  cursor: pointer;
+}
+
 .inline-form .form-buttons {
   display: flex;
   flex-wrap: wrap;

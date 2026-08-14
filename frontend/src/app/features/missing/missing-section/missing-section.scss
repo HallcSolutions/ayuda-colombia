@@ -1,3 +1,5 @@
+@use '../../../shared/styles/toolbar';
+
 :host {
   display: block;
 }
@@ -31,63 +33,6 @@
   font-weight: 750;
   cursor: pointer;
   box-shadow: 0 6px 20px rgba(223, 105, 79, 0.22);
-}
-
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: flex-end;
-  padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: 13px;
-  background: white;
-}
-
-.toolbar input,
-.toolbar select {
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #fbfcfa;
-  color: var(--ink);
-}
-
-.toolbar .search input {
-  min-width: 16rem;
-}
-
-.kind-tabs {
-  display: inline-flex;
-  gap: 4px;
-  padding: 4px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: #fbfcfa;
-}
-
-.kind-tabs button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border: 0;
-  border-radius: 7px;
-  padding: 8px 14px;
-  background: transparent;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.kind-tabs button i {
-  font-style: normal;
-  font-size: 15px;
-}
-
-.kind-tabs button.selected {
-  background: var(--green);
-  color: white;
 }
 
 .stats {

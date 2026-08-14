@@ -44,6 +44,12 @@ export class UpdateReliefPointDto {
   @IsOptional()
   notes?: string;
 
+  /** Nombre de quien verificó el sitio; cadena vacía retira el sello. */
+  @IsString()
+  @MaxLength(120)
+  @IsOptional()
+  verifiedBy?: string;
+
   @Type(() => Number)
   @IsLatitude()
   @IsOptional()

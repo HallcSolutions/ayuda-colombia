@@ -10,6 +10,33 @@
     </button>
   </header>
 
+  <div class="group-tabs" role="group" [attr.aria-label]="t('lodging.groupLabel')">
+    <button
+      type="button"
+      [class.selected]="group() === 'sleep'"
+      [attr.aria-pressed]="group() === 'sleep'"
+      (click)="selectGroup('sleep')"
+    >
+      <i aria-hidden="true">🛏️</i>{{ t('lodging.groupSleep') }}
+    </button>
+    <button
+      type="button"
+      [class.selected]="group() === 'health'"
+      [attr.aria-pressed]="group() === 'health'"
+      (click)="selectGroup('health')"
+    >
+      <i aria-hidden="true">🏥</i>{{ t('lodging.groupHealth') }}
+    </button>
+    <button
+      type="button"
+      [class.selected]="group() === 'veterinary'"
+      [attr.aria-pressed]="group() === 'veterinary'"
+      (click)="selectGroup('veterinary')"
+    >
+      <i aria-hidden="true">🐾</i>{{ t('lodging.groupVeterinary') }}
+    </button>
+  </div>
+
   @if (showForm()) {
     <app-modal
       [eyebrow]="t('lodging.eyebrow')"
@@ -20,15 +47,17 @@
     </app-modal>
   }
 
-  <app-colombia-map
-    [markers]="mapMarkers()"
-    [selectedId]="selectedOfferId()"
-    (markerSelected)="selectOffer($event)"
-  >
-    @if (selectedOffer(); as offer) {
-      <app-lodging-card [offer]="offer" />
-    }
-  </app-colombia-map>
+  @if (group() === 'sleep') {
+    <app-colombia-map
+      [markers]="mapMarkers()"
+      [selectedId]="selectedOfferId()"
+      (markerSelected)="selectOffer($event)"
+    >
+      @if (selectedOffer(); as offer) {
+        <app-lodging-card [offer]="offer" />
+      }
+    </app-colombia-map>
+  }
 
   <div class="toolbar">
     <label class="search">
@@ -40,73 +69,101 @@
         (input)="updateSearch($event)"
       />
     </label>
-    <div class="kind-tabs" role="group" [attr.aria-label]="t('lodging.allKinds')">
-      <button
-        type="button"
-        [class.selected]="kindFilter() === ''"
-        [attr.aria-pressed]="kindFilter() === ''"
-        (click)="selectKind('')"
-      >
-        {{ t('lodging.allKinds') }}
-      </button>
-      @for (kind of kinds; track kind) {
+    @if (group() === 'sleep') {
+      <div class="kind-tabs" role="group" [attr.aria-label]="t('lodging.allKinds')">
         <button
           type="button"
-          [class.selected]="kindFilter() === kind"
-          [attr.aria-pressed]="kindFilter() === kind"
-          (click)="selectKind(kind)"
+          [class.selected]="kindFilter() === ''"
+          [attr.aria-pressed]="kindFilter() === ''"
+          (click)="selectKind('')"
         >
-          <i aria-hidden="true">{{ kindIcons[kind] }}</i
-          >{{ t(kindKey(kind)) }}
+          {{ t('lodging.allKinds') }}
         </button>
-      }
-    </div>
-    <label>
-      <span class="visually-hidden">{{ t('lodging.allStatuses') }}</span>
-      <select [value]="statusFilter()" (change)="updateStatusFilter($event)">
-        <option value="">{{ t('lodging.allStatuses') }}</option>
-        @for (status of statuses; track status) {
-          <option [value]="status">{{ t(statusKey(status)) }}</option>
+        @for (kind of kinds; track kind) {
+          <button
+            type="button"
+            [class.selected]="kindFilter() === kind"
+            [attr.aria-pressed]="kindFilter() === kind"
+            (click)="selectKind(kind)"
+          >
+            <i aria-hidden="true">{{ kindIcons[kind] }}</i
+            >{{ t(kindKey(kind)) }}
+          </button>
         }
-      </select>
-    </label>
+      </div>
+      <label>
+        <span class="visually-hidden">{{ t('lodging.allStatuses') }}</span>
+        <select [value]="statusFilter()" (change)="updateStatusFilter($event)">
+          <option value="">{{ t('lodging.allStatuses') }}</option>
+          @for (status of statuses; track status) {
+            <option [value]="status">{{ t(statusKey(status)) }}</option>
+          }
+        </select>
+      </label>
+    }
   </div>
 
-  <dl class="stats">
-    <div>
-      <dt>{{ t('lodging.stats.freeSpaces') }}</dt>
-      <dd>{{ freeSpaces() }}</dd>
-    </div>
-    <div>
-      <dt>{{ t('lodging.stats.offers') }}</dt>
-      <dd>{{ offersCount() }}</dd>
-    </div>
-    <div>
-      <dt>{{ t('lodging.stats.hosted') }}</dt>
-      <dd>{{ hostedPeople() }}</dd>
-    </div>
-    <div>
-      <dt>{{ t('lodging.stats.full') }}</dt>
-      <dd>{{ fullCount() }}</dd>
-    </div>
-  </dl>
-
-  @if (lodgingService.error()) {
-    <p class="section-error" role="alert">{{ lodgingService.error() }}</p>
+  @if (group() !== 'sleep') {
+    <p class="care-hint">{{ t('lodging.careHint') }}</p>
   }
 
-  @if (lodgingService.loading()) {
-    <p class="empty">{{ t('common.loading') }}</p>
-  } @else if (!offers().length) {
-    <div class="empty-state">
-      <h3>{{ t('lodging.empty.title') }}</h3>
-      <p>{{ t('lodging.empty.body') }}</p>
-    </div>
+  @if (group() === 'sleep') {
+    <dl class="stats">
+      <div>
+        <dt>{{ t('lodging.stats.freeSpaces') }}</dt>
+        <dd>{{ freeSpaces() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('lodging.stats.offers') }}</dt>
+        <dd>{{ offersCount() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('lodging.stats.hosted') }}</dt>
+        <dd>{{ hostedPeople() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('lodging.stats.full') }}</dt>
+        <dd>{{ fullCount() }}</dd>
+      </div>
+    </dl>
+  }
+
+  @if (group() === 'sleep') {
+    @if (lodgingService.error()) {
+      <p class="section-error" role="alert">{{ lodgingService.error() }}</p>
+    }
+
+    @if (lodgingService.loading()) {
+      <p class="empty">{{ t('common.loading') }}</p>
+    } @else if (!offers().length) {
+      <div class="empty-state">
+        <h3>{{ t('lodging.empty.title') }}</h3>
+        <p>{{ t('lodging.empty.body') }}</p>
+      </div>
+    } @else {
+      <div class="lodging-grid">
+        @for (offer of offers(); track offer.id) {
+          <app-lodging-card [offer]="offer" />
+        }
+      </div>
+    }
   } @else {
-    <div class="lodging-grid">
-      @for (offer of offers(); track offer.id) {
-        <app-lodging-card [offer]="offer" />
-      }
-    </div>
+    @if (reliefPointsService.error()) {
+      <p class="section-error" role="alert">{{ reliefPointsService.error() }}</p>
+    }
+
+    @if (reliefPointsService.loading()) {
+      <p class="empty">{{ t('common.loading') }}</p>
+    } @else if (!visibleCarePlaces().length) {
+      <div class="empty-state">
+        <p>{{ t('lodging.careEmpty') }}</p>
+      </div>
+    } @else {
+      <div class="lodging-grid">
+        @for (place of visibleCarePlaces(); track place.id) {
+          <app-care-place-card [place]="place" />
+        }
+      </div>
+    }
   }
 </section>

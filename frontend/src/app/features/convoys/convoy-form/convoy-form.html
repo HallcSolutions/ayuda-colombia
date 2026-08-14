@@ -65,16 +65,19 @@
 
   <fieldset class="cargo-choice">
     <legend>{{ t('convoyForm.cargo') }}</legend>
-    @for (category of categories; track category) {
-      <button
-        type="button"
-        [class.selected]="cargo().includes(category)"
-        [attr.aria-pressed]="cargo().includes(category)"
-        (click)="toggleCargo(category)"
-      >
-        {{ t(categoryKey(category)) }}
-      </button>
-    }
+    <div class="cargo-grid">
+      @for (category of categories; track category) {
+        <button
+          type="button"
+          [class.selected]="cargo().includes(category)"
+          [attr.aria-pressed]="cargo().includes(category)"
+          (click)="toggleCargo(category)"
+        >
+          <i aria-hidden="true">{{ cargo().includes(category) ? '✓' : '+' }}</i
+          >{{ t(categoryKey(category)) }}
+        </button>
+      }
+    </div>
   </fieldset>
 
   <label class="consent">

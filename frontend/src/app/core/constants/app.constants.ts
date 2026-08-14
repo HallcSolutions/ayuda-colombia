@@ -16,6 +16,8 @@ export enum ReliefPointType {
   COMMUNITY_KITCHEN = 'community_kitchen',
   SHELTER = 'shelter',
   MEDICAL_POST = 'medical_post',
+  /** Atención de mascotas y animales de finca, que también salen desplazados. */
+  VETERINARY = 'veterinary',
 }
 
 export enum ReliefPointStatus {
@@ -90,6 +92,19 @@ export enum ConvoyStatus {
 export enum RouteSource {
   ROAD = 'road',
   STRAIGHT_LINE = 'straight_line',
+}
+
+/** Señales que el chequeo periódico levanta sobre un punto ya registrado. */
+export enum DigestFindingKind {
+  CRITICAL_STALE = 'critical_stale',
+  NO_ACTIVITY = 'no_activity',
+  KITCHEN_WITHOUT_SERVICE = 'kitchen_without_service',
+  STATUS_OUTDATED = 'status_outdated',
+}
+
+export enum DigestRunStatus {
+  OK = 'ok',
+  FAILED = 'failed',
 }
 
 // Mismos límites que valida el backend en `common/uploads/photo-upload.ts`.

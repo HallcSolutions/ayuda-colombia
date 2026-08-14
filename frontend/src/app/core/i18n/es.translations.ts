@@ -18,6 +18,7 @@ export const ES_TRANSLATIONS = {
   'reliefPointType.community_kitchen': 'Comedor comunitario',
   'reliefPointType.shelter': 'Albergue',
   'reliefPointType.medical_post': 'Puesto de salud',
+  'reliefPointType.veterinary': 'Atención veterinaria',
 
   'reliefPointStatus.active': 'Abierto',
   'reliefPointStatus.full': 'Sin capacidad',
@@ -168,6 +169,9 @@ export const ES_TRANSLATIONS = {
   'reliefPointCard.requestHelp': 'Pedir ayuda',
   'reliefPointCard.registerMeal': 'Registrar comida',
   'reliefPointCard.updateStatus': '¿Cambió la situación?',
+  'reliefPointCard.needCovered': 'Ya no la necesitamos',
+  'reliefPointCard.needCovering': 'Retirando…',
+  'reliefPointCard.needCoveredError': 'No se pudo retirar la necesidad. Intenta de nuevo.',
   'reliefPointCard.markFull': 'Marcar sin capacidad',
   'reliefPointCard.markActive': 'Marcar abierto',
   'reliefPointCard.markClosed': 'Marcar cerrado',
@@ -216,7 +220,7 @@ export const ES_TRANSLATIONS = {
   'nav.report': 'Reportar vivienda',
   'nav.needs': 'Necesidades',
   'nav.points': 'Puntos de ayuda',
-  'nav.lodging': 'Dónde dormir',
+  'nav.lodging': 'A dónde ir',
   'nav.missing': 'Desaparecidos',
   'nav.convoys': 'Camiones',
   'nav.cta': 'Crear reporte',
@@ -441,10 +445,21 @@ export const ES_TRANSLATIONS = {
   'missingForm.submitting': 'Publicando…',
 
   'lodging.loadError': 'No fue posible cargar los alojamientos publicados.',
-  'lodging.eyebrow': 'Dormidas ofrecidas por la gente',
-  'lodging.title': 'Un techo para esta noche',
+  'lodging.eyebrow': 'Lugares a los que puedes ir',
+  'lodging.title': 'A dónde ir esta noche',
   'lodging.subtitle':
-    'Familias, hoteles, moteles y fincas ofrecen cupos para dormir. Cada anfitrión va descontando los cupos que se ocupan, así que lo que ves aquí es lo que queda libre.',
+    'Dormidas, atención en salud y veterinarias, con su dirección y cómo llegar. Los sitios con sello han sido comprobados por alguien de la red; los demás confírmalos por teléfono antes de ir.',
+  'lodging.groupSleep': 'Dormir',
+  'lodging.groupHealth': 'Salud',
+  'lodging.groupVeterinary': 'Veterinarias',
+  'lodging.groupLabel': 'Qué estás buscando',
+  'lodging.careEmpty': 'Todavía no hay sitios registrados de este tipo en la zona.',
+  'lodging.careHint':
+    'Estos sitios salen del directorio de puntos de ayuda. Si conoces uno que falta, regístralo desde Puntos de ayuda.',
+  'place.verified': 'Verificado por {name}',
+  'place.unverified': 'Sin confirmar',
+  'place.unverifiedHint':
+    'Nadie de la red ha comprobado este sitio. Llama antes de ir y, si puedes, ve acompañado.',
   'lodging.publish': 'Ofrecer alojamiento',
   'lodging.cancelPublish': 'Cerrar formulario',
   'lodging.searchPlaceholder': 'Buscar por lugar, dirección o ciudad',
@@ -621,6 +636,22 @@ export const ES_TRANSLATIONS = {
 
   'notification.title': '{point} necesita ayuda',
   'notification.body': '{category}{quantity} · urgencia {severity}',
+
+  'digest.eyebrow': 'Chequeo cada 6 horas',
+  'digest.title': 'Qué cambió y qué sigue faltando',
+  'digest.lead': 'Última revisión de la red:',
+  'digest.empty': 'En esta zona no hay acopios nuevos ni necesidades sin atender.',
+  'digest.newPoints': 'Acopios nuevos',
+  'digest.activeAlerts': 'Necesidades activas',
+  'digest.criticalAlerts': 'Críticas',
+  'digest.needsTitle': 'Lo que están pidiendo',
+  'digest.since': 'desde el',
+  'digest.moreFindings': 'y {count} señales más en el resumen completo.',
+
+  'digestFinding.critical_stale': 'Crítica sin atender',
+  'digestFinding.no_activity': 'Sin novedades hace días',
+  'digestFinding.kitchen_without_service': 'Comedor sin jornadas',
+  'digestFinding.status_outdated': 'Estado desactualizado',
 } as const;
 
 export type TranslationKey = keyof typeof ES_TRANSLATIONS;

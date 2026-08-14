@@ -18,11 +18,12 @@ import { ReportsService } from '../../core/services/reports.service';
 import { ColombiaMap } from '../../shared/colombia-map/colombia-map';
 import { MapMarker } from '../../shared/colombia-map/colombia-map.model';
 import { toMapMarker } from '../relief-points/relief-point-marker';
+import { NeedsDigestPanel } from './needs-digest/needs-digest';
 import { NewsFeed } from './news-feed/news-feed';
 
 @Component({
   selector: 'app-home-page',
-  imports: [RouterLink, ColombiaMap, NewsFeed],
+  imports: [RouterLink, ColombiaMap, NeedsDigestPanel, NewsFeed],
   templateUrl: './home-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

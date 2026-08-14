@@ -1,5 +1,6 @@
 import {
   ConvoyStatus,
+  DigestFindingKind,
   LodgingKind,
   LodgingStatus,
   MealType,
@@ -44,6 +45,9 @@ export const lodgingStatusKey = (status: LodgingStatus): TranslationKey =>
 
 export const convoyStatusKey = (status: ConvoyStatus): TranslationKey =>
   `convoyStatus.${status}`;
+
+export const digestFindingKey = (kind: DigestFindingKind): TranslationKey =>
+  `digestFinding.${kind}`;
 
 /** Emoji que acompaña a cada tipo de búsqueda; es decoración, no texto traducible. */
 export const MISSING_KIND_ICONS: Record<MissingSubjectKind, string> = {

@@ -1,0 +1,82 @@
+@if (digest(); as summary) {
+  <section class="digest" [attr.aria-label]="t('digest.title')">
+    <header class="overview-heading">
+      <span class="section-kicker"><i></i>{{ t('digest.eyebrow') }}</span>
+      <div>
+        <h2>{{ t('digest.title') }}</h2>
+        <p>
+          {{ t('digest.lead') }}
+          <time [attr.datetime]="summary.ranAt">
+            {{ summary.ranAt | date: 'd MMM · h:mm a' : undefined : i18n.locale() }}
+          </time>
+        </p>
+      </div>
+    </header>
+
+    @if (!hasSomethingToShow()) {
+      <p class="digest-empty">{{ t('digest.empty') }}</p>
+    } @else {
+      <div class="digest-metrics">
+        <div>
+          <span class="metric-label"><i></i>{{ t('digest.newPoints') }}</span>
+          <strong>{{ newPoints() }}</strong>
+        </div>
+        <div>
+          <span class="metric-label"><i></i>{{ t('digest.activeAlerts') }}</span>
+          <strong>{{ activeAlerts() }}</strong>
+        </div>
+        <div [class.urgent]="criticalAlerts() > 0">
+          <span class="metric-label"><i></i>{{ t('digest.criticalAlerts') }}</span>
+          <strong>{{ criticalAlerts() }}</strong>
+        </div>
+      </div>
+
+      @if (findings().length) {
+        <ul class="digest-findings">
+          @for (finding of findings(); track finding.kind + finding.point.id) {
+            <li [class]="'finding-' + finding.kind">
+              <span class="finding-what">{{ t(findingKey(finding.kind)) }}</span>
+              <a routerLink="/puntos">
+                <strong>{{ finding.point.name }}</strong>
+                <span>{{ finding.point.municipality }}, {{ finding.point.department }}</span>
+              </a>
+              @if (finding.since) {
+                <time [attr.datetime]="finding.since">
+                  {{ t('digest.since') }}
+                  {{ finding.since | date: 'd MMM' : undefined : i18n.locale() }}
+                </time>
+              }
+            </li>
+          }
+        </ul>
+        @if (hiddenFindings()) {
+          <p class="digest-more">{{ t('digest.moreFindings', { count: hiddenFindings() }) }}</p>
+        }
+      }
+
+      @if (points().length) {
+        <h3 class="digest-subtitle">{{ t('digest.needsTitle') }}</h3>
+        <ul class="digest-points">
+          @for (entry of points(); track entry.point.id) {
+            <li>
+              <a routerLink="/puntos">
+                <strong>{{ entry.point.name }}</strong>
+                <span>{{ entry.point.municipality }}, {{ entry.point.department }}</span>
+              </a>
+              <ul class="digest-needs">
+                @for (need of entry.needs; track need.category) {
+                  <li [class]="'severity-' + need.severity">
+                    {{ t(categoryKey(need.category)) }}
+                    @if (need.requested.length) {
+                      <span class="digest-quantity">· {{ need.requested.join(', ') }}</span>
+                    }
+                  </li>
+                }
+              </ul>
+            </li>
+          }
+        </ul>
+      }
+    }
+  </section>
+}

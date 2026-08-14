@@ -1,0 +1,118 @@
+/* Barra de filtros compartida (puntos, alojamiento, desaparecidos, camiones).
+   Todos los controles miden lo mismo de alto para que la fila quede alineada. */
+.toolbar {
+  --control-height: 42px;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: white;
+}
+
+/* El buscador se lleva el espacio sobrante: el texto nunca se corta. */
+.toolbar .search {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+
+.toolbar input,
+.toolbar select,
+.toolbar .kind-tabs,
+.toolbar .ghost {
+  height: var(--control-height);
+  box-sizing: border-box;
+}
+
+.toolbar input,
+.toolbar select {
+  width: 100%;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fbfcfa;
+  color: var(--ink);
+}
+
+.toolbar select {
+  min-width: 11rem;
+}
+
+.toolbar input:focus-visible,
+.toolbar select:focus-visible {
+  outline: 3px solid rgba(18, 88, 64, 0.2);
+  outline-offset: 1px;
+  border-color: var(--green);
+}
+
+/* Grupo de pestañas: persona/animal, tipo de alojamiento. */
+.toolbar .kind-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fbfcfa;
+}
+
+.toolbar .kind-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.toolbar .kind-tabs button i {
+  font-style: normal;
+  font-size: 15px;
+}
+
+.toolbar .kind-tabs button.selected {
+  background: var(--green);
+  color: white;
+}
+
+.toolbar .ghost {
+  padding: 0 16px;
+  border: 1px solid var(--green);
+  border-radius: 9px;
+  background: transparent;
+  color: var(--green);
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.toolbar .ghost:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* En un teléfono cada control ocupa la fila completa. */
+@media (max-width: 640px) {
+  .toolbar .search,
+  .toolbar label,
+  .toolbar .kind-tabs,
+  .toolbar .ghost {
+    flex: 1 1 100%;
+  }
+
+  .toolbar .kind-tabs button {
+    flex: 1;
+    justify-content: center;
+    padding: 0 8px;
+  }
+}

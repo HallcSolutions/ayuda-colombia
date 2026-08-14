@@ -44,6 +44,44 @@ El código de demostración definido en `.env.example` es `brigada-demo-2026`. D
 - `POST /api/convoys/:id/pings`: envía la posición del camión. Exige la cabecera `x-convoy-pin` y que el viaje tenga el rastreo autorizado.
 - `PATCH /api/convoys/:id`: enciende o apaga el rastreo, marca la llegada o cancela el viaje. Exige la misma cabecera.
 - WebSocket `/convoys`: eventos `convoy.created`, `convoy.moved` y `convoy.updated`.
+- `GET /api/monitoring/digest`: último resumen del chequeo periódico (acopios nuevos y qué falta).
+- `GET /api/monitoring/status`: si el chequeo sigue vivo (última corrida, próxima y fallos seguidos).
+- `POST /api/monitoring/digest/run`: genera el resumen a mano. Exige la cabecera `x-digest-token`.
+- WebSocket `/monitoring`: evento `digest.created`.
+
+## Chequeo cada 6 horas
+
+Cada seis horas —a las 0, 6, 12 y 18, hora de Colombia— el API revisa la red sola y guarda un
+resumen en `needs_digests`: qué acopios se registraron desde la última revisión y qué les sigue
+faltando a los que ya estaban. Además de las alertas abiertas, agrupadas por punto y categoría,
+levanta cuatro señales que no se ven mirando una alerta suelta: la **alerta crítica** que lleva más
+de 24 horas sin que nadie la atienda, el **punto del que no se sabe nada** hace más de 48 (ni
+alertas, ni comidas, ni ediciones), el **comedor sin ninguna jornada** de comida programada, y el
+punto marcado como **lleno o cerrado** hace tanto que el dato ya no es creíble. El resumen sale por
+el socket apenas se genera, así que la portada se actualiza sin recargar.
+
+La ventana revisada no es «las últimas seis horas» sino **desde donde terminó la última corrida
+buena**: si el contenedor se reinició o se redesplegó justo a esa hora, la corrida siguiente
+recupera lo que se hubiera perdido. Las corridas que fallan también se guardan, porque un chequeo
+muerto y un país sin novedades se ven igual desde fuera; `GET /api/monitoring/status` es lo que
+distingue uno del otro.
+
+Todo se configura por entorno (`DIGEST_*` en `.env.example`): cadencia, zona horaria, umbrales de
+horas, retención y la llave del disparo manual. `DIGEST_ENABLED=false` lo apaga sin redesplegar.
+
+### En Railway
+
+- **Serverless (app sleeping) debe estar apagado** en el servicio: si el contenedor duerme, el reloj
+  del chequeo se duerme con él. Con Serverless encendido, el respaldo es un reloj externo llamando a
+  `POST /api/monitoring/digest/run` con `DIGEST_TRIGGER_TOKEN`.
+- El resumen se genera **dentro del servicio web**, no como cron job de Railway: un cron de Railway
+  exige que el proceso termine, y este tiene que seguir vivo para emitir por socket a quien esté
+  mirando la página.
+- Durante un redespliegue conviven el contenedor viejo y el nuevo unos segundos. Si el reloj cae ahí,
+  los dos intentarían generar el resumen: lo impide un `advisory lock` de Postgres, que se toma sobre
+  una conexión propia porque el candado pertenece a la sesión y el pool reparte conexiones distintas.
+- El contenedor corre en UTC, así que la imagen instala `tzdata` y fija `TZ=America/Bogota`. Colombia
+  no tiene horario de verano, de modo que el desfase es siempre de cinco horas.
 
 ## Camiones en ruta
 

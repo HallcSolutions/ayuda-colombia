@@ -1,3 +1,5 @@
+@use '../../../shared/styles/toolbar';
+
 :host {
   display: block;
 }
@@ -205,47 +207,6 @@
   background: var(--green);
   box-shadow: 0 10px 24px rgba(18, 88, 64, 0.2);
   font: 800 24px/1 var(--serif);
-}
-
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: flex-end;
-  padding-bottom: 18px;
-  border-bottom: 1px solid #d8e0d6;
-}
-
-.toolbar input,
-.toolbar select {
-  padding: 11px 12px;
-  border: 1px solid #d4ddd2;
-  border-radius: 9px;
-  color: var(--ink);
-  background: white;
-}
-
-.toolbar .search {
-  flex: 1 1 19rem;
-}
-
-.toolbar .search input {
-  width: 100%;
-}
-
-.toolbar .ghost {
-  border: 1px solid var(--green);
-  border-radius: 9px;
-  padding: 10px 16px;
-  color: var(--green);
-  background: transparent;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.toolbar .ghost:disabled {
-  opacity: 0.6;
-  cursor: progress;
 }
 
 .stats {
@@ -522,17 +483,6 @@
     width: 48px;
     height: 48px;
     font-size: 20px;
-  }
-
-  .toolbar {
-    align-items: stretch;
-  }
-
-  .toolbar label,
-  .toolbar input,
-  .toolbar select,
-  .toolbar .ghost {
-    width: 100%;
   }
 
   .stats div {

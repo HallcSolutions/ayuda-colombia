@@ -1,3 +1,5 @@
+@use '../../../shared/styles/toolbar';
+
 :host {
   display: block;
 }
@@ -31,25 +33,6 @@
   font-weight: 750;
   cursor: pointer;
   box-shadow: 0 6px 20px rgba(223, 105, 79, 0.22);
-}
-
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: flex-end;
-  padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: 13px;
-  background: white;
-}
-
-.toolbar select {
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: white;
-  font: inherit;
 }
 
 .stats {

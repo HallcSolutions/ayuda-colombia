@@ -73,6 +73,12 @@ export class ReliefPointsService {
     if (dto.notes !== undefined) entity.notes = dto.notes.trim();
     if (dto.latitude !== undefined) entity.latitude = dto.latitude;
     if (dto.longitude !== undefined) entity.longitude = dto.longitude;
+    // La fecha del sello la pone el servidor: vale la hora en que alguien fue y comprobó,
+    // no la que quiera escribir quien envía el formulario. Sin nombre, el sello se cae.
+    if (dto.verifiedBy !== undefined) {
+      entity.verifiedBy = dto.verifiedBy.trim();
+      entity.verifiedAt = entity.verifiedBy ? new Date() : null;
+    }
     const point = this.toContract(await this.repository.save(entity));
     this.gateway.pointUpdated(point);
     return point;
@@ -107,6 +113,8 @@ export class ReliefPointsService {
       dailyMealCapacity: entity.dailyMealCapacity,
       status: entity.status,
       notes: entity.notes,
+      verifiedBy: entity.verifiedBy,
+      verifiedAt: entity.verifiedAt?.toISOString() ?? null,
       createdAt: entity.createdAt.toISOString(),
       updatedAt: entity.updatedAt.toISOString(),
     };

@@ -1,37 +1,59 @@
+@use '../../../shared/styles/form';
+
+/* Dentro de la ventana modal el formulario no repite el marco blanco. */
+.inline-form {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+}
+
 .cargo-choice {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
   margin: 0;
   padding: 0;
   border: 0;
 }
 
 .cargo-choice legend {
-  width: 100%;
   margin-bottom: 8px;
   padding: 0;
   color: var(--muted);
   font-size: 10px;
-  font-weight: 750;
-  letter-spacing: 0.08em;
+  font-weight: 800;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
 }
 
+.cargo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 9px;
+}
+
 .cargo-choice button {
-  padding: 8px 14px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: white;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 13px;
+  border: 1px solid #d9ded8;
+  border-radius: 8px;
+  background: #fafbfa;
+  color: #47534c;
   font-size: 13px;
   font-weight: 650;
+  text-align: left;
   cursor: pointer;
 }
 
+.cargo-choice button i {
+  font-style: normal;
+  font-weight: 800;
+  color: var(--green);
+}
+
 .cargo-choice button.selected {
-  border-color: var(--green);
-  background: #eef5ee;
-  color: var(--ink);
+  border-color: #9fc7ad;
+  background: #e8f2eb;
+  color: var(--green);
 }
 
 .consent {
@@ -45,7 +67,10 @@
 }
 
 .consent input {
+  width: auto;
   margin-top: 3px;
+  flex: 0 0 18px;
+  accent-color: var(--green);
 }
 
 .consent strong {

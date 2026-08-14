@@ -190,6 +190,8 @@ export class LodgingService {
       freeOfCharge: entity.freeOfCharge,
       acceptsPets: entity.acceptsPets,
       notes: entity.notes,
+      verifiedBy: entity.verifiedBy,
+      verifiedAt: entity.verifiedAt?.toISOString() ?? null,
       status: entity.status,
       createdAt: entity.createdAt.toISOString(),
       updatedAt: entity.updatedAt.toISOString(),

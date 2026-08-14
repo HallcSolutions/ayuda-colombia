@@ -33,6 +33,9 @@ export interface LodgingOffer {
   freeOfCharge: boolean;
   acceptsPets: boolean;
   notes: string;
+  /** Quién verificó la dormida; cadena vacía si nadie la ha confirmado todavía. */
+  verifiedBy: string;
+  verifiedAt: string | null;
   status: LodgingStatus;
   createdAt: string;
   updatedAt: string;

@@ -1,0 +1,57 @@
+<article class="care-place" [class]="'care-place status-' + place().status">
+  <header>
+    <div class="kicker">
+      <span class="type">{{ t(typeKey(place().type)) }}</span>
+      <span [class]="'status status-' + place().status">{{ t(statusKey(place().status)) }}</span>
+    </div>
+    <h3>{{ place().name }}</h3>
+    <p class="address">
+      {{ place().addressReference }}
+      <span>{{ place().municipality }}, {{ place().department }}</span>
+    </p>
+  </header>
+
+  @if (place().verifiedBy) {
+    <p class="seal verified">
+      <span aria-hidden="true">✓</span>
+      <span>
+        {{ t('place.verified', { name: place().verifiedBy }) }}
+        @if (place().verifiedAt) {
+          · {{ place().verifiedAt | date: 'd MMM' : undefined : i18n.locale() }}
+        }
+      </span>
+    </p>
+  } @else {
+    <p class="seal unverified">
+      <span aria-hidden="true">!</span>
+      <span>
+        <strong>{{ t('place.unverified') }}</strong>
+        {{ t('place.unverifiedHint') }}
+      </span>
+    </p>
+  }
+
+  <dl class="facts">
+    <div>
+      <dt>{{ t('reliefPointCard.schedule') }}</dt>
+      <dd>{{ place().schedule }}</dd>
+    </div>
+    <div>
+      <dt>{{ t('reliefPointCard.contact') }}</dt>
+      <dd>
+        {{ place().contactName }}
+        @if (hasCallablePhone()) {
+          <a [href]="'tel:' + place().contactPhone">{{ place().contactPhone }}</a>
+        }
+      </dd>
+    </div>
+  </dl>
+
+  @if (place().notes) {
+    <p class="notes">{{ place().notes }}</p>
+  }
+
+  <a class="directions" [href]="directionsUrl()" target="_blank" rel="noopener">
+    {{ t('common.directions') }}
+  </a>
+</article>

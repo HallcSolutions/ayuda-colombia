@@ -18,6 +18,9 @@ export interface ReliefPoint extends ReliefPointSummary {
   dailyMealCapacity: number | null;
   status: ReliefPointStatus;
   notes: string;
+  /** Quién comprobó el sitio; cadena vacía si nadie lo ha confirmado todavía. */
+  verifiedBy: string;
+  verifiedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }

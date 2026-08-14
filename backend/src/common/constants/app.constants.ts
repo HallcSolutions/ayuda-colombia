@@ -16,6 +16,8 @@ export enum ReliefPointType {
   COMMUNITY_KITCHEN = 'community_kitchen',
   SHELTER = 'shelter',
   MEDICAL_POST = 'medical_post',
+  /** Atención de mascotas y animales de finca, que también salen desplazados. */
+  VETERINARY = 'veterinary',
 }
 
 export enum ReliefPointStatus {
@@ -93,6 +95,23 @@ export enum ConvoyStatus {
 export enum RouteSource {
   ROAD = 'road',
   STRAIGHT_LINE = 'straight_line',
+}
+
+/** Cada señal que el chequeo periódico sabe levantar sobre un punto ya registrado. */
+export enum DigestFindingKind {
+  /** Alerta crítica que lleva demasiadas horas abierta sin que nadie la atienda. */
+  CRITICAL_STALE = 'critical_stale',
+  /** Punto activo del que no se sabe nada: ni alertas, ni comidas, ni cambios. */
+  NO_ACTIVITY = 'no_activity',
+  /** Comedor abierto que no tiene ninguna jornada de comida programada. */
+  KITCHEN_WITHOUT_SERVICE = 'kitchen_without_service',
+  /** Punto marcado como lleno o cerrado hace tanto que el dato ya no es creíble. */
+  STATUS_OUTDATED = 'status_outdated',
+}
+
+export enum DigestRunStatus {
+  OK = 'ok',
+  FAILED = 'failed',
 }
 
 export const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];

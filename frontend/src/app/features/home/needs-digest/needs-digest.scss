@@ -1,0 +1,158 @@
+:host {
+  display: block;
+}
+
+.digest {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.digest-empty {
+  margin: 0;
+  color: var(--muted, #5b6472);
+}
+
+.digest-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.75rem;
+
+  > div {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--line, #e3e7ee);
+    border-radius: 0.9rem;
+    background: var(--surface, #fff);
+
+    strong {
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    &.urgent strong {
+      color: var(--critical, #c0342b);
+    }
+  }
+}
+
+.metric-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--muted, #5b6472);
+}
+
+.digest-findings,
+.digest-points,
+.digest-needs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.digest-findings {
+  display: grid;
+  gap: 0.5rem;
+
+  > li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.7rem 0.9rem;
+    border-left: 3px solid var(--line, #e3e7ee);
+    border-radius: 0 0.6rem 0.6rem 0;
+    background: var(--surface-soft, #f6f8fb);
+
+    a {
+      display: grid;
+      gap: 0.1rem;
+      color: inherit;
+      text-decoration: none;
+
+      span {
+        font-size: 0.82rem;
+        color: var(--muted, #5b6472);
+      }
+    }
+
+    time {
+      margin-left: auto;
+      font-size: 0.78rem;
+      color: var(--muted, #5b6472);
+    }
+  }
+
+  // La alerta crítica que nadie atiende es lo único que se destaca en rojo.
+  .finding-critical_stale {
+    border-left-color: var(--critical, #c0342b);
+  }
+}
+
+.finding-what {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted, #5b6472);
+}
+
+.digest-subtitle {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.digest-points {
+  display: grid;
+  gap: 0.75rem;
+
+  > li {
+    display: grid;
+    gap: 0.4rem;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--line, #e3e7ee);
+    border-radius: 0.8rem;
+
+    > a {
+      display: grid;
+      gap: 0.1rem;
+      color: inherit;
+      text-decoration: none;
+
+      span {
+        font-size: 0.82rem;
+        color: var(--muted, #5b6472);
+      }
+    }
+  }
+}
+
+.digest-needs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+
+  > li {
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    background: var(--surface-soft, #f6f8fb);
+  }
+
+  .severity-critical {
+    background: var(--critical-soft, #fdeceb);
+    color: var(--critical, #c0342b);
+  }
+}
+
+.digest-quantity {
+  color: var(--muted, #5b6472);
+}
+
+.digest-more {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted, #5b6472);
+}

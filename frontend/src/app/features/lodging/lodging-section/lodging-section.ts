@@ -11,6 +11,7 @@ import {
   LODGING_STATUSES,
   LodgingKind,
   LodgingStatus,
+  ReliefPointType,
 } from '../../../core/constants/app.constants';
 import {
   LODGING_KIND_ICONS,
@@ -19,18 +20,24 @@ import {
 } from '../../../core/i18n/domain-keys';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { LodgingOffer } from '../../../core/models/lodging-offer.model';
+import { ReliefPoint } from '../../../core/models/relief-point.model';
 import { LodgingService } from '../../../core/services/lodging.service';
 import { RegionService } from '../../../core/services/region.service';
+import { ReliefPointsService } from '../../../core/services/relief-points.service';
 import { ColombiaMap } from '../../../shared/colombia-map/colombia-map';
 import { MapMarker } from '../../../shared/colombia-map/colombia-map.model';
 import { Modal } from '../../../shared/modal/modal';
+import { CarePlaceCard } from '../care-place-card/care-place-card';
 import { LodgingCard } from '../lodging-card/lodging-card';
 import { LodgingForm } from '../lodging-form/lodging-form';
 import { toMapMarker } from '../lodging-marker';
 
+/** Los tres grupos del módulo: dónde dormir, dónde atenderse y dónde llevar animales. */
+export type PlaceGroup = 'sleep' | 'health' | 'veterinary';
+
 @Component({
   selector: 'app-lodging-section',
-  imports: [ColombiaMap, LodgingCard, LodgingForm, Modal],
+  imports: [CarePlaceCard, ColombiaMap, LodgingCard, LodgingForm, Modal],
   templateUrl: './lodging-section.html',
   styleUrl: './lodging-section.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,6 +45,7 @@ import { toMapMarker } from '../lodging-marker';
 export class LodgingSection {
   private readonly region = inject(RegionService);
   readonly lodgingService = inject(LodgingService);
+  readonly reliefPointsService = inject(ReliefPointsService);
 
   protected readonly t = inject(I18nService).t;
   protected readonly kinds = LODGING_KINDS;
@@ -50,6 +58,37 @@ export class LodgingSection {
   readonly kindFilter = signal<'' | LodgingKind>('');
   readonly statusFilter = signal<'' | LodgingStatus>('');
   readonly showForm = signal(false);
+  /** Qué está buscando quien entra: dormir, atenderse o llevar a un animal. */
+  readonly group = signal<PlaceGroup>('sleep');
+
+  /**
+   * Los sitios de salud y veterinaria son puntos de ayuda del directorio, no dormidas:
+   * se agrupan aquí porque quien llega a esta pantalla busca "a dónde voy", y el
+   * buscador de arriba también los filtra.
+   */
+  private readonly carePlaces = computed(() => {
+    const search = this.search().trim().toLowerCase();
+    const type =
+      this.group() === 'health' ? ReliefPointType.MEDICAL_POST : ReliefPointType.VETERINARY;
+    return this.reliefPointsService
+      .pointsInRegion()
+      .filter((point) => point.type === type)
+      .filter(
+        (point) =>
+          !search ||
+          [point.name, point.addressReference, point.municipality, point.department, point.notes]
+            .join(' ')
+            .toLowerCase()
+            .includes(search),
+      );
+  });
+
+  /** Primero los sitios comprobados: son a los que se puede mandar a alguien de noche. */
+  readonly visibleCarePlaces = computed<ReliefPoint[]>(() =>
+    [...this.carePlaces()].sort(
+      (first, second) => this.verifiedFirst(first) - this.verifiedFirst(second),
+    ),
+  );
 
   /** Alojamientos de la zona que pasan los filtros de texto, tipo y estado. */
   private readonly visibleOffers = computed(() => {
@@ -105,7 +144,13 @@ export class LodgingSection {
     effect(() => {
       this.region.selection();
       this.lodgingService.loadOffers();
+      this.reliefPointsService.loadPoints();
     });
+  }
+
+  selectGroup(group: PlaceGroup): void {
+    this.group.set(group);
+    this.selectedOfferId.set(null);
   }
 
   updateSearch(event: Event): void {
@@ -134,5 +179,9 @@ export class LodgingSection {
 
   private availableFirst(offer: LodgingOffer): number {
     return offer.status === LodgingStatus.AVAILABLE ? 0 : 1;
+  }
+
+  private verifiedFirst(place: ReliefPoint): number {
+    return place.verifiedBy ? 0 : 1;
   }
 }

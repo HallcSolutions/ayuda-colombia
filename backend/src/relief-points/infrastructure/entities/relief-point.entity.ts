@@ -36,6 +36,13 @@ export class ReliefPointEntity {
   })
   status!: ReliefPointStatus;
   @Column({ type: 'varchar', length: 400, default: '' }) notes!: string;
+  /**
+   * Sello de verificación: quién comprobó en terreno que el sitio existe y atiende.
+   * Vacío significa "sin confirmar", y la interfaz lo advierte: a un lugar del que
+   * nadie responde no se manda a una familia con niños de noche.
+   */
+  @Column({ type: 'varchar', length: 120, default: '' }) verifiedBy!: string;
+  @Column({ type: 'timestamptz', nullable: true }) verifiedAt!: Date | null;
 
   @CreateDateColumn({ type: 'timestamptz' }) createdAt!: Date;
   @UpdateDateColumn({ type: 'timestamptz' }) updatedAt!: Date;

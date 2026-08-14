@@ -38,6 +38,18 @@
                     {{ t('reliefPointCard.reportedBy', { name: alert.createdBy }) }} ·
                     {{ alert.createdAt | date: 'd MMM, h:mm a' : undefined : i18n.locale() }}
                   </p>
+                  <button
+                    type="button"
+                    class="need-covered"
+                    [disabled]="resolvingAlertId() === alert.id"
+                    (click)="markNeedCovered(alert)"
+                  >
+                    {{
+                      resolvingAlertId() === alert.id
+                        ? t('reliefPointCard.needCovering')
+                        : t('reliefPointCard.needCovered')
+                    }}
+                  </button>
                 </div>
               </li>
             }

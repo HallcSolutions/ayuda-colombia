@@ -12,6 +12,7 @@ import { ConvoysModule } from './convoys/convoys.module';
 import { LodgingModule } from './lodging/lodging.module';
 import { MealsModule } from './meals/meals.module';
 import { MissingModule } from './missing/missing.module';
+import { MonitoringModule } from './monitoring/monitoring.module';
 import { ReliefPointsModule } from './relief-points/relief-points.module';
 import { ReportsModule } from './reports/reports.module';
 
@@ -56,6 +57,7 @@ const serveClient = existsSync(CLIENT_PATH)
     MissingModule,
     LodgingModule,
     ConvoysModule,
+    MonitoringModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

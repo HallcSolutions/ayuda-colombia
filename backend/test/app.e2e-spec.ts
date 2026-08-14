@@ -6,6 +6,13 @@ import { AlertsController } from '../src/alerts/alerts.controller';
 import { AlertsService } from '../src/alerts/alerts.service';
 import { ResponseInterceptor } from '../src/common/interceptors/response.interceptor';
 import { MealsController } from '../src/meals/meals.controller';
+import { DigestTokenGuard } from '../src/monitoring/digest-token.guard';
+import {
+  MONITORING_OPTIONS,
+  buildMonitoringOptions,
+} from '../src/monitoring/monitoring.config';
+import { MonitoringController } from '../src/monitoring/monitoring.controller';
+import { MonitoringService } from '../src/monitoring/monitoring.service';
 import { MealsService } from '../src/meals/meals.service';
 import { ReliefPointsController } from '../src/relief-points/relief-points.controller';
 import { ReliefPointsService } from '../src/relief-points/relief-points.service';
@@ -22,6 +29,7 @@ describe('Reports API (e2e)', () => {
         ReliefPointsController,
         AlertsController,
         MealsController,
+        MonitoringController,
       ],
       providers: [
         {
@@ -61,6 +69,21 @@ describe('Reports API (e2e)', () => {
             create: jest.fn().mockImplementation((dto) => dto),
             update: jest.fn(),
           },
+        },
+        {
+          provide: MonitoringService,
+          useValue: {
+            findLast: jest.fn().mockResolvedValue({ id: 'digest-1' }),
+            status: jest.fn().mockResolvedValue({ enabled: true }),
+            runDigest: jest.fn().mockResolvedValue({ id: 'digest-2' }),
+          },
+        },
+        DigestTokenGuard,
+        {
+          provide: MONITORING_OPTIONS,
+          useValue: buildMonitoringOptions({
+            DIGEST_TRIGGER_TOKEN: 'llave-de-prueba',
+          }),
         },
       ],
     }).compile();
@@ -149,5 +172,36 @@ describe('Reports API (e2e)', () => {
         portionsPlanned: 20,
       })
       .expect(201);
+  });
+
+  it('deja consultar el resumen y el estado del chequeo sin ninguna llave', async () => {
+    await request(app.getHttpServer())
+      .get('/api/monitoring/digest')
+      .expect(200);
+    await request(app.getHttpServer())
+      .get('/api/monitoring/status')
+      .expect(200);
+  });
+
+  it('no deja disparar el resumen a mano sin la llave', async () => {
+    await request(app.getHttpServer())
+      .post('/api/monitoring/digest/run')
+      .expect(401);
+
+    await request(app.getHttpServer())
+      .post('/api/monitoring/digest/run')
+      .set('x-digest-token', 'llave-equivocada')
+      .expect(401);
+  });
+
+  it('dispara el resumen a mano con la llave correcta', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/api/monitoring/digest/run')
+      .set('x-digest-token', 'llave-de-prueba')
+      .expect(200);
+
+    expect((response.body as { data: unknown }).data).toEqual({
+      id: 'digest-2',
+    });
   });
 });

@@ -192,6 +192,29 @@
   font-size: 11.5px;
 }
 
+/* Cerrar la petición cuando la ayuda ya llegó: acción tranquila, no destructiva. */
+.need-covered {
+  margin-top: 10px;
+  border: 1px solid #cfa08c;
+  border-radius: 999px;
+  padding: 8px 15px;
+  color: #7d3421;
+  background: white;
+  font-size: 12.5px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.need-covered:hover:not(:disabled) {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.need-covered:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
 .about {
   padding: 14px 16px;
   border: 1px solid #dce8de;
