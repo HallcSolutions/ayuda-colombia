@@ -4,8 +4,9 @@ import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { ReliefPointType } from '../../../core/constants/app.constants';
+import { ReliefPointStatus, ReliefPointType } from '../../../core/constants/app.constants';
 import { I18nService } from '../../../core/i18n/i18n.service';
+import { ReliefPoint } from '../../../core/models/relief-point.model';
 import { LodgingService } from '../../../core/services/lodging.service';
 import { ReliefPointsService } from '../../../core/services/relief-points.service';
 import { ReliefPointForm } from '../../relief-points/relief-point-form/relief-point-form';
@@ -17,7 +18,28 @@ const emptyList = () => ({
   error: signal(''),
 });
 
-const render = async () => {
+const carePlace = (name: string, type: ReliefPointType): ReliefPoint => ({
+  id: name,
+  name,
+  type,
+  department: 'Antioquia',
+  municipality: 'Medellín',
+  latitude: 6.25,
+  longitude: -75.56,
+  addressReference: 'Calle 10 con carrera 40',
+  contactName: 'Ana Ruiz',
+  contactPhone: '3001234567',
+  schedule: '8am a 6pm',
+  dailyMealCapacity: null,
+  status: ReliefPointStatus.ACTIVE,
+  notes: '',
+  verifiedBy: '',
+  verifiedAt: null,
+  createdAt: '2026-08-14T02:00:00.000Z',
+  updatedAt: '2026-08-14T02:00:00.000Z',
+});
+
+const render = async (points: ReliefPoint[] = []) => {
   TestBed.configureTestingModule({
     imports: [LodgingSection],
     providers: [
@@ -29,7 +51,7 @@ const render = async () => {
       },
       {
         provide: ReliefPointsService,
-        useValue: { ...emptyList(), pointsInRegion: signal([]), loadPoints: () => undefined },
+        useValue: { ...emptyList(), pointsInRegion: signal(points), loadPoints: () => undefined },
       },
     ],
   });
@@ -101,6 +123,24 @@ describe('LodgingSection', () => {
     expect(
       (fixture.nativeElement as HTMLElement).querySelector('[formcontrolname="type"]'),
     ).toBeNull();
+  });
+
+  /** Lo que se registra tiene que salir después en la lista de su pestaña. */
+  it('lista cada sitio en la pestaña que le corresponde', async () => {
+    const fixture = await render([
+      carePlace('Veterinaria del Valle', ReliefPointType.VETERINARY),
+      carePlace('Puesto de salud La Ceiba', ReliefPointType.MEDICAL_POST),
+      carePlace('Acopio del barrio', ReliefPointType.COLLECTION_CENTER),
+    ]);
+    const element = fixture.nativeElement as HTMLElement;
+
+    await click(fixture, '.group-tabs button', 1);
+    expect(element.querySelectorAll('app-care-place-card').length).toBe(1);
+    expect(element.querySelector('.care-list')?.textContent).toContain('Puesto de salud La Ceiba');
+
+    await click(fixture, '.group-tabs button', 2);
+    expect(element.querySelectorAll('app-care-place-card').length).toBe(1);
+    expect(element.querySelector('.care-list')?.textContent).toContain('Veterinaria del Valle');
   });
 
   it('cambiar de pestaña cierra el formulario abierto', async () => {
