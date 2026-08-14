@@ -45,6 +45,20 @@ Para desactivarlo (por ejemplo, en un despliegue donde se aplican aparte) usa `D
 Cada vez que cambies una entidad, genera la migración correspondiente y súbela con el cambio:
 sin ella, otras personas y el despliegue se quedan con el esquema viejo.
 
+## ¿La están usando?
+
+```bash
+npm run uso                                # la base local; `npm run uso -- 30` para 30 días
+railway run --service Postgres npm run uso # producción, desde tu máquina
+```
+
+Solo lee. Separa **publicar** (entrar una vez y dejar un dato) de **volver** (ocupar un cupo,
+cerrar una alerta, mover un camión, comprobar un sitio): una base llena de publicaciones y sin
+señales de vuelta significa que la página se ve pero no sirve. Avisa además de las cargas
+masivas para que una siembra no se lea como un día de uso intenso.
+
+Lo que **no** mide: cuánta gente entra a mirar. Eso hoy no se guarda en ninguna parte.
+
 ## Pruebas
 
 ```bash
