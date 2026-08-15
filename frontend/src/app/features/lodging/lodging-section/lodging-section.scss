@@ -56,6 +56,23 @@
   grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
 }
 
+.all-place-groups,
+.place-group {
+  display: grid;
+  gap: 18px;
+}
+
+.all-place-groups {
+  gap: 34px;
+}
+
+.place-group > h3 {
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  font: 700 22px/1.2 var(--serif);
+}
+
 /* Salud y veterinarias van en filas separadas por línea, no en cuadrícula de recuadros. */
 .care-list {
   display: block;

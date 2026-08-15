@@ -30,13 +30,14 @@ import { MapMarker } from '../../../shared/colombia-map/colombia-map.model';
 import { ColombiaWatermark } from '../../../shared/colombia-watermark/colombia-watermark';
 import { Modal } from '../../../shared/modal/modal';
 import { ReliefPointForm } from '../../relief-points/relief-point-form/relief-point-form';
+import { toMapMarker as reliefPointToMapMarker } from '../../relief-points/relief-point-marker';
 import { CarePlaceCard } from '../care-place-card/care-place-card';
 import { LodgingCard } from '../lodging-card/lodging-card';
 import { LodgingForm } from '../lodging-form/lodging-form';
 import { toMapMarker } from '../lodging-marker';
 
-/** Los tres grupos del módulo: dónde dormir, dónde atenderse y dónde llevar animales. */
-export type PlaceGroup = 'sleep' | 'health' | 'veterinary';
+/** La portada reúne todo; después se puede aislar dónde dormir, salud o veterinarias. */
+export type PlaceGroup = 'all' | 'sleep' | 'health' | 'veterinary';
 
 /** Un filtro de la fila de arriba: una clase de dormida o un tipo de atención. */
 export interface PlaceFilter {
@@ -59,6 +60,7 @@ interface PlaceActionCard {
  * veterinaria la encuentra donde busca, no en unas pestañas aparte más arriba.
  */
 const PLACE_FILTERS: PlaceFilter[] = [
+  { id: 'all', icon: '📍', labelKey: 'lodging.groupAll', group: 'all', kind: '' },
   { id: 'sleep', icon: '🛏️', labelKey: 'lodging.groupSleep', group: 'sleep', kind: '' },
   ...LODGING_KINDS.map((kind) => ({
     id: kind,
@@ -102,23 +104,23 @@ export class LodgingSection {
   protected readonly statuses = LODGING_STATUSES;
   protected readonly statusKey = lodgingStatusKey;
 
-  /** Lo que se registra en cada pestaña: una dormida, un puesto de salud o una veterinaria. */
-  private readonly carePointType = computed(() =>
-    this.group() === 'health' ? ReliefPointType.MEDICAL_POST : ReliefPointType.VETERINARY,
-  );
+  /** La vista general no publica un tipo ambiguo: primero se elige una categoría. */
+  readonly canPublish = computed(() => this.group() !== 'all');
 
   /** En "Dormir" se ofrece un cupo; en las otras dos se registra el sitio de atención. */
-  readonly publishType = computed<ReliefPointType | null>(() =>
-    this.group() === 'sleep' ? null : this.carePointType(),
-  );
+  readonly publishType = computed<ReliefPointType | null>(() => {
+    if (this.group() === 'health') return ReliefPointType.MEDICAL_POST;
+    if (this.group() === 'veterinary') return ReliefPointType.VETERINARY;
+    return null;
+  });
 
   readonly publishKey = computed<TranslationKey>(() => {
-    if (this.group() === 'sleep') return 'lodging.publish';
+    if (this.group() === 'all' || this.group() === 'sleep') return 'lodging.publish';
     return this.group() === 'health' ? 'lodging.publishHealth' : 'lodging.publishVeterinary';
   });
 
   readonly publishTitleKey = computed<TranslationKey>(() => {
-    if (this.group() === 'sleep') return 'lodgingForm.title';
+    if (this.group() === 'all' || this.group() === 'sleep') return 'lodgingForm.title';
     return this.group() === 'health'
       ? 'reliefPointForm.titleMedicalPost'
       : 'reliefPointForm.titleVeterinary';
@@ -128,10 +130,18 @@ export class LodgingSection {
   readonly kindFilter = signal<'' | LodgingKind>('');
   readonly statusFilter = signal<'' | LodgingStatus>('');
   readonly showForm = signal(false);
-  /** Qué está buscando quien entra: dormir, atenderse o llevar a un animal. */
-  readonly group = signal<PlaceGroup>('sleep');
+  /** Al entrar se ve la red completa; luego se puede escoger una categoría. */
+  readonly group = signal<PlaceGroup>('all');
 
   readonly actionCard = computed<PlaceActionCard>(() => {
+    if (this.group() === 'all') {
+      return {
+        imageSrc: '/assets/actions/redayuda-lodging-home.jpg',
+        imageAltKey: 'lodging.actionAllImageAlt',
+        eyebrowKey: 'lodging.actionAllEyebrow',
+        bodyKey: 'lodging.actionAllBody',
+      };
+    }
     if (this.group() === 'health') {
       return {
         imageSrc: '/assets/actions/redayuda-health-post.jpg',
@@ -168,10 +178,17 @@ export class LodgingSection {
    */
   private readonly carePlaces = computed(() => {
     const search = this.search().trim().toLowerCase();
-    const type = this.carePointType();
+    const group = this.group();
     return this.reliefPointsService
       .pointsInRegion()
-      .filter((point) => point.type === type)
+      .filter((point) => {
+        if (group === 'health') return point.type === ReliefPointType.MEDICAL_POST;
+        if (group === 'veterinary') return point.type === ReliefPointType.VETERINARY;
+        return (
+          group === 'all' &&
+          [ReliefPointType.MEDICAL_POST, ReliefPointType.VETERINARY].includes(point.type)
+        );
+      })
       .filter(
         (point) =>
           !search ||
@@ -188,12 +205,19 @@ export class LodgingSection {
       (first, second) => this.verifiedFirst(first) - this.verifiedFirst(second),
     ),
   );
+  readonly visibleHealthPlaces = computed(() =>
+    this.visibleCarePlaces().filter((point) => point.type === ReliefPointType.MEDICAL_POST),
+  );
+  readonly visibleVeterinaryPlaces = computed(() =>
+    this.visibleCarePlaces().filter((point) => point.type === ReliefPointType.VETERINARY),
+  );
 
   /** Alojamientos de la zona que pasan los filtros de texto, tipo y estado. */
   private readonly visibleOffers = computed(() => {
     const search = this.search().trim().toLowerCase();
-    const kind = this.kindFilter();
-    const status = this.statusFilter();
+    if (!['all', 'sleep'].includes(this.group())) return [];
+    const kind = this.group() === 'sleep' ? this.kindFilter() : '';
+    const status = this.group() === 'sleep' ? this.statusFilter() : '';
     return this.lodgingService.offersInRegion().filter((offer) => {
       const matchesText =
         !search ||
@@ -225,18 +249,48 @@ export class LodgingSection {
     () => this.visibleOffers().filter((offer) => offer.status === LodgingStatus.FULL).length,
   );
 
-  readonly selectedOfferId = signal<string | null>(null);
-
-  /** Solo se pueden dibujar los alojamientos con el punto marcado. */
-  readonly mapMarkers = computed(() =>
-    this.visibleOffers()
-      .map(toMapMarker)
-      .filter((marker): marker is MapMarker => marker !== null),
+  /** Contadores de portada: representan toda la zona, no el filtro de texto. */
+  private readonly carePlacesInRegion = computed(() =>
+    this.reliefPointsService
+      .pointsInRegion()
+      .filter((point) =>
+        [ReliefPointType.MEDICAL_POST, ReliefPointType.VETERINARY].includes(point.type),
+      ),
   );
 
-  /** Alojamiento abierto desde el mapa, mientras siga pasando los filtros. */
+  readonly totalPlacesCount = computed(
+    () => this.lodgingService.offersInRegion().length + this.carePlacesInRegion().length,
+  );
+  readonly lodgingPlacesCount = computed(() => this.lodgingService.offersInRegion().length);
+  readonly healthPlacesCount = computed(
+    () =>
+      this.carePlacesInRegion().filter((point) => point.type === ReliefPointType.MEDICAL_POST)
+        .length,
+  );
+  readonly veterinaryPlacesCount = computed(
+    () =>
+      this.carePlacesInRegion().filter((point) => point.type === ReliefPointType.VETERINARY).length,
+  );
+
+  readonly selectedPlaceId = signal<string | null>(null);
+
+  /** La portada dibuja juntos alojamientos ubicados, salud y veterinarias. */
+  readonly mapMarkers = computed(() => {
+    const lodgingMarkers = this.visibleOffers()
+      .map(toMapMarker)
+      .filter((marker): marker is MapMarker => marker !== null);
+    const careMarkers = this.visibleCarePlaces().map((point) =>
+      reliefPointToMapMarker(point, false),
+    );
+    return [...lodgingMarkers, ...careMarkers];
+  });
+
+  /** Ficha abierta desde el mapa, mientras siga pasando los filtros. */
   readonly selectedOffer = computed(
-    () => this.visibleOffers().find((offer) => offer.id === this.selectedOfferId()) ?? null,
+    () => this.visibleOffers().find((offer) => offer.id === this.selectedPlaceId()) ?? null,
+  );
+  readonly selectedCarePlace = computed(
+    () => this.visibleCarePlaces().find((place) => place.id === this.selectedPlaceId()) ?? null,
   );
 
   constructor() {
@@ -250,7 +304,7 @@ export class LodgingSection {
   /** Cambiar de grupo cierra el formulario: lo que se registra ya no es lo mismo. */
   private selectGroup(group: PlaceGroup): void {
     this.group.set(group);
-    this.selectedOfferId.set(null);
+    this.selectedPlaceId.set(null);
     this.showForm.set(false);
   }
 
@@ -258,8 +312,8 @@ export class LodgingSection {
     this.search.set((event.target as HTMLInputElement).value);
   }
 
-  selectOffer(marker: MapMarker | null): void {
-    this.selectedOfferId.set(marker?.id ?? null);
+  selectMapPlace(marker: MapMarker | null): void {
+    this.selectedPlaceId.set(marker?.id ?? null);
   }
 
   /** Cambiar de grupo arrastra sus efectos; quedarse dentro de las dormidas, no. */

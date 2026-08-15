@@ -62,6 +62,9 @@ export class ReliefPointsService {
 
   async update(id: string, dto: UpdateReliefPointDto): Promise<ReliefPoint> {
     const entity = await this.findEntity(id);
+    if (dto.name !== undefined) entity.name = dto.name.trim();
+    if (dto.addressReference !== undefined)
+      entity.addressReference = dto.addressReference.trim();
     if (dto.status) entity.status = dto.status;
     if (dto.schedule !== undefined) entity.schedule = dto.schedule.trim();
     if (dto.contactName !== undefined)

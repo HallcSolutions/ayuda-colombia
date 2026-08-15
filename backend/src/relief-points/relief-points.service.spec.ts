@@ -27,6 +27,8 @@ const pointEntity = (
   dailyMealCapacity: null,
   status: ReliefPointStatus.ACTIVE,
   notes: '',
+  verifiedBy: '',
+  verifiedAt: null,
   createdAt: new Date('2026-08-13T10:00:00Z'),
   updatedAt: new Date('2026-08-13T10:00:00Z'),
   ...overrides,
@@ -107,6 +109,19 @@ describe('ReliefPointsService', () => {
 
     expect(point.status).toBe(ReliefPointStatus.FULL);
     expect(point.schedule).toBe('7:00 a 19:00');
+    expect(gateway.pointUpdated).toHaveBeenCalledWith(point);
+  });
+
+  it('corrige el nombre y la dirección de un punto ya publicado', async () => {
+    repository.findOneBy.mockResolvedValue(pointEntity());
+
+    const point = await service.update('point-1', {
+      name: ' Centro de Bienestar Animal ',
+      addressReference: ' Carrera 56 # 7 Oeste-315 ',
+    });
+
+    expect(point.name).toBe('Centro de Bienestar Animal');
+    expect(point.addressReference).toBe('Carrera 56 # 7 Oeste-315');
     expect(gateway.pointUpdated).toHaveBeenCalledWith(point);
   });
 
