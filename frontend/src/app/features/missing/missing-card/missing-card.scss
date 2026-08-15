@@ -1,187 +1,225 @@
+/* La misma fila se dibuja en el listado (ancho) y en la vista previa del mapa (22rem),
+   así que se mide contra su propio contenedor y no contra la ventana. */
 :host {
   display: block;
-  height: 100%;
+  container-type: inline-size;
 }
 
-.missing-card {
+.missing-row {
   display: grid;
-  grid-template-rows: auto 1fr;
-  height: 100%;
-  background: white;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  overflow: hidden;
+  grid-template-columns: minmax(18rem, 1.5fr) minmax(12rem, 0.8fr) auto;
+  gap: 18px 24px;
+  align-items: start;
+  padding: 20px;
+  /* El estado se marca con una línea vertical a la izquierda, no con un marco. */
+  border-left: 2px solid var(--coral);
 }
 
-.missing-card.status-found {
-  border-color: #bcdcc5;
+.missing-row.status-found {
+  border-left-color: var(--green);
 }
 
-.missing-card.status-closed {
-  opacity: 0.72;
+.missing-row.status-closed {
+  border-left-color: #aab4ad;
+  opacity: 0.78;
 }
 
-.poster {
-  position: relative;
-  aspect-ratio: 4 / 3;
+.identity {
+  display: flex;
+  gap: 14px;
+  min-width: 0;
+}
+
+.portrait {
+  flex: 0 0 86px;
+  width: 86px;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 10px;
   background: #eef1ec;
 }
 
-.poster img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.who {
+  min-width: 0;
 }
 
-.kind-chip,
-.status-chip {
-  position: absolute;
-  top: 12px;
-  display: inline-flex;
+.kicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
   align-items: center;
-  gap: 6px;
-  padding: 6px 11px;
-  border-radius: 999px;
-  font-size: 11.5px;
-  font-weight: 750;
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-}
-
-.kind-chip {
-  left: 12px;
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--ink);
-}
-
-.kind-chip i {
-  font-style: normal;
-  font-size: 14px;
-}
-
-.status-chip {
-  right: 12px;
-  background: var(--coral);
-  color: white;
-}
-
-.status-found .status-chip {
-  background: var(--green);
-}
-
-.status-closed .status-chip {
-  background: #6c776f;
-}
-
-.body {
-  display: grid;
-  align-content: start;
-  gap: 13px;
-  padding: 17px 19px 19px;
-}
-
-.body header h3 {
-  margin: 0;
-  font: 700 21px/1.2 var(--serif);
-}
-
-.age {
-  margin: 3px 0 0;
   color: var(--green);
-  font-size: 12.5px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
 }
 
-.place {
-  margin: 3px 0 0;
-  color: var(--muted);
+.kind {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.kind i {
+  font-style: normal;
   font-size: 13px;
+}
+
+/* Sello de estado: fondo de color solo aquí, porque es el dato que urge leer. */
+.status {
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: #8b3824;
+  background: #fff0ec;
+}
+
+.status-found {
+  color: #1b5b3a;
+  background: #e9f4ec;
+}
+
+.status-closed {
+  color: #66706b;
+  background: #e9ece9;
+}
+
+.who h3 {
+  margin: 6px 0 3px;
+  font: 720 19px/1.2 var(--serif);
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.signs {
+  margin-top: 10px;
+}
+
+.signs strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+/* Las señas suelen traer enlaces larguísimos: se parten antes de empujar la pantalla. */
+.signs p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.thumbnails img {
+  width: 46px;
+  height: 46px;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 .facts {
   display: grid;
-  gap: 10px;
+  gap: 11px;
   margin: 0;
-  padding: 13px 15px;
-  background: #f4f7f2;
-  border-radius: 11px;
+  min-width: 0;
 }
 
 .facts dt {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.09em;
 }
 
 .facts dd {
-  margin: 3px 0 0;
-  font-size: 13.5px;
+  margin: 2px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
-.body h4 {
-  margin: 0 0 6px;
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-}
-
-.signs p,
-.contact p {
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 1.5;
-}
-
-.thumbnails {
-  display: flex;
-  gap: 8px;
-}
-
-.thumbnails img {
-  width: 62px;
-  height: 62px;
-  object-fit: cover;
-  border-radius: 9px;
-  border: 1px solid var(--line);
-}
-
-.contact-links {
+/* Las acciones se reparten el ancho que quede y bajan de línea solas. */
+.row-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 9px;
+  gap: 7px;
+  min-width: 10rem;
 }
 
-.contact-links a {
-  border-radius: 8px;
-  padding: 9px 14px;
-  font-size: 13px;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.contact-links .call {
-  background: var(--green);
-  color: white;
-}
-
-.contact-links .whatsapp {
+.row-actions a,
+.row-actions button {
+  display: inline-flex;
+  flex: 1 1 8.5rem;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  /* Zona de toque mínima: se pulsa desde la calle, con una mano. */
+  min-height: 44px;
+  padding: 10px 12px;
   border: 1px solid var(--green);
+  border-radius: 8px;
   color: var(--green);
+  background: white;
+  font-size: 11.5px;
+  font-weight: 750;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.row-actions .call,
+.row-actions .found {
+  color: white;
+  background: var(--green);
+}
+
+.row-actions .ghost {
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+.found-notice,
+.card-error,
+.pin-prompt {
+  grid-column: 1 / -1;
 }
 
 .found-notice {
   margin: 0;
-  padding: 10px 13px;
-  border-radius: 9px;
-  background: #e9f4ec;
+  padding-left: 12px;
+  border-left: 3px solid var(--green);
   color: #1b5b3a;
-  font-size: 13px;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.card-error {
+  margin: 0;
+  padding-left: 12px;
+  border-left: 3px solid #c0563c;
+  color: #8c2f1c;
+  font-size: 12.5px;
 }
 
 .pin-prompt {
@@ -189,21 +227,20 @@
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
-  padding: 13px 15px;
-  border: 1px dashed var(--green);
-  border-radius: 11px;
-  background: #f4f7f2;
+  padding-left: 12px;
+  border-left: 3px solid var(--green);
 }
 
 .pin-prompt p {
   flex: 1 0 100%;
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12.5px;
 }
 
 .pin-prompt input {
   width: 7rem;
+  min-height: 44px;
   padding: 9px 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -215,19 +252,20 @@
 }
 
 .pin-prompt button {
-  border-radius: 8px;
-  padding: 9px 15px;
-  font-size: 13px;
-  font-weight: 700;
+  min-height: 44px;
+  padding: 10px 15px;
   border: 1px solid var(--green);
+  border-radius: 8px;
   background: white;
   color: var(--green);
+  font-size: 12px;
+  font-weight: 750;
   cursor: pointer;
 }
 
 .pin-prompt button.primary {
-  background: var(--green);
   color: white;
+  background: var(--green);
 }
 
 .pin-prompt button.primary:disabled {
@@ -250,45 +288,32 @@
   white-space: nowrap;
 }
 
-.card-error {
-  margin: 0;
-  color: #8c2f1c;
-  font-size: 13px;
+@container (max-width: 900px) {
+  .missing-row {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.9fr);
+    gap: 16px 20px;
+  }
+
+  .row-actions {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
 }
 
-.missing-card footer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  border-top: 1px solid var(--line);
-  padding-top: 12px;
-}
+@container (max-width: 640px) {
+  .missing-row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 16px 14px;
+  }
 
-.missing-card footer a {
-  color: var(--green);
-  font-size: 13px;
-  font-weight: 650;
-}
+  .portrait {
+    flex-basis: 72px;
+    width: 72px;
+  }
 
-.missing-card footer button {
-  border-radius: 8px;
-  padding: 9px 15px;
-  font-size: 13px;
-  font-weight: 700;
-  border: 1px solid var(--green);
-  background: white;
-  color: var(--green);
-  cursor: pointer;
-}
-
-.missing-card footer button.primary {
-  background: var(--green);
-  border-color: var(--green);
-  color: white;
-}
-
-.missing-card footer button.ghost {
-  border-color: var(--line);
-  color: var(--muted);
+  /* En el teléfono, llamar es la acción principal y ocupa el ancho. */
+  .row-actions .call {
+    flex: 1 1 100%;
+  }
 }

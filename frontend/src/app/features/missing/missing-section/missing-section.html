@@ -116,11 +116,13 @@
         <p>{{ t('missing.empty.body') }}</p>
       </div>
     } @else {
-      <div class="missing-grid">
+      <ul class="missing-list">
         @for (record of records(); track record.id) {
-          <app-missing-card [record]="record" />
+          <li>
+            <app-missing-card [record]="record" />
+          </li>
         }
-      </div>
+      </ul>
     }
   </div>
 </section>
