@@ -1780,10 +1780,11 @@ textarea {
   position: relative;
   isolation: isolate;
   display: grid;
+  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr);
   overflow: hidden;
   min-height: clamp(650px, 72vw, 820px);
-  align-items: center;
-  padding: clamp(86px, 9vw, 132px) max(7vw, 28px);
+  align-items: stretch;
+  padding: 0;
   scroll-margin-top: 138px;
   background: #102f28;
 }
@@ -1791,42 +1792,39 @@ textarea {
   position: absolute;
   z-index: 1;
   inset: 0;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(8, 34, 28, 0.98) 0%,
-      rgba(8, 34, 28, 0.91) 43%,
-      rgba(8, 34, 28, 0.48) 72%,
-      rgba(8, 34, 28, 0.2) 100%
-    ),
-    linear-gradient(180deg, rgba(9, 31, 26, 0.12), rgba(9, 31, 26, 0.48));
+  background: linear-gradient(
+    90deg,
+    rgba(8, 34, 28, 0.08) 0%,
+    rgba(8, 34, 28, 0.24) 44%,
+    rgba(8, 34, 28, 0) 54%
+  );
   content: '';
   pointer-events: none;
 }
 .hope-visual {
-  position: absolute;
+  position: relative;
   z-index: 0;
-  top: clamp(54px, 6vw, 88px);
-  right: max(4vw, 28px);
-  bottom: clamp(54px, 6vw, 88px);
-  width: min(40vw, 760px);
+  grid-column: 1;
+  width: 100%;
+  min-height: 100%;
   overflow: hidden;
   margin: 0;
-  border-radius: 28px;
 }
 .hope-visual img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 75% top;
+  object-position: 75% center;
   filter: saturate(0.88) contrast(1.04);
 }
 .hope-inner {
   position: relative;
   z-index: 2;
-  width: min(100%, 1440px);
-  margin-inline: auto;
+  grid-column: 2;
+  align-self: center;
+  width: 100%;
+  padding: clamp(72px, 7vw, 110px) clamp(42px, 6vw, 104px);
 }
 .hope-kicker {
   display: flex;
@@ -1846,7 +1844,7 @@ textarea {
   content: '';
 }
 .hope-inner blockquote {
-  max-width: min(47vw, 950px);
+  max-width: 950px;
   margin: 0;
 }
 .hope-inner blockquote p {
@@ -2885,15 +2883,14 @@ textarea {
     min-height: 0;
   }
   .hope-section::after {
-    background: linear-gradient(180deg, rgba(7, 30, 25, 0.08), rgba(7, 30, 25, 0.3));
+    background: linear-gradient(180deg, rgba(7, 30, 25, 0.04), rgba(7, 30, 25, 0.24));
   }
   .hope-visual {
-    position: relative;
-    inset: auto;
-    width: min(100%, 620px);
+    width: 100%;
     aspect-ratio: 16 / 9;
-    margin: 0 0 clamp(42px, 7vw, 62px);
-    border-radius: 24px;
+  }
+  .hope-inner {
+    padding: clamp(64px, 9vw, 86px) 20px;
   }
   .hope-inner blockquote {
     max-width: none;
@@ -2902,15 +2899,13 @@ textarea {
 
 @media (max-width: 640px) {
   .hope-section {
-    padding: 72px 18px;
+    padding: 0;
   }
   .hope-visual {
     aspect-ratio: 4 / 3;
-    margin-bottom: 42px;
-    border-radius: 20px;
   }
   .hope-inner {
-    width: 100%;
+    padding: 64px 18px 72px;
   }
   .hope-inner blockquote p {
     font-size: clamp(42px, 13vw, 56px);

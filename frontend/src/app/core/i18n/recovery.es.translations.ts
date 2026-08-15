@@ -226,6 +226,7 @@ export const RECOVERY_ES_TRANSLATIONS = {
     'Tu teléfono no se publica: se lo damos a quien pide ayuda cuando acepta tu postulación.',
   'recovery.helper.experienceTitle': 'Dónde ayudas y en qué',
   'recovery.helper.skillsHint': 'Elige hasta ocho.',
+  'recovery.helper.skillsChosen': '{count} de 8 elegidos',
   'recovery.helper.displayName': 'Nombre que verá el responsable del caso',
   'recovery.helper.phone': 'Teléfono',
   'recovery.helper.department': 'Departamento',

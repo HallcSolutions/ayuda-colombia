@@ -61,16 +61,26 @@
 
       <fieldset class="skill-grid">
         <legend>{{ t('recovery.helper.skills') }}</legend>
-        <p class="section-lead">{{ t('recovery.helper.skillsHint') }}</p>
-        <div class="skill-chips">
-          @for (category of categories; track category) {
+        <p class="skill-hint">
+          {{ t('recovery.helper.skillsHint') }}
+          @if (selectedSkills().length) {
+            <span class="skill-count">{{
+              t('recovery.helper.skillsChosen', { count: selectedSkills().length })
+            }}</span>
+          }
+        </p>
+        <div class="skill-list">
+          @for (category of categories; track category; let index = $index) {
             <button
               type="button"
+              class="skill-option"
+              [style.--index]="index"
               [class.selected]="selectedSkills().includes(category)"
               [attr.aria-pressed]="selectedSkills().includes(category)"
               (click)="toggleSkill(category)"
             >
-              {{ t(categoryKey(category)) }}
+              <span class="mark" aria-hidden="true"></span>
+              <span class="label">{{ t(categoryKey(category)) }}</span>
             </button>
           }
         </div>

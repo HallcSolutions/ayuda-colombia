@@ -222,6 +222,7 @@ export const RECOVERY_EN_TRANSLATIONS: Record<keyof typeof RECOVERY_ES_TRANSLATI
     'Your phone is never published: we hand it to the person asking for help once they accept your application.',
   'recovery.helper.experienceTitle': 'Where you help and with what',
   'recovery.helper.skillsHint': 'Choose up to eight.',
+  'recovery.helper.skillsChosen': '{count} of 8 chosen',
   'recovery.helper.displayName': 'Name shown to the case owner',
   'recovery.helper.phone': 'Phone',
   'recovery.helper.department': 'Department',
