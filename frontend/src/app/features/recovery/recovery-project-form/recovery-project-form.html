@@ -48,6 +48,9 @@
         <span>{{ t('recovery.access.emailField') }}</span>
         <input type="email" inputmode="email" autocomplete="email" formControlName="contactEmail" />
         <small>{{ t('recovery.access.emailHint') }}</small>
+        @if (emailRejected()) {
+          <small class="field-error" role="alert">{{ t('recovery.access.invalidEmail') }}</small>
+        }
       </label>
       <label class="check-row wide share-phone">
         <input type="checkbox" formControlName="shareContactPublicly" />

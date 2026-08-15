@@ -4,9 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { TranslationKey } from '../../../core/i18n/es.translations';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { RecoveryService } from '../../../core/services/recovery.service';
-
-/** Basta con que se parezca a un correo: quien decide si existe es el servidor. */
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+import { EMAIL_PATTERN } from '../../../core/utils/email.util';
 
 /**
  * Salida para quien perdió su código o su PIN. El PIN se guarda cifrado, así que no

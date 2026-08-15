@@ -37,6 +37,11 @@
             formControlName="contactEmail"
           />
           <small>{{ t('recovery.access.emailHint') }}</small>
+          @if (emailRejected()) {
+            <small class="field-error" role="alert">{{
+              t('recovery.access.invalidEmail')
+            }}</small>
+          }
         </label>
       </div>
     </section>

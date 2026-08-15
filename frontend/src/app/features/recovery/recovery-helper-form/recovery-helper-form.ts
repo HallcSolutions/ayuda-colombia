@@ -11,6 +11,7 @@ import { I18nService } from '../../../core/i18n/i18n.service';
 import { TranslationKey } from '../../../core/i18n/es.translations';
 import { NewRecoveryHelper } from '../../../core/models/recovery.model';
 import { RecoveryService } from '../../../core/services/recovery.service';
+import { EMAIL_MAX_LENGTH, EMAIL_PATTERN } from '../../../core/utils/email.util';
 import { PHONE_PATTERN } from '../../../core/utils/phone.util';
 import { AccessResult } from '../../../shared/access-result/access-result';
 import { PhoneFieldDirective } from '../../../shared/phone-field/phone-field.directive';
@@ -42,7 +43,10 @@ export class RecoveryHelperForm {
   readonly form = this.fb.nonNullable.group({
     displayName: ['', [Validators.required, Validators.maxLength(80)]],
     contactPhone: ['', [Validators.required, Validators.pattern(PHONE_PATTERN)]],
-    contactEmail: ['', [Validators.email, Validators.maxLength(160)]],
+    contactEmail: [
+      '',
+      [Validators.pattern(EMAIL_PATTERN), Validators.maxLength(EMAIL_MAX_LENGTH)],
+    ],
     department: ['', Validators.required],
     municipality: ['', [Validators.required, Validators.maxLength(80)]],
     consentToShareContact: [false, Validators.requiredTrue],
@@ -60,6 +64,12 @@ export class RecoveryHelperForm {
 
   isIncomplete(): boolean {
     return this.form.invalid || !this.selectedSkills().length;
+  }
+
+  /** El correo es opcional, pero si se escribe mal hay que decirlo junto al campo. */
+  emailRejected(): boolean {
+    const control = this.form.controls.contactEmail;
+    return control.touched && control.invalid;
   }
 
   async submit(): Promise<void> {
