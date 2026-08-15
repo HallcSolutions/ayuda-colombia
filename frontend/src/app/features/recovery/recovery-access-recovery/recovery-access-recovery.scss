@@ -1,0 +1,99 @@
+:host {
+  display: grid;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.disclose {
+  justify-self: start;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.recover {
+  display: grid;
+  gap: 12px;
+  padding-left: 14px;
+  border-left: 2px solid var(--green);
+}
+
+.recover p {
+  margin: 0;
+  max-width: 56ch;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.recover label {
+  display: grid;
+  gap: 6px;
+}
+
+.recover label span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.recover input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background-color: #fbfcfa;
+  color: var(--ink);
+}
+
+.recover input:focus-visible {
+  outline: 3px solid rgba(18, 88, 64, 0.2);
+  outline-offset: 1px;
+  border-color: var(--green);
+}
+
+.recover button {
+  justify-self: start;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid var(--green);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--green);
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.recover button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.notice {
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.notice.error {
+  color: #8c2f1c;
+}
+
+@media (max-width: 640px) {
+  .recover button {
+    justify-self: stretch;
+    width: 100%;
+  }
+}

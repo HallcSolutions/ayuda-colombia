@@ -21,6 +21,7 @@
     @if (error()) {
       <p class="error" role="alert">{{ error() }}</p>
     }
+    <app-recovery-access-recovery />
   </section>
 } @else {
   <section class="helper-management">
@@ -28,7 +29,7 @@
       <header>
         <span>{{ t('recovery.helperManage.profile') }}</span>
         <h4>{{ helper.displayName }}</h4>
-        <p>{{ t(verificationKey(helper.verificationLevel)) }}</p>
+        <p>{{ helper.municipality }}, {{ helper.department }}</p>
       </header>
     }
 

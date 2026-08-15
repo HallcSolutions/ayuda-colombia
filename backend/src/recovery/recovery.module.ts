@@ -8,9 +8,13 @@ import { RecoveryController } from './recovery.controller';
 import { RecoveryGateway } from './recovery.gateway';
 import { RecoveryService } from './recovery.service';
 import { RecoveryVerifierGuard } from './recovery-verifier.guard';
+import { PhotoStorageService } from '../common/uploads/photo-upload';
+import { EmailModule } from '../common/email/email.module';
+import { RecoveryAccessMailer } from './recovery-access.mailer';
 
 @Module({
   imports: [
+    EmailModule,
     TypeOrmModule.forFeature([
       RecoveryProjectEntity,
       RecoveryTaskEntity,
@@ -19,6 +23,12 @@ import { RecoveryVerifierGuard } from './recovery-verifier.guard';
     ]),
   ],
   controllers: [RecoveryController],
-  providers: [RecoveryGateway, RecoveryService, RecoveryVerifierGuard],
+  providers: [
+    PhotoStorageService,
+    RecoveryAccessMailer,
+    RecoveryGateway,
+    RecoveryService,
+    RecoveryVerifierGuard,
+  ],
 })
 export class RecoveryModule {}

@@ -1,7 +1,4 @@
 import {
-  HelperCredentialType,
-  HelperVerificationLevel,
-  HelperVerificationMethod,
   RecoveryApplicationStatus,
   RecoveryProjectKind,
   RecoveryProjectStatus,
@@ -44,6 +41,7 @@ export interface RecoveryProject {
   priceReference: string;
   salesModes: RecoverySalesMode[];
   schedule: string;
+  photos: string[];
   publicContactPhone: string;
   status: RecoveryProjectStatus;
   verifiedBy: string;
@@ -60,6 +58,8 @@ export interface NewRecoveryProject {
   story: string;
   organizerName: string;
   contactPhone: string;
+  /** Privado: solo sirve para devolver el código y el PIN si se pierden. */
+  contactEmail?: string;
   department: string;
   municipality: string;
   areaReference: string;
@@ -73,6 +73,8 @@ export interface NewRecoveryProject {
 
 export interface PublishedRecoveryProject extends RecoveryProject {
   editPin: string;
+  /** Dice si la copia del código y el PIN salió al correo indicado. */
+  accessEmailSent: boolean;
 }
 
 export interface NewRecoveryTask {
@@ -87,22 +89,14 @@ export interface NewRecoveryTask {
 }
 
 export interface NewRecoveryHelper {
-  fullName: string;
   displayName: string;
-  documentType: string;
-  documentNumber: string;
   contactPhone: string;
+  /** Privado: solo sirve para devolver el código y el PIN si se pierden. */
+  contactEmail?: string;
   department: string;
   municipality: string;
   skills: RecoveryTaskCategory[];
-  bio?: string;
-  yearsExperience: number;
-  credentialType: HelperCredentialType;
-  credentialNumber?: string;
-  credentialIssuer?: string;
-  referenceName?: string;
-  referencePhone?: string;
-  consentToVerification: boolean;
+  consentToShareContact: boolean;
 }
 
 export interface RecoveryHelperProfile {
@@ -111,18 +105,12 @@ export interface RecoveryHelperProfile {
   department: string;
   municipality: string;
   skills: RecoveryTaskCategory[];
-  verifiedSkills: RecoveryTaskCategory[];
-  bio: string;
-  yearsExperience: number;
-  verificationLevel: HelperVerificationLevel;
-  verificationMethod: HelperVerificationMethod | null;
-  verifiedBy: string;
-  verifiedAt: string | null;
-  verificationSourceName: string;
 }
 
 export interface RegisteredRecoveryHelper extends RecoveryHelperProfile {
   editPin: string;
+  /** Dice si la copia del código y el PIN salió al correo indicado. */
+  accessEmailSent: boolean;
 }
 
 export interface RecoveryApplication {
@@ -134,10 +122,7 @@ export interface RecoveryApplication {
   helperId: string;
   helperName: string;
   helperPhone: string;
-  helperVerificationLevel: HelperVerificationLevel;
-  helperVerifiedBy: string;
-  helperVerifiedSkills: RecoveryTaskCategory[];
-  helperVerificationSource: string;
+  helperSkills: RecoveryTaskCategory[];
   message: string;
   availability: string;
   status: RecoveryApplicationStatus;
@@ -158,6 +143,7 @@ export interface RecoveryProjectReviewItem extends Omit<
   priceReference: string;
   salesModes: RecoverySalesMode[];
   schedule: string;
+  photos: string[];
   shareContactPublicly: boolean;
 }
 
@@ -176,19 +162,7 @@ export interface RecoveryTaskReviewItem extends NewRecoveryTask {
   createdAt: string;
 }
 
-export interface RecoveryHelperReviewItem extends Omit<NewRecoveryHelper, 'consentToVerification'> {
-  id: string;
-  verificationLevel: HelperVerificationLevel;
-  createdAt: string;
-  bio: string;
-  credentialNumber: string;
-  credentialIssuer: string;
-  referenceName: string;
-  referencePhone: string;
-}
-
 export interface RecoveryVerificationQueue {
   projects: RecoveryProjectReviewItem[];
   tasks: RecoveryTaskReviewItem[];
-  helpers: RecoveryHelperReviewItem[];
 }

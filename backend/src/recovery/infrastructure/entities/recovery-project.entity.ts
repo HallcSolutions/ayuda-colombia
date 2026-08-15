@@ -26,6 +26,9 @@ export class RecoveryProjectEntity {
   @Column({ length: 100 }) organizerName!: string;
   /** Privado salvo autorización explícita; la cola de verificación sí lo muestra. */
   @Column({ length: 30 }) contactPhone!: string;
+  /** Nunca público: solo sirve para devolver el código y el PIN a quien publicó. */
+  @Column({ type: 'varchar', length: 160, default: '' })
+  contactEmail!: string;
   @Column({ length: 80 }) department!: string;
   @Column({ length: 80 }) municipality!: string;
   /** Zona aproximada; nunca se almacena aquí una dirección residencial exacta. */
@@ -37,6 +40,8 @@ export class RecoveryProjectEntity {
   @Column({ type: 'jsonb', default: () => "'[]'::jsonb" })
   salesModes!: RecoverySalesMode[];
   @Column({ type: 'varchar', length: 180, default: '' }) schedule!: string;
+  /** Fotos públicas del daño o de lo que se necesita; nunca documentos de identidad. */
+  @Column({ type: 'jsonb', default: () => "'[]'::jsonb" }) photos!: string[];
   @Column({ default: false }) shareContactPublicly!: boolean;
   @Column({
     type: 'enum',

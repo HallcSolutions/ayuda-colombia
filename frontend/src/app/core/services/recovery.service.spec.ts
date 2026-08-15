@@ -91,6 +91,7 @@ function project(id: string, department: string, municipality: string): Recovery
     priceReference: '',
     salesModes: [],
     schedule: '',
+    photos: [],
     publicContactPhone: '',
     status: RecoveryProjectStatus.OPEN,
     verifiedBy: '',

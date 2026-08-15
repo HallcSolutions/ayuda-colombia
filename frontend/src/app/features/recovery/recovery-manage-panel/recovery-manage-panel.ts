@@ -9,7 +9,6 @@ import {
   RecoveryTaskStatus,
 } from '../../../core/constants/app.constants';
 import {
-  helperVerificationKey,
   recoveryApplicationStatusKey,
   recoveryTaskCategoryKey,
 } from '../../../core/i18n/domain-keys';
@@ -20,10 +19,11 @@ import {
   RecoveryTask,
 } from '../../../core/models/recovery.model';
 import { RecoveryService } from '../../../core/services/recovery.service';
+import { RecoveryAccessRecovery } from '../recovery-access-recovery/recovery-access-recovery';
 
 @Component({
   selector: 'app-recovery-manage-panel',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RecoveryAccessRecovery],
   templateUrl: './recovery-manage-panel.html',
   styleUrl: './recovery-manage-panel.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,7 +37,6 @@ export class RecoveryManagePanel {
   protected readonly RecoveryProjectStatus = RecoveryProjectStatus;
   protected readonly categories = RECOVERY_TASK_CATEGORIES;
   protected readonly categoryKey = recoveryTaskCategoryKey;
-  protected readonly verificationKey = helperVerificationKey;
   protected readonly applicationStatusKey = recoveryApplicationStatusKey;
 
   readonly project = input.required<RecoveryProject>();
@@ -58,6 +57,13 @@ export class RecoveryManagePanel {
     skillsRequired: ['', Validators.maxLength(400)],
     materialsNeeded: ['', Validators.maxLength(500)],
   });
+
+  /** Los oficios que la persona declaró al ofrecerse, en el idioma activo. */
+  helperSkills(application: RecoveryApplication): string {
+    return application.helperSkills
+      .map((skill) => this.t(recoveryTaskCategoryKey(skill)))
+      .join(' · ');
+  }
 
   updatePin(event: Event): void {
     this.pin.set((event.target as HTMLInputElement).value.trim());

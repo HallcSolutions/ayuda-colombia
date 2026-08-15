@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import {
+  RECOVERY_DONATION_CATEGORIES,
   RECOVERY_PROJECT_KINDS,
   RecoveryProjectKind,
   RecoveryTaskStatus,
@@ -36,17 +37,8 @@ import { RecoveryHelperForm } from './recovery-helper-form/recovery-helper-form'
 import { RecoveryHelperManagePanel } from './recovery-helper-manage-panel/recovery-helper-manage-panel';
 import { RecoveryManagePanel } from './recovery-manage-panel/recovery-manage-panel';
 import { RecoveryProjectForm } from './recovery-project-form/recovery-project-form';
+import { RecoveryModal, RecoveryRow } from './recovery-page.model';
 import { RecoveryVerifierPanel } from './recovery-verifier-panel/recovery-verifier-panel';
-
-type RecoveryModal = 'project' | 'helper' | 'helper-manage' | 'verify' | 'apply' | 'manage' | null;
-
-/** Un caso con lo único que hace falta saber de un vistazo: qué le falta todavía. */
-interface RecoveryRow {
-  project: RecoveryProject;
-  openTasks: number;
-  missingPeople: number;
-  pendingApplications: number;
-}
 
 @Component({
   selector: 'app-recovery-page',
@@ -185,7 +177,17 @@ export class RecoveryPage {
 
   /** Solo los lugares públicos activan el mapa con una dirección declarada como exacta. */
   hasPublicLocation(project: RecoveryProject): boolean {
-    return project.kind !== RecoveryProjectKind.HOME && Boolean(project.areaReference.trim());
+    return !this.privateAddress(project) && Boolean(project.areaReference.trim());
+  }
+
+  /** Ni una vivienda ni una persona exponen dónde duermen: solo la zona. */
+  privateAddress(project: RecoveryProject): boolean {
+    return [RecoveryProjectKind.HOME, RecoveryProjectKind.PERSON].includes(project.kind);
+  }
+
+  /** Una donación la puede entregar cualquiera; una obra exige oficio comprobado. */
+  isDonation(task: RecoveryTask): boolean {
+    return RECOVERY_DONATION_CATEGORIES.includes(task.category);
   }
 
   /** En viviendas, el destino contiene únicamente la zona que ya aparece en el listado público. */

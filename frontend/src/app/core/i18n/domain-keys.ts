@@ -9,9 +9,6 @@ import {
   MissingStatus,
   MissingSubjectKind,
   PublicNewsCategory,
-  HelperCredentialType,
-  HelperVerificationLevel,
-  HelperVerificationMethod,
   RecoveryApplicationStatus,
   RecoveryProjectKind,
   RecoveryProjectStatus,
@@ -81,18 +78,13 @@ export const recoveryTaskStatusKey = (status: RecoveryTaskStatus): TranslationKe
   `recoveryTaskStatus.${status}`;
 export const recoverySalesModeKey = (mode: RecoverySalesMode): TranslationKey =>
   `recoverySalesMode.${mode}`;
-export const helperCredentialKey = (type: HelperCredentialType): TranslationKey =>
-  `helperCredential.${type}`;
-export const helperVerificationKey = (level: HelperVerificationLevel): TranslationKey =>
-  `helperVerification.${level}`;
-export const helperVerificationMethodKey = (method: HelperVerificationMethod): TranslationKey =>
-  `helperVerificationMethod.${method}`;
 export const recoveryApplicationStatusKey = (status: RecoveryApplicationStatus): TranslationKey =>
   `recoveryApplicationStatus.${status}`;
 
 /** Referencia visual breve para elegir a quién se va a apoyar. */
 export const RECOVERY_PROJECT_KIND_ICONS: Record<RecoveryProjectKind, string> = {
   [RecoveryProjectKind.HOME]: '🏠',
+  [RecoveryProjectKind.PERSON]: '🙋',
   [RecoveryProjectKind.BUSINESS]: '🏪',
   [RecoveryProjectKind.RESTAURANT]: '🍲',
   [RecoveryProjectKind.ARTISAN]: '🪵',

@@ -3,16 +3,13 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  ServiceUnavailableException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, IsNull, Repository } from 'typeorm';
 import {
-  HelperCredentialType,
-  HelperVerificationLevel,
-  HelperVerificationMethod,
   RecoveryApplicationStatus,
-  RecoveryProjectKind,
   RecoveryProjectStatus,
   RecoveryRiskLevel,
   RecoveryTaskCategory,
@@ -20,6 +17,8 @@ import {
 } from '../common/constants/app.constants';
 import {
   PublishedRecoveryProject,
+  RecoveryAccessEntry,
+  RecoveryAccessRequest,
   RecoveryApplication,
   RecoveryHelperProfile,
   RecoveryProject,
@@ -28,12 +27,13 @@ import {
   RegisteredRecoveryHelper,
 } from '../common/interfaces/recovery.interface';
 import { createEditPin, matchesEditPin } from '../common/security/edit-pin';
+import { PhotoStorageService } from '../common/uploads/photo-upload';
 import { CreateRecoveryApplicationDto } from './dto/create-recovery-application.dto';
 import { CreateRecoveryProjectDto } from './dto/create-recovery-project.dto';
 import { CreateRecoveryTaskDto } from './dto/create-recovery-task.dto';
 import { FindRecoveryProjectsQueryDto } from './dto/find-recovery-projects-query.dto';
+import { RecoverRecoveryAccessDto } from './dto/recover-recovery-access.dto';
 import { RegisterRecoveryHelperDto } from './dto/register-recovery-helper.dto';
-import { ReviewRecoveryHelperDto } from './dto/review-recovery-helper.dto';
 import { ReviewRecoveryProjectDto } from './dto/review-recovery-project.dto';
 import { ReviewRecoveryTaskDto } from './dto/review-recovery-task.dto';
 import { UpdateRecoveryApplicationDto } from './dto/update-recovery-application.dto';
@@ -43,7 +43,11 @@ import { RecoveryApplicationEntity } from './infrastructure/entities/recovery-ap
 import { RecoveryHelperEntity } from './infrastructure/entities/recovery-helper.entity';
 import { RecoveryProjectEntity } from './infrastructure/entities/recovery-project.entity';
 import { RecoveryTaskEntity } from './infrastructure/entities/recovery-task.entity';
+import { RecoveryAccessMailer } from './recovery-access.mailer';
 import { RecoveryGateway } from './recovery.gateway';
+
+/** El correo se guarda siempre igual para poder buscar por él al recuperar el acceso. */
+const normalizeEmail = (value = ''): string => value.trim().toLowerCase();
 
 const PUBLIC_PROJECT_STATUSES = [
   RecoveryProjectStatus.OPEN,
@@ -64,16 +68,22 @@ const RISK_RANK: Record<RecoveryRiskLevel, number> = {
   [RecoveryRiskLevel.RED]: 3,
 };
 
-const VERIFICATION_RANK: Partial<Record<HelperVerificationLevel, number>> = {
-  [HelperVerificationLevel.IDENTITY]: 1,
-  [HelperVerificationLevel.TRADE]: 2,
-  [HelperVerificationLevel.PROFESSIONAL]: 3,
-};
-
 const RED_CATEGORIES = new Set<RecoveryTaskCategory>([
   RecoveryTaskCategory.STRUCTURAL,
   RecoveryTaskCategory.ELECTRICAL,
   RecoveryTaskCategory.GAS,
+]);
+
+/**
+ * Necesidades que se resuelven entregando una cosa. No hay riesgo físico que
+ * clasificar, así que se publican de inmediato: quien necesita una silla de
+ * ruedas no puede esperar a una cola de revisión.
+ */
+const DONATION_CATEGORIES = new Set<RecoveryTaskCategory>([
+  RecoveryTaskCategory.ASSISTIVE_DEVICE,
+  RecoveryTaskCategory.HOUSEHOLD_GOODS,
+  RecoveryTaskCategory.MATERIALS,
+  RecoveryTaskCategory.FOOD,
 ]);
 
 const AMBER_CATEGORIES = new Set<RecoveryTaskCategory>([
@@ -96,6 +106,8 @@ export class RecoveryService {
     @InjectRepository(RecoveryApplicationEntity)
     private readonly applications: Repository<RecoveryApplicationEntity>,
     private readonly gateway: RecoveryGateway,
+    private readonly photoStorage: PhotoStorageService,
+    private readonly mailer: RecoveryAccessMailer,
   ) {}
 
   async findProjects(
@@ -137,6 +149,7 @@ export class RecoveryService {
 
   async createProject(
     dto: CreateRecoveryProjectDto,
+    files: Express.Multer.File[] = [],
   ): Promise<PublishedRecoveryProject> {
     if (!dto.consentToVerification) {
       throw new BadRequestException(
@@ -144,31 +157,49 @@ export class RecoveryService {
       );
     }
     const editPin = createEditPin();
-    const entity = await this.projects.save(
-      this.projects.create({
-        kind: dto.kind,
-        name: dto.name.trim(),
-        story: dto.story.trim(),
-        organizerName: dto.organizerName.trim(),
-        contactPhone: dto.contactPhone.trim(),
-        department: dto.department.trim(),
-        municipality: dto.municipality.trim(),
-        areaReference: dto.areaReference.trim(),
-        productsOrServices: dto.productsOrServices?.trim() ?? '',
-        priceReference: dto.priceReference?.trim() ?? '',
-        salesModes: [...new Set(dto.salesModes ?? [])],
-        schedule: dto.schedule?.trim() ?? '',
-        shareContactPublicly:
-          this.isCommerce(dto.kind) && Boolean(dto.shareContactPublicly),
-        status: RecoveryProjectStatus.OPEN,
-        verifiedBy: '',
-        verifiedAt: null,
-        editPinHash: editPin.hash,
-      }),
-    );
+    const photos = await this.photoStorage.store(files);
+    let entity: RecoveryProjectEntity;
+    try {
+      entity = await this.projects.save(
+        this.projects.create({
+          kind: dto.kind,
+          name: dto.name.trim(),
+          story: dto.story.trim(),
+          organizerName: dto.organizerName.trim(),
+          contactPhone: dto.contactPhone.trim(),
+          contactEmail: normalizeEmail(dto.contactEmail),
+          department: dto.department.trim(),
+          municipality: dto.municipality.trim(),
+          areaReference: dto.areaReference.trim(),
+          productsOrServices: dto.productsOrServices?.trim() ?? '',
+          priceReference: dto.priceReference?.trim() ?? '',
+          salesModes: [...new Set(dto.salesModes ?? [])],
+          schedule: dto.schedule?.trim() ?? '',
+          photos,
+          // Publicar el teléfono lo decide quien publica, no el tipo de caso:
+          // sin contacto directo, una donación se queda esperando trámites.
+          shareContactPublicly: Boolean(dto.shareContactPublicly),
+          status: RecoveryProjectStatus.OPEN,
+          verifiedBy: '',
+          verifiedAt: null,
+          editPinHash: editPin.hash,
+        }),
+      );
+    } catch (error) {
+      await this.photoStorage.remove(photos);
+      throw error;
+    }
     const project = this.toProject(entity, []);
     this.gateway.projectCreated(project);
-    return { ...project, editPin: editPin.pin };
+    return {
+      ...project,
+      editPin: editPin.pin,
+      accessEmailSent: await this.mailer.sendAccess(
+        entity.contactEmail,
+        [this.projectAccess(entity, editPin.pin)],
+        'published',
+      ),
+    };
   }
 
   async updateProject(
@@ -219,7 +250,9 @@ export class RecoveryService {
         description: dto.description.trim(),
         category: dto.category,
         riskLevel,
-        status: RecoveryTaskStatus.PENDING_REVIEW,
+        status: DONATION_CATEGORIES.has(dto.category)
+          ? RecoveryTaskStatus.OPEN
+          : RecoveryTaskStatus.PENDING_REVIEW,
         peopleNeeded: dto.peopleNeeded,
         scheduledFor: dto.scheduledFor ? new Date(dto.scheduledFor) : null,
         durationHours: dto.durationHours ?? null,
@@ -254,9 +287,12 @@ export class RecoveryService {
       RecoveryTaskStatus.COMPLETED,
       RecoveryTaskStatus.CANCELLED,
     ];
-    if (!task.reviewedAt || !allowed.includes(dto.status)) {
+    if (
+      task.status === RecoveryTaskStatus.PENDING_REVIEW ||
+      !allowed.includes(dto.status)
+    ) {
       throw new BadRequestException(
-        'La tarea debe ser revisada antes de cambiar su estado',
+        'La tarea debe estar publicada antes de cambiar su estado',
       );
     }
     task.status = dto.status;
@@ -268,49 +304,103 @@ export class RecoveryService {
   async registerHelper(
     dto: RegisterRecoveryHelperDto,
   ): Promise<RegisteredRecoveryHelper> {
-    if (!dto.consentToVerification) {
+    if (!dto.consentToShareContact) {
       throw new BadRequestException(
-        'Debes autorizar la verificación privada de identidad y oficio',
-      );
-    }
-    if (
-      dto.credentialType === HelperCredentialType.PROFESSIONAL_LICENSE &&
-      (!dto.credentialNumber?.trim() || !dto.credentialIssuer?.trim())
-    ) {
-      throw new BadRequestException(
-        'La matrícula profesional requiere número y entidad emisora',
+        'Debes autorizar que tu contacto se entregue a quien pide ayuda',
       );
     }
     const editPin = createEditPin();
     const entity = await this.helpers.save(
       this.helpers.create({
-        fullName: dto.fullName.trim(),
         displayName: dto.displayName.trim(),
-        documentType: dto.documentType.trim(),
-        documentNumber: dto.documentNumber.trim(),
         contactPhone: dto.contactPhone.trim(),
+        contactEmail: normalizeEmail(dto.contactEmail),
         department: dto.department.trim(),
         municipality: dto.municipality.trim(),
         skills: [...new Set(dto.skills)],
-        verifiedSkills: [],
-        bio: dto.bio?.trim() ?? '',
-        yearsExperience: dto.yearsExperience,
-        credentialType: dto.credentialType,
-        credentialNumber: dto.credentialNumber?.trim() ?? '',
-        credentialIssuer: dto.credentialIssuer?.trim() ?? '',
-        referenceName: dto.referenceName?.trim() ?? '',
-        referencePhone: dto.referencePhone?.trim() ?? '',
-        verificationLevel: HelperVerificationLevel.PENDING,
-        verificationMethod: null,
-        verifiedBy: '',
-        verifiedAt: null,
-        verificationNotes: '',
-        verificationSourceName: '',
-        verificationSourceUrl: '',
         editPinHash: editPin.hash,
       }),
     );
-    return { ...this.toHelperProfile(entity), editPin: editPin.pin };
+    return {
+      ...this.toHelperProfile(entity),
+      editPin: editPin.pin,
+      accessEmailSent: await this.mailer.sendAccess(
+        entity.contactEmail,
+        [this.helperAccess(entity, editPin.pin)],
+        'published',
+      ),
+    };
+  }
+
+  /**
+   * Devuelve por correo el acceso de todo lo publicado con esa dirección. El PIN solo
+   * se guarda cifrado, así que no se puede reenviar: se genera uno nuevo y el anterior
+   * deja de servir. La respuesta nunca revela si el correo estaba registrado.
+   */
+  async recoverAccess({
+    email,
+  }: RecoverRecoveryAccessDto): Promise<RecoveryAccessRequest> {
+    if (!this.mailer.available) {
+      throw new ServiceUnavailableException(
+        'El envío de correos no está disponible en este momento',
+      );
+    }
+    const contactEmail = normalizeEmail(email);
+    const [projects, helpers] = await Promise.all([
+      this.projects.findBy({ contactEmail }),
+      this.helpers.findBy({ contactEmail }),
+    ]);
+    const entries = [
+      ...projects.map((project) =>
+        this.projectAccess(project, this.resetPin(project)),
+      ),
+      ...helpers.map((helper) =>
+        this.helperAccess(helper, this.resetPin(helper)),
+      ),
+    ];
+    // El PIN nuevo solo sustituye al anterior si el correo salió de verdad: si el
+    // envío falla, quien publicó conserva el acceso que ya tenía.
+    if (
+      entries.length &&
+      (await this.mailer.sendAccess(contactEmail, entries, 'recovered'))
+    ) {
+      await Promise.all([
+        this.projects.save(projects),
+        this.helpers.save(helpers),
+      ]);
+    }
+    return { requested: true };
+  }
+
+  /** Cambia la llave guardada de la publicación y devuelve el PIN nuevo en claro. */
+  private resetPin(entity: { editPinHash: string }): string {
+    const editPin = createEditPin();
+    entity.editPinHash = editPin.hash;
+    return editPin.pin;
+  }
+
+  private projectAccess(
+    project: RecoveryProjectEntity,
+    pin: string,
+  ): RecoveryAccessEntry {
+    return {
+      title: project.name,
+      codeLabel: 'Código del proyecto',
+      code: project.id,
+      pin,
+    };
+  }
+
+  private helperAccess(
+    helper: RecoveryHelperEntity,
+    pin: string,
+  ): RecoveryAccessEntry {
+    return {
+      title: helper.displayName,
+      codeLabel: 'Código de ayudante',
+      code: helper.id,
+      pin,
+    };
   }
 
   async getHelper(id: string, editPin: string): Promise<RecoveryHelperProfile> {
@@ -335,7 +425,7 @@ export class RecoveryService {
       helper.editPinHash,
       'El PIN de la persona voluntaria no es correcto',
     );
-    if (task.status !== RecoveryTaskStatus.OPEN || !task.reviewedAt) {
+    if (task.status !== RecoveryTaskStatus.OPEN) {
       throw new BadRequestException(
         'La tarea todavía no está abierta para recibir ayuda',
       );
@@ -474,7 +564,7 @@ export class RecoveryService {
   }
 
   async verificationQueue(): Promise<RecoveryVerificationQueue> {
-    const [projects, tasks, helpers] = await Promise.all([
+    const [projects, tasks] = await Promise.all([
       this.projects.find({
         where: [
           { status: RecoveryProjectStatus.PENDING_REVIEW },
@@ -485,10 +575,6 @@ export class RecoveryService {
       this.tasks.find({
         where: { status: RecoveryTaskStatus.PENDING_REVIEW },
         relations: { project: true },
-        order: { createdAt: 'ASC' },
-      }),
-      this.helpers.find({
-        where: { verificationLevel: HelperVerificationLevel.PENDING },
         order: { createdAt: 'ASC' },
       }),
     ]);
@@ -507,6 +593,7 @@ export class RecoveryService {
         priceReference: project.priceReference,
         salesModes: project.salesModes,
         schedule: project.schedule,
+        photos: project.photos,
         shareContactPublicly: project.shareContactPublicly,
         status: project.status,
         createdAt: project.createdAt.toISOString(),
@@ -528,26 +615,6 @@ export class RecoveryService {
         skillsRequired: task.skillsRequired,
         materialsNeeded: task.materialsNeeded,
         createdAt: task.createdAt.toISOString(),
-      })),
-      helpers: helpers.map((helper) => ({
-        id: helper.id,
-        fullName: helper.fullName,
-        displayName: helper.displayName,
-        documentType: helper.documentType,
-        documentNumber: helper.documentNumber,
-        contactPhone: helper.contactPhone,
-        department: helper.department,
-        municipality: helper.municipality,
-        skills: helper.skills,
-        bio: helper.bio,
-        yearsExperience: helper.yearsExperience,
-        credentialType: helper.credentialType,
-        credentialNumber: helper.credentialNumber,
-        credentialIssuer: helper.credentialIssuer,
-        referenceName: helper.referenceName,
-        referencePhone: helper.referencePhone,
-        verificationLevel: helper.verificationLevel,
-        createdAt: helper.createdAt.toISOString(),
       })),
     };
   }
@@ -612,156 +679,16 @@ export class RecoveryService {
     return this.toTask(task, []);
   }
 
-  async reviewHelper(
-    id: string,
-    dto: ReviewRecoveryHelperDto,
-  ): Promise<RecoveryHelperProfile> {
-    const helper = await this.findHelperEntity(id);
-    const allowed = [
-      HelperVerificationLevel.IDENTITY,
-      HelperVerificationLevel.TRADE,
-      HelperVerificationLevel.PROFESSIONAL,
-      HelperVerificationLevel.REJECTED,
-      HelperVerificationLevel.SUSPENDED,
-    ];
-    if (!allowed.includes(dto.verificationLevel)) {
-      throw new BadRequestException('Nivel de verificación inválido');
-    }
-    const verifiedSkills = [...new Set(dto.verifiedSkills)];
-    if (verifiedSkills.some((skill) => !helper.skills.includes(skill))) {
-      throw new BadRequestException(
-        'No se puede verificar un oficio que la persona no declaró',
-      );
-    }
-    this.assertVerificationEvidence(helper, dto);
-    helper.verificationLevel = dto.verificationLevel;
-    helper.verificationMethod = dto.verificationMethod ?? null;
-    const grantsTradeAccess =
-      dto.verificationLevel === HelperVerificationLevel.TRADE ||
-      dto.verificationLevel === HelperVerificationLevel.PROFESSIONAL;
-    helper.verifiedSkills = grantsTradeAccess ? verifiedSkills : [];
-    helper.verifiedBy = dto.verifiedBy.trim();
-    helper.verifiedAt = [
-      HelperVerificationLevel.REJECTED,
-      HelperVerificationLevel.SUSPENDED,
-    ].includes(dto.verificationLevel)
-      ? null
-      : new Date();
-    helper.verificationNotes = dto.verificationNotes?.trim() ?? '';
-    helper.verificationSourceName = grantsTradeAccess
-      ? (dto.verificationSourceName?.trim() ?? '')
-      : '';
-    helper.verificationSourceUrl =
-      dto.verificationLevel === HelperVerificationLevel.PROFESSIONAL
-        ? (dto.verificationSourceUrl?.trim() ?? '')
-        : '';
-    await this.helpers.save(helper);
-    return this.toHelperProfile(helper);
-  }
-
-  private assertVerificationEvidence(
-    helper: RecoveryHelperEntity,
-    dto: ReviewRecoveryHelperDto,
-  ): void {
-    if (
-      [
-        HelperVerificationLevel.REJECTED,
-        HelperVerificationLevel.SUSPENDED,
-      ].includes(dto.verificationLevel)
-    ) {
-      return;
-    }
-    if (!dto.verificationMethod)
-      throw new BadRequestException('Debes registrar cómo se verificó');
-    if (
-      dto.verificationLevel === HelperVerificationLevel.IDENTITY &&
-      dto.verificationMethod !== HelperVerificationMethod.IDENTITY_AND_PHONE
-    ) {
-      throw new BadRequestException(
-        'La verificación básica debe confirmar identidad y teléfono',
-      );
-    }
-    if (dto.verificationLevel === HelperVerificationLevel.TRADE) {
-      const validMethods = [
-        HelperVerificationMethod.TRAINING_CERTIFICATE,
-        HelperVerificationMethod.EMPLOYER_REFERENCE,
-        HelperVerificationMethod.COMMUNITY_REFERENCE,
-        HelperVerificationMethod.PRACTICAL_ASSESSMENT,
-      ];
-      if (!validMethods.includes(dto.verificationMethod)) {
-        throw new BadRequestException('Ese método no comprueba un oficio');
-      }
-      if (helper.credentialType === HelperCredentialType.NONE) {
-        throw new BadRequestException(
-          'Para validar un oficio se requiere certificado o referencia comprobable',
-        );
-      }
-      if (!dto.verificationSourceName?.trim()) {
-        throw new BadRequestException(
-          'Debes registrar la fuente o persona con la que comprobaste el oficio',
-        );
-      }
-    }
-    if (dto.verificationLevel === HelperVerificationLevel.PROFESSIONAL) {
-      if (
-        dto.verificationMethod !== HelperVerificationMethod.OFFICIAL_REGISTRY ||
-        helper.credentialType !== HelperCredentialType.PROFESSIONAL_LICENSE ||
-        !helper.credentialNumber ||
-        !helper.credentialIssuer
-      ) {
-        throw new BadRequestException(
-          'Un profesional solo se valida consultando su matrícula en fuente oficial',
-        );
-      }
-      const sourceName = dto.verificationSourceName?.trim();
-      const sourceUrl = dto.verificationSourceUrl?.trim();
-      if (!sourceName || !sourceUrl || !this.isTrustedRegistryUrl(sourceUrl)) {
-        throw new BadRequestException(
-          'La validación profesional requiere nombre y enlace HTTPS de un registro oficial autorizado',
-        );
-      }
-    }
-  }
-
-  private isTrustedRegistryUrl(value: string): boolean {
-    const trustedDomains = (process.env.RECOVERY_TRUSTED_REGISTRY_DOMAINS ?? '')
-      .split(',')
-      .map((domain) => domain.trim().toLowerCase())
-      .filter(Boolean);
-    if (!trustedDomains.length) return false;
-    try {
-      const url = new URL(value);
-      const hostname = url.hostname.toLowerCase();
-      return (
-        url.protocol === 'https:' &&
-        trustedDomains.some(
-          (domain) => hostname === domain || hostname.endsWith(`.${domain}`),
-        )
-      );
-    } catch {
-      return false;
-    }
-  }
-
+  /**
+   * Nadie comprueba a quien se ofrece: lo único que se exige es que la ayuda
+   * que declaró corresponda con lo que la tarea pide.
+   */
   private assertHelperCanPerform(
     helper: RecoveryHelperEntity,
     task: RecoveryTaskEntity,
   ): void {
-    const level = VERIFICATION_RANK[helper.verificationLevel] ?? 0;
-    const required = RISK_RANK[task.riskLevel];
-    if (level < required) {
-      throw new UnauthorizedException(
-        'Tu nivel de verificación no permite asumir esta tarea',
-      );
-    }
-    const skills =
-      task.riskLevel === RecoveryRiskLevel.GREEN
-        ? helper.skills
-        : helper.verifiedSkills;
-    if (!skills.includes(task.category)) {
-      throw new UnauthorizedException(
-        'Ese oficio no fue comprobado para tu perfil',
-      );
+    if (!helper.skills.includes(task.category)) {
+      throw new UnauthorizedException('No te ofreciste para ese tipo de ayuda');
     }
   }
 
@@ -784,8 +711,10 @@ export class RecoveryService {
       })
       .orderBy('task.createdAt', 'ASC')
       .getMany();
-    const reviewedTasks = taskEntities.filter((task) => task.reviewedAt);
-    const taskIds = reviewedTasks.map((task) => task.id);
+    const publishedTasks = taskEntities.filter(
+      (task) => task.status !== RecoveryTaskStatus.PENDING_REVIEW,
+    );
+    const taskIds = publishedTasks.map((task) => task.id);
     const applications = taskIds.length
       ? await this.applications.find({
           where: {
@@ -797,7 +726,7 @@ export class RecoveryService {
     return projects.map((project) =>
       this.toProject(
         project,
-        reviewedTasks
+        publishedTasks
           .filter((task) => task.projectId === project.id)
           .map((task) =>
             this.toTask(
@@ -831,10 +760,10 @@ export class RecoveryService {
       priceReference: entity.priceReference,
       salesModes: entity.salesModes,
       schedule: entity.schedule,
-      publicContactPhone:
-        entity.shareContactPublicly && this.isCommerce(entity.kind)
-          ? entity.contactPhone
-          : '',
+      photos: entity.photos,
+      publicContactPhone: entity.shareContactPublicly
+        ? entity.contactPhone
+        : '',
       status: entity.status,
       verifiedBy: entity.verifiedBy,
       verifiedAt: entity.verifiedAt?.toISOString() ?? null,
@@ -885,14 +814,6 @@ export class RecoveryService {
       department: entity.department,
       municipality: entity.municipality,
       skills: entity.skills,
-      verifiedSkills: entity.verifiedSkills,
-      bio: entity.bio,
-      yearsExperience: entity.yearsExperience,
-      verificationLevel: entity.verificationLevel,
-      verificationMethod: entity.verificationMethod,
-      verifiedBy: entity.verifiedBy,
-      verifiedAt: entity.verifiedAt?.toISOString() ?? null,
-      verificationSourceName: entity.verificationSourceName,
     };
   }
 
@@ -914,10 +835,7 @@ export class RecoveryService {
       helperName: entity.helper.displayName,
       helperPhone:
         viewer === 'project' && accepted ? entity.helper.contactPhone : '',
-      helperVerificationLevel: entity.helper.verificationLevel,
-      helperVerifiedBy: entity.helper.verifiedBy,
-      helperVerifiedSkills: entity.helper.verifiedSkills,
-      helperVerificationSource: entity.helper.verificationSourceName,
+      helperSkills: entity.helper.skills,
       message: entity.message,
       availability: entity.availability,
       status: entity.status,
@@ -938,14 +856,6 @@ export class RecoveryService {
     } catch {
       // Los proyectos pendientes no deben salir por el socket público.
     }
-  }
-
-  private isCommerce(kind: RecoveryProjectKind): boolean {
-    return [
-      RecoveryProjectKind.BUSINESS,
-      RecoveryProjectKind.RESTAURANT,
-      RecoveryProjectKind.ARTISAN,
-    ].includes(kind);
   }
 
   private assertPin(received: string, hash: string, message: string): void {

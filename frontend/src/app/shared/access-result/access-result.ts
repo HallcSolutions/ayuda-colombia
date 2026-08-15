@@ -19,6 +19,8 @@ export class AccessResult {
   readonly code = input.required<string>();
   readonly pin = input.required<string>();
   readonly note = input.required<TranslationKey>();
+  /** Correo al que ya salió esta copia; vacío cuando no se envió ninguna. */
+  readonly sentTo = input('');
   readonly closed = output<void>();
 
   protected readonly t = inject(I18nService).t;

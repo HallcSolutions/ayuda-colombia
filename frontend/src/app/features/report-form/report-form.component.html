@@ -206,7 +206,7 @@
           role="group"
           aria-labelledby="report-needs-title"
           [attr.aria-describedby]="
-            submitAttempted() && !selectedNeeds().length ? 'report-needs-error' : null
+            reportForm.touched && !selectedNeeds().length ? 'report-needs-error' : null
           "
         >
           @for (need of needOptions; track need.value) {
@@ -221,7 +221,7 @@
             </button>
           }
         </div>
-        @if (submitAttempted() && !selectedNeeds().length) {
+        @if (reportForm.touched && !selectedNeeds().length) {
           <small id="report-needs-error" class="field-error needs-error" role="alert">
             {{ t('reportForm.needsRequired') }}
           </small>
@@ -431,7 +431,7 @@
         @if (successMessage()) {
           <div class="form-message success" role="status">{{ successMessage() }}</div>
         }
-        @if (reportForm.invalid || !selectedNeeds().length) {
+        @if (isIncomplete()) {
           <p id="report-required-hint" class="required-hint">
             {{ t('common.requiredMissing') }}
           </p>
@@ -439,10 +439,8 @@
         <button
           class="submit-button"
           type="submit"
-          [disabled]="submitting()"
-          [attr.aria-describedby]="
-            reportForm.invalid || !selectedNeeds().length ? 'report-required-hint' : null
-          "
+          [disabled]="submitting() || isIncomplete()"
+          [attr.aria-describedby]="isIncomplete() ? 'report-required-hint' : null"
         >
           {{ submitting() ? t('reportForm.submitting') : t('reportForm.submit') }}
           <span aria-hidden="true">→</span>

@@ -53,7 +53,6 @@ export class ReportFormComponent implements OnDestroy {
   readonly selectedNeeds = signal<string[]>([]);
   readonly selectedPhotos = signal<SelectedPhoto[]>([]);
   readonly submitting = signal(false);
-  readonly submitAttempted = signal(false);
   readonly capturingLocation = signal(false);
 
   private readonly successMessageKey = signal<TranslationKey | null>(null);
@@ -206,15 +205,15 @@ export class ReportFormComponent implements OnDestroy {
     this.setLocationMessage('reportForm.locationIdle');
   }
 
+  /** Faltan datos obligatorios: mientras sea cierto no se ofrece el botón de publicar. */
+  isIncomplete(): boolean {
+    return this.reportForm.invalid || !this.selectedNeeds().length;
+  }
+
   async submitReport(): Promise<void> {
-    this.submitAttempted.set(true);
+    if (this.isIncomplete()) return;
     this.successMessageKey.set(null);
     this.clearError();
-    this.reportForm.markAllAsTouched();
-    if (this.reportForm.invalid || !this.selectedNeeds().length) {
-      this.setError('reportForm.invalid');
-      return;
-    }
 
     this.submitting.set(true);
     try {
@@ -261,7 +260,6 @@ export class ReportFormComponent implements OnDestroy {
     this.selectedPhotos().forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
     this.selectedPhotos.set([]);
     this.selectedNeeds.set([]);
-    this.submitAttempted.set(false);
     this.hasLocation.set(false);
     this.setLocationMessage('reportForm.locationIdle');
     this.reportForm.reset({

@@ -2,8 +2,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, map, tap } from 'rxjs';
 import {
-  HelperVerificationLevel,
-  HelperVerificationMethod,
   RecoveryApplicationStatus,
   RecoveryProjectStatus,
   RecoveryRiskLevel,
@@ -14,7 +12,6 @@ import { I18nService } from '../i18n/i18n.service';
 import { ApiResponse } from '../interfaces/api-response.interface';
 import {
   NewRecoveryHelper,
-  NewRecoveryProject,
   NewRecoveryTask,
   PublishedRecoveryProject,
   RecoveryApplication,
@@ -75,7 +72,8 @@ export class RecoveryService {
     });
   }
 
-  createProject(payload: NewRecoveryProject): Observable<PublishedRecoveryProject> {
+  /** Viaja como multipart porque el caso puede llegar con fotos de lo que se necesita. */
+  createProject(payload: FormData): Observable<PublishedRecoveryProject> {
     return this.unwrap(
       this.http.post<ApiResponse<PublishedRecoveryProject>>(`${ENDPOINT}/projects`, payload),
     ).pipe(tap((project) => this.upsert(project)));
@@ -95,6 +93,14 @@ export class RecoveryService {
     return this.unwrap(
       this.http.post<ApiResponse<RegisteredRecoveryHelper>>(`${ENDPOINT}/helpers`, payload),
     ).pipe(tap((helper) => this.rememberHelper(helper.id)));
+  }
+
+  /**
+   * Pide que el código y un PIN nuevo vuelvan al correo con el que se publicó.
+   * La API responde igual exista o no la dirección: aquí no se sabe más que eso.
+   */
+  recoverAccess(email: string): Observable<void> {
+    return this.unwrap(this.http.post<ApiResponse<void>>(`${ENDPOINT}/access/recover`, { email }));
   }
 
   getHelper(id: string, pin: string): Observable<RecoveryHelperProfile> {
@@ -229,28 +235,6 @@ export class RecoveryService {
       this.http.patch<ApiResponse<RecoveryTask>>(
         `${ENDPOINT}/verification/tasks/${id}`,
         { riskLevel, status, reviewedBy },
-        verifierHeader(key),
-      ),
-    );
-  }
-
-  reviewHelper(
-    id: string,
-    payload: {
-      verificationLevel: HelperVerificationLevel;
-      verificationMethod?: HelperVerificationMethod;
-      verifiedSkills: RecoveryTaskCategory[];
-      verifiedBy: string;
-      verificationNotes?: string;
-      verificationSourceName?: string;
-      verificationSourceUrl?: string;
-    },
-    key: string,
-  ): Observable<RecoveryHelperProfile> {
-    return this.unwrap(
-      this.http.patch<ApiResponse<RecoveryHelperProfile>>(
-        `${ENDPOINT}/verification/helpers/${id}`,
-        payload,
         verifierHeader(key),
       ),
     );

@@ -1,16 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { RecoveryApplicationStatus } from '../../../core/constants/app.constants';
-import {
-  helperVerificationKey,
-  recoveryApplicationStatusKey,
-} from '../../../core/i18n/domain-keys';
+import { recoveryApplicationStatusKey } from '../../../core/i18n/domain-keys';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { RecoveryApplication, RecoveryHelperProfile } from '../../../core/models/recovery.model';
 import { RecoveryService } from '../../../core/services/recovery.service';
+import { RecoveryAccessRecovery } from '../recovery-access-recovery/recovery-access-recovery';
 
 @Component({
   selector: 'app-recovery-helper-manage-panel',
+  imports: [RecoveryAccessRecovery],
   templateUrl: './recovery-helper-manage-panel.html',
   styleUrl: './recovery-helper-manage-panel.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,7 +18,6 @@ export class RecoveryHelperManagePanel {
   private readonly recovery = inject(RecoveryService);
   protected readonly t = inject(I18nService).t;
   protected readonly statuses = RecoveryApplicationStatus;
-  protected readonly verificationKey = helperVerificationKey;
   protected readonly applicationStatusKey = recoveryApplicationStatusKey;
 
   readonly helperId = signal(this.recovery.helperId());

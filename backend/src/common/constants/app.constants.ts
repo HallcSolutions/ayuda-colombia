@@ -146,9 +146,13 @@ export enum PublicNewsStatus {
   ARCHIVED = 'archived',
 }
 
-/** Quién necesita recuperar el lugar: sirve para viviendas y para economía local. */
+/**
+ * Quién necesita recuperarse: viviendas, economía local y también una persona
+ * concreta que necesita que le donen algo para volver a valerse por sí misma.
+ */
 export enum RecoveryProjectKind {
   HOME = 'home',
+  PERSON = 'person',
   BUSINESS = 'business',
   RESTAURANT = 'restaurant',
   ARTISAN = 'artisan',
@@ -172,7 +176,10 @@ export enum RecoveryProjectStatus {
   REJECTED = 'rejected',
 }
 
-/** Oficio principal requerido por una tarea de recuperación. */
+/**
+ * Qué hace falta para resolver una necesidad: casi siempre un oficio, y en las
+ * categorías de donación una cosa concreta que alguien puede entregar.
+ */
 export enum RecoveryTaskCategory {
   GENERAL = 'general',
   CLEANING = 'cleaning',
@@ -187,6 +194,8 @@ export enum RecoveryTaskCategory {
   TRANSPORT = 'transport',
   FOOD = 'food',
   MATERIALS = 'materials',
+  ASSISTIVE_DEVICE = 'assistive_device',
+  HOUSEHOLD_GOODS = 'household_goods',
   BUSINESS_SUPPORT = 'business_support',
   DIGITAL = 'digital',
   OTHER = 'other',
@@ -208,36 +217,6 @@ export enum RecoveryTaskStatus {
   CANCELLED = 'cancelled',
 }
 
-/**
- * `identity` solo comprueba a la persona; `trade` comprueba un oficio y
- * `professional` una matrícula/licencia consultada en una fuente oficial.
- */
-export enum HelperVerificationLevel {
-  PENDING = 'pending',
-  IDENTITY = 'identity',
-  TRADE = 'trade',
-  PROFESSIONAL = 'professional',
-  REJECTED = 'rejected',
-  SUSPENDED = 'suspended',
-}
-
-export enum HelperCredentialType {
-  NONE = 'none',
-  PROFESSIONAL_LICENSE = 'professional_license',
-  TRADE_CERTIFICATE = 'trade_certificate',
-  EMPLOYER_REFERENCE = 'employer_reference',
-  COMMUNITY_REFERENCE = 'community_reference',
-}
-
-export enum HelperVerificationMethod {
-  IDENTITY_AND_PHONE = 'identity_and_phone',
-  OFFICIAL_REGISTRY = 'official_registry',
-  TRAINING_CERTIFICATE = 'training_certificate',
-  EMPLOYER_REFERENCE = 'employer_reference',
-  COMMUNITY_REFERENCE = 'community_reference',
-  PRACTICAL_ASSESSMENT = 'practical_assessment',
-}
-
 export enum RecoveryApplicationStatus {
   PENDING = 'pending',
   ACCEPTED = 'accepted',
@@ -249,4 +228,5 @@ export enum RecoveryApplicationStatus {
 export const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 export const MAX_REPORT_PHOTOS = 6;
 export const MAX_MISSING_PHOTOS = 3;
+export const MAX_RECOVERY_PHOTOS = 3;
 export const MAX_PHOTO_SIZE_BYTES = 5 * 1024 * 1024;

@@ -23,37 +23,23 @@
   align-content: end;
 }
 
-.helper-form label.narrow input {
-  max-width: 11rem;
-}
-
-.verification-explainer {
+.helper-explainer {
   display: grid;
   gap: 6px;
   padding-left: 14px;
   border-left: 3px solid #d8bd64;
 }
 
-.verification-explainer strong {
+.helper-explainer strong {
   font: 700 18px/1.25 var(--serif);
 }
 
-.verification-explainer p,
+.helper-explainer p,
 .section-lead {
   margin: 0;
   color: var(--muted);
   font-size: 13px;
   line-height: 1.55;
-}
-
-.verification-explainer ol {
-  display: grid;
-  gap: 4px;
-  margin: 4px 0 0;
-  padding-left: 18px;
-  color: #445049;
-  font-size: 13px;
-  line-height: 1.5;
 }
 
 .form-section {
@@ -162,10 +148,6 @@
 @media (max-width: 640px) {
   .helper-form .field-grid {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .helper-form label.narrow input {
-    max-width: none;
   }
 
   .form-buttons button {

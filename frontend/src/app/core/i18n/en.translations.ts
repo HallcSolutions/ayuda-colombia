@@ -344,9 +344,10 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'hero.titleAccent': 'where it is needed most.',
   'hero.lead':
     'Connect families affected by the disaster directly with people who can help, without RedAyuda receiving or managing any money.',
-  'hero.faithQuote': '"Carry one another\'s burdens."',
+  'hero.faithQuote': '"Carry one another\'s burdens, and so fulfill the law of Christ."',
   'hero.faithSource': 'Galatians 6:2',
-  'hero.faithNote': "With God's help and everyone's hands, no family faces the storm alone.",
+  'hero.faithNote':
+    'His love brings us together beyond our differences and inspires us to reach out with humility. May every act of help bring comfort, renew hope, and reflect his love.',
   'hero.primaryCta': 'Register a family',
   'hero.secondaryCta': 'Offer direct aid',
   'hero.trust': 'Contact details and location are shared only with explicit consent.',
@@ -360,8 +361,10 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
 
   'landing.heroImageAlt':
     'Colombian volunteer holds a box with food, water and a blanket ready for aid delivery',
-  'landing.scroll': 'A message of hope',
   'landing.hopeKicker': 'A word of hope',
+  'landing.hopeCredit': 'In the midst of the storm, God reminds us that we are not alone.',
+  'landing.hopeImageAlt':
+    'Symbolic depiction of Jesus with open arms above a united community delivering aid',
   'landing.missionRail': 'Report · connect · mobilize · support · Colombia looks after its own',
   'landing.storyEyebrow': 'The network in action',
   'landing.storyTitle': 'From a visible need to aid that truly arrives.',
@@ -536,8 +539,6 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'reportForm.needsRequired': 'Select at least one need.',
   'reportForm.consent':
     'I understand that my personal details are private. I authorize sharing a case summary —without my name, ID number or phone— to coordinate humanitarian aid.',
-  'reportForm.invalid':
-    'Complete the minimum details, select at least one need and confirm authorized contact.',
   'reportForm.error': 'The report could not be published. Check your connection and try again.',
   'reportForm.success':
     'Family registered. Anyone wishing to help can now speak directly with the authorized contact.',

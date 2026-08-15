@@ -12,6 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter, take } from 'rxjs';
 import { NavTab } from './app.model';
+import { ReportStatus } from './core/constants/app.constants';
 import { I18nService } from './core/i18n/i18n.service';
 import { AlertsService } from './core/services/alerts.service';
 import { LoadingService } from './core/services/loading.service';
@@ -50,7 +51,17 @@ export class App {
     { path: '/noticias', labelKey: 'nav.news' },
     { path: '/recuperacion', labelKey: 'nav.recovery' },
     { path: '/reportar', labelKey: 'nav.report' },
-    { path: '/reportes', labelKey: 'nav.needs' },
+    {
+      path: '/reportes',
+      labelKey: 'nav.needs',
+      // Familias de la zona que siguen esperando: es la cifra que hace entrar a la pestaña.
+      badge: computed(
+        () =>
+          this.reportsService
+            .reportsInRegion()
+            .filter((report) => report.status === ReportStatus.OPEN).length,
+      ),
+    },
   ];
 
   /**

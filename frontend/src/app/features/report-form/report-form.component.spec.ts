@@ -44,6 +44,7 @@ describe('ReportFormComponent', () => {
       consentToShareLocation: false,
     });
     component.toggleNeed('Agua potable');
+    expect(component.isIncomplete()).toBe(false);
 
     await component.submitReport();
 
@@ -55,7 +56,6 @@ describe('ReportFormComponent', () => {
     expect(payload.has('longitude')).toBe(false);
     expect(payload.getAll('photos')).toHaveLength(0);
     expect(component.selectedNeeds()).toEqual([]);
-    expect(component.submitAttempted()).toBe(false);
   });
 
   it('permite registrar el caso aunque la familia prefiera mantener privado el contacto', () => {
@@ -72,15 +72,16 @@ describe('ReportFormComponent', () => {
     expect(component.reportForm.valid).toBe(true);
   });
 
-  it('expone errores por campo y permite enviar el formulario para validarlos', async () => {
+  it('no ofrece el botón vacío y expone los errores por campo al tocarlos', async () => {
     const fixture = TestBed.createComponent(ReportFormComponent);
     fixture.detectChanges();
 
     const submitButton = fixture.nativeElement.querySelector(
       'button[type="submit"]',
     ) as HTMLButtonElement;
-    expect(submitButton.disabled).toBe(false);
+    expect(submitButton.disabled).toBe(true);
 
+    fixture.componentInstance.reportForm.markAllAsTouched();
     await fixture.componentInstance.submitReport();
     fixture.detectChanges();
 

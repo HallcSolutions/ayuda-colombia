@@ -11,6 +11,7 @@
     @if (error()) {
       <p class="error" role="alert">{{ error() }}</p>
     }
+    <app-recovery-access-recovery />
   </section>
 } @else {
   <section class="manage-panel">
@@ -58,22 +59,11 @@
                 <dd>{{ application.availability }}</dd>
               </div>
               <div>
-                <dt>{{ t('recovery.manage.verification') }}</dt>
+                <dt>{{ t('recovery.manage.offeredHelp') }}</dt>
                 <dd>
-                  {{ t(verificationKey(application.helperVerificationLevel)) }}
-                  @if (application.helperVerifiedBy) {
-                    <small>
-                      {{ t('recovery.manage.verifiedBy', { name: application.helperVerifiedBy }) }}
-                    </small>
-                  }
+                  {{ helperSkills(application) }}
                 </dd>
               </div>
-              @if (application.helperVerificationSource) {
-                <div>
-                  <dt>{{ t('recovery.manage.verifiedSource') }}</dt>
-                  <dd>{{ application.helperVerificationSource }}</dd>
-                </div>
-              }
             </dl>
 
             @if (application.message) {

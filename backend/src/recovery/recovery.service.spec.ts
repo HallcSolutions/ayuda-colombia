@@ -1,9 +1,10 @@
-import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ServiceUnavailableException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import {
-  HelperCredentialType,
-  HelperVerificationLevel,
-  HelperVerificationMethod,
   RecoveryApplicationStatus,
   RecoveryProjectKind,
   RecoveryProjectStatus,
@@ -11,11 +12,13 @@ import {
   RecoveryTaskCategory,
   RecoveryTaskStatus,
 } from '../common/constants/app.constants';
-import { createEditPin } from '../common/security/edit-pin';
+import { createEditPin, matchesEditPin } from '../common/security/edit-pin';
+import { PhotoStorageService } from '../common/uploads/photo-upload';
 import { RecoveryApplicationEntity } from './infrastructure/entities/recovery-application.entity';
 import { RecoveryHelperEntity } from './infrastructure/entities/recovery-helper.entity';
 import { RecoveryProjectEntity } from './infrastructure/entities/recovery-project.entity';
 import { RecoveryTaskEntity } from './infrastructure/entities/recovery-task.entity';
+import { RecoveryAccessMailer } from './recovery-access.mailer';
 import { RecoveryGateway } from './recovery.gateway';
 import { RecoveryService } from './recovery.service';
 
@@ -33,6 +36,7 @@ const projectEntity = (
     'El terremoto dañó la cocina y seguimos vendiendo almuerzos en la calle.',
   organizerName: 'Ana Pérez',
   contactPhone: '3001234567',
+  contactEmail: 'ana@example.com',
   department: 'Caldas',
   municipality: 'Manizales',
   areaReference: 'Barrio El Bosque',
@@ -40,6 +44,7 @@ const projectEntity = (
   priceReference: 'Desde $8.000',
   salesModes: [],
   schedule: '8 a. m. a 3 p. m.',
+  photos: [],
   shareContactPublicly: true,
   status: RecoveryProjectStatus.PENDING_REVIEW,
   verifiedBy: '',
@@ -84,29 +89,12 @@ const helperEntity = (
   overrides: Partial<RecoveryHelperEntity> = {},
 ): RecoveryHelperEntity => ({
   id: '33333333-3333-4333-8333-333333333333',
-  fullName: 'Carlos Gómez',
   displayName: 'Carlos G.',
-  documentType: 'CC',
-  documentNumber: '123456789',
   contactPhone: '3101234567',
+  contactEmail: 'carlos@example.com',
   department: 'Caldas',
   municipality: 'Manizales',
   skills: [RecoveryTaskCategory.ELECTRICAL],
-  verifiedSkills: [],
-  bio: 'Instalaciones residenciales',
-  yearsExperience: 8,
-  credentialType: HelperCredentialType.NONE,
-  credentialNumber: '',
-  credentialIssuer: '',
-  referenceName: '',
-  referencePhone: '',
-  verificationLevel: HelperVerificationLevel.PENDING,
-  verificationMethod: null,
-  verifiedBy: '',
-  verifiedAt: null,
-  verificationNotes: '',
-  verificationSourceName: '',
-  verificationSourceUrl: '',
   editPinHash: helperPin.hash,
   applications: [],
   createdAt: now,
@@ -120,15 +108,17 @@ describe('RecoveryService', () => {
   let tasks: jest.Mocked<Repository<RecoveryTaskEntity>>;
   let helpers: jest.Mocked<Repository<RecoveryHelperEntity>>;
   let applications: jest.Mocked<Repository<RecoveryApplicationEntity>>;
+  let photoStorage: jest.Mocked<PhotoStorageService>;
+  let mailer: jest.Mocked<RecoveryAccessMailer>;
 
   beforeEach(() => {
-    process.env.RECOVERY_TRUSTED_REGISTRY_DOMAINS = 'registro.gov.co';
     projects = {
       create: jest.fn((values) =>
         projectEntity(values as Partial<RecoveryProjectEntity>),
       ),
       save: jest.fn((entity: RecoveryProjectEntity) => Promise.resolve(entity)),
       findOneBy: jest.fn(),
+      findBy: jest.fn().mockResolvedValue([]),
     } as unknown as jest.Mocked<Repository<RecoveryProjectEntity>>;
     tasks = {
       create: jest.fn((values) =>
@@ -143,6 +133,7 @@ describe('RecoveryService', () => {
       ),
       save: jest.fn((entity: RecoveryHelperEntity) => Promise.resolve(entity)),
       findOneBy: jest.fn(),
+      findBy: jest.fn().mockResolvedValue([]),
     } as unknown as jest.Mocked<Repository<RecoveryHelperEntity>>;
     applications = {
       existsBy: jest.fn().mockResolvedValue(false),
@@ -150,10 +141,26 @@ describe('RecoveryService', () => {
       save: jest.fn(),
       createQueryBuilder: jest.fn(),
     } as unknown as jest.Mocked<Repository<RecoveryApplicationEntity>>;
-    service = new RecoveryService(projects, tasks, helpers, applications, {
-      projectCreated: jest.fn(),
-      projectUpdated: jest.fn(),
-    } as unknown as RecoveryGateway);
+    photoStorage = {
+      store: jest.fn().mockResolvedValue([]),
+      remove: jest.fn().mockResolvedValue(undefined),
+    };
+    mailer = {
+      available: true,
+      sendAccess: jest.fn().mockResolvedValue(true),
+    } as unknown as jest.Mocked<RecoveryAccessMailer>;
+    service = new RecoveryService(
+      projects,
+      tasks,
+      helpers,
+      applications,
+      {
+        projectCreated: jest.fn(),
+        projectUpdated: jest.fn(),
+      } as unknown as RecoveryGateway,
+      photoStorage,
+      mailer,
+    );
   });
 
   it('publica el caso de inmediato y muestra el teléfono solo cuando se autoriza para pedidos', async () => {
@@ -195,6 +202,89 @@ describe('RecoveryService', () => {
     expect(created.publicContactPhone).toBe('');
   });
 
+  it('publica el caso de una persona con la foto y con el contacto directo que autorizó', async () => {
+    photoStorage.store.mockResolvedValue(['/uploads/silla.jpg']);
+
+    const created = await service.createProject(
+      {
+        kind: RecoveryProjectKind.PERSON,
+        name: 'Doña Rosa',
+        story: 'Perdió la silla de ruedas cuando se cayó el techo.',
+        organizerName: 'Ana Pérez',
+        contactPhone: '3001234567',
+        department: 'Caldas',
+        municipality: 'Manizales',
+        areaReference: 'Barrio El Bosque',
+        shareContactPublicly: true,
+        consentToVerification: true,
+      },
+      [{ originalname: 'silla.jpg' } as Express.Multer.File],
+    );
+
+    expect(created.photos).toEqual(['/uploads/silla.jpg']);
+    expect(created.publicContactPhone).toBe('3001234567');
+  });
+
+  it('no publica el teléfono de una persona que no lo autorizó', async () => {
+    const created = await service.createProject({
+      kind: RecoveryProjectKind.PERSON,
+      name: 'Doña Rosa',
+      story: 'Perdió la silla de ruedas cuando se cayó el techo.',
+      organizerName: 'Ana Pérez',
+      contactPhone: '3001234567',
+      department: 'Caldas',
+      municipality: 'Manizales',
+      areaReference: 'Barrio El Bosque',
+      shareContactPublicly: false,
+      consentToVerification: true,
+    });
+
+    expect(created.publicContactPhone).toBe('');
+  });
+
+  it('borra las fotos recién subidas si el caso no se pudo guardar', async () => {
+    photoStorage.store.mockResolvedValue(['/uploads/silla.jpg']);
+    projects.save.mockRejectedValueOnce(new Error('sin base de datos'));
+
+    await expect(
+      service.createProject(
+        {
+          kind: RecoveryProjectKind.PERSON,
+          name: 'Doña Rosa',
+          story: 'Perdió la silla de ruedas cuando se cayó el techo.',
+          organizerName: 'Ana Pérez',
+          contactPhone: '3001234567',
+          department: 'Caldas',
+          municipality: 'Manizales',
+          areaReference: 'Barrio El Bosque',
+          consentToVerification: true,
+        },
+        [{ originalname: 'silla.jpg' } as Express.Multer.File],
+      ),
+    ).rejects.toThrow('sin base de datos');
+    expect(photoStorage.remove.mock.calls).toEqual([[['/uploads/silla.jpg']]]);
+  });
+
+  it('deja una donación de silla de ruedas en riesgo bajo y sin exigir profesional', async () => {
+    projects.findOneBy.mockResolvedValue(projectEntity());
+
+    const task = await service.createTask(
+      projectEntity().id,
+      {
+        title: 'Silla de ruedas plegable',
+        description: 'Talla adulto, para salir del albergue a la calle.',
+        category: RecoveryTaskCategory.ASSISTIVE_DEVICE,
+        peopleNeeded: 1,
+      },
+      projectPin.pin,
+    );
+
+    expect(task.riskLevel).toBe(RecoveryRiskLevel.GREEN);
+    expect(task.professionalRequired).toBe(false);
+    // Entregar una silla de ruedas no tiene riesgo que clasificar: se ve ya.
+    expect(task.status).toBe(RecoveryTaskStatus.OPEN);
+  });
+
   it('clasifica electricidad como riesgo rojo desde su creación', async () => {
     projects.findOneBy.mockResolvedValue(projectEntity());
 
@@ -228,88 +318,63 @@ describe('RecoveryService', () => {
     ).rejects.toBeInstanceOf(BadRequestException);
   });
 
-  it('no expone documento, teléfono ni credencial al registrar un ayudante', async () => {
+  it('no expone el contacto de quien se ofrece al registrarlo', async () => {
     const helper = await service.registerHelper({
-      fullName: 'Carlos Gómez',
       displayName: 'Carlos G.',
-      documentType: 'CC',
-      documentNumber: '123456789',
       contactPhone: '3101234567',
       department: 'Caldas',
       municipality: 'Manizales',
       skills: [RecoveryTaskCategory.ELECTRICAL],
-      yearsExperience: 8,
-      credentialType: HelperCredentialType.NONE,
-      consentToVerification: true,
+      consentToShareContact: true,
     });
 
-    expect(helper).not.toHaveProperty('documentNumber');
     expect(helper).not.toHaveProperty('contactPhone');
-    expect(helper).not.toHaveProperty('credentialNumber');
-    expect(helper.verificationLevel).toBe(HelperVerificationLevel.PENDING);
+    expect(helper).not.toHaveProperty('contactEmail');
+    expect(helper.skills).toEqual([RecoveryTaskCategory.ELECTRICAL]);
   });
 
-  it('solo permite nivel profesional con matrícula y consulta oficial', async () => {
-    helpers.findOneBy.mockResolvedValue(helperEntity());
-
+  it('exige autorizar que el contacto se entregue a quien pide ayuda', async () => {
     await expect(
-      service.reviewHelper(helperEntity().id, {
-        verificationLevel: HelperVerificationLevel.PROFESSIONAL,
-        verificationMethod: HelperVerificationMethod.OFFICIAL_REGISTRY,
-        verifiedSkills: [RecoveryTaskCategory.ELECTRICAL],
-        verifiedBy: 'Coordinación local',
+      service.registerHelper({
+        displayName: 'Carlos G.',
+        contactPhone: '3101234567',
+        department: 'Caldas',
+        municipality: 'Manizales',
+        skills: [RecoveryTaskCategory.ELECTRICAL],
+        consentToShareContact: false,
       }),
     ).rejects.toBeInstanceOf(BadRequestException);
   });
 
-  it('registra una validación profesional trazable solo desde un dominio autorizado', async () => {
-    helpers.findOneBy.mockResolvedValue(
-      helperEntity({
-        credentialType: HelperCredentialType.PROFESSIONAL_LICENSE,
-        credentialNumber: 'MAT-2048',
-        credentialIssuer: 'Consejo profesional',
-      }),
-    );
-
-    const reviewed = await service.reviewHelper(helperEntity().id, {
-      verificationLevel: HelperVerificationLevel.PROFESSIONAL,
-      verificationMethod: HelperVerificationMethod.OFFICIAL_REGISTRY,
-      verifiedSkills: [RecoveryTaskCategory.ELECTRICAL],
-      verifiedBy: 'Coordinación local',
-      verificationSourceName: 'Registro oficial de prueba',
-      verificationSourceUrl: 'https://consulta.registro.gov.co/matriculas',
-    });
-
-    expect(reviewed.verificationLevel).toBe(
-      HelperVerificationLevel.PROFESSIONAL,
-    );
-    expect(reviewed.verificationSourceName).toBe('Registro oficial de prueba');
-  });
-
-  it('rechaza una supuesta fuente profesional fuera de la lista autorizada', async () => {
-    helpers.findOneBy.mockResolvedValue(
-      helperEntity({
-        credentialType: HelperCredentialType.PROFESSIONAL_LICENSE,
-        credentialNumber: 'MAT-2048',
-        credentialIssuer: 'Consejo profesional',
-      }),
-    );
-
-    await expect(
-      service.reviewHelper(helperEntity().id, {
-        verificationLevel: HelperVerificationLevel.PROFESSIONAL,
-        verificationMethod: HelperVerificationMethod.OFFICIAL_REGISTRY,
-        verifiedSkills: [RecoveryTaskCategory.ELECTRICAL],
-        verifiedBy: 'Coordinación local',
-        verificationSourceName: 'Página no oficial',
-        verificationSourceUrl: 'https://ejemplo.com/certificado',
-      }),
-    ).rejects.toBeInstanceOf(BadRequestException);
-  });
-
-  it('rechaza postulaciones de perfiles todavía pendientes', async () => {
+  it('acepta la postulación sin ninguna comprobación previa del perfil', async () => {
     tasks.findOne.mockResolvedValue(taskEntity());
     helpers.findOneBy.mockResolvedValue(helperEntity());
+    applications.existsBy.mockResolvedValue(false);
+    applications.create.mockImplementation(
+      (values) => values as RecoveryApplicationEntity,
+    );
+    applications.save.mockImplementation((entity) =>
+      Promise.resolve({
+        ...entity,
+        createdAt: now,
+        updatedAt: now,
+      } as RecoveryApplicationEntity),
+    );
+
+    const application = await service.applyToTask(
+      taskEntity().id,
+      { helperId: helperEntity().id, message: '', availability: 'Mañana' },
+      helperPin.pin,
+    );
+
+    expect(application.status).toBe(RecoveryApplicationStatus.PENDING);
+  });
+
+  it('rechaza postularse a una ayuda que la persona no ofreció', async () => {
+    tasks.findOne.mockResolvedValue(taskEntity());
+    helpers.findOneBy.mockResolvedValue(
+      helperEntity({ skills: [RecoveryTaskCategory.FOOD] }),
+    );
 
     await expect(
       service.applyToTask(
@@ -327,10 +392,7 @@ describe('RecoveryService', () => {
       taskId: taskEntity().id,
       task: taskEntity(),
       helperId: helperEntity().id,
-      helper: helperEntity({
-        verificationLevel: HelperVerificationLevel.IDENTITY,
-        verifiedBy: 'Equipo coordinador de prueba',
-      }),
+      helper: helperEntity(),
       message: 'Puedo ayudar',
       availability: 'Mañana',
       status: RecoveryApplicationStatus.PENDING,
@@ -350,7 +412,7 @@ describe('RecoveryService', () => {
       projectPin.pin,
     );
     expect(pending[0].helperPhone).toBe('');
-    expect(pending[0].helperVerifiedBy).toBe('Equipo coordinador de prueba');
+    expect(pending[0].helperSkills).toEqual([RecoveryTaskCategory.ELECTRICAL]);
 
     application.status = RecoveryApplicationStatus.ACCEPTED;
     const accepted = await service.getProjectApplications(
@@ -358,5 +420,62 @@ describe('RecoveryService', () => {
       projectPin.pin,
     );
     expect(accepted[0].helperPhone).toBe('3101234567');
+  });
+
+  it('recupera el acceso con un PIN nuevo y deja sin valor el anterior', async () => {
+    const project = projectEntity({ contactEmail: 'ana@example.com' });
+    projects.findBy.mockResolvedValue([project]);
+
+    const response = await service.recoverAccess({
+      email: ' Ana@Example.com ',
+    });
+
+    expect(response).toEqual({ requested: true });
+    expect(projects.findBy.mock.calls[0][0]).toEqual({
+      contactEmail: 'ana@example.com',
+    });
+    expect(project.editPinHash).not.toBe(projectPin.hash);
+    expect(projects.save.mock.calls[0][0]).toEqual([project]);
+    const [to, entries, reason] = mailer.sendAccess.mock.calls[0];
+    expect(to).toBe('ana@example.com');
+    expect(reason).toBe('recovered');
+    expect(entries).toHaveLength(1);
+    expect(entries[0].code).toBe(project.id);
+    expect(matchesEditPin(entries[0].pin, project.editPinHash)).toBe(true);
+    expect(matchesEditPin(projectPin.pin, project.editPinHash)).toBe(false);
+  });
+
+  it('conserva el PIN anterior si el correo no pudo enviarse', async () => {
+    const project = projectEntity({ contactEmail: 'ana@example.com' });
+    projects.findBy.mockResolvedValue([project]);
+    mailer.sendAccess.mockResolvedValue(false);
+
+    const response = await service.recoverAccess({ email: 'ana@example.com' });
+
+    expect(response).toEqual({ requested: true });
+    expect(projects.save.mock.calls).toHaveLength(0);
+    expect(matchesEditPin(projectPin.pin, projectEntity().editPinHash)).toBe(
+      true,
+    );
+  });
+
+  it('responde igual cuando el correo no está registrado y no envía nada', async () => {
+    const response = await service.recoverAccess({
+      email: 'desconocido@example.com',
+    });
+
+    expect(response).toEqual({ requested: true });
+    expect(mailer.sendAccess.mock.calls).toHaveLength(0);
+    expect(projects.save.mock.calls).toHaveLength(0);
+    expect(helpers.save.mock.calls).toHaveLength(0);
+  });
+
+  it('avisa que la recuperación no está disponible si no hay correo configurado', async () => {
+    Object.defineProperty(mailer, 'available', { value: false });
+
+    await expect(
+      service.recoverAccess({ email: 'ana@example.com' }),
+    ).rejects.toBeInstanceOf(ServiceUnavailableException);
+    expect(projects.findBy.mock.calls).toHaveLength(0);
   });
 });

@@ -50,8 +50,9 @@ La ilustración de portada está en `frontend/public/assets/redayuda-colombia-he
 - `POST/PATCH /api/news`: publicación editorial con la cabecera `x-news-publisher-key`. Solo admite categorías de desastre (sismo, inundación, deslizamiento, incendio, tormenta, sequía u otro); no es un directorio de programas generales.
 - `GET /api/recovery/projects`: casos verificados de recuperación tras el terremoto, con tareas revisadas y oferta local de artesanos, restaurantes, ventas ambulantes y pequeños negocios.
 - `POST /api/recovery/projects`: registra un caso o negocio para revisión y entrega un PIN. El contacto solo se publica para pedidos cuando el titular lo autoriza; documentos y direcciones exactas nunca salen en el listado.
-- `POST /api/recovery/helpers`: registra privadamente identidad, oficio y soporte. Nadie puede postularse hasta que el equipo asigne un nivel comprobado.
-- `GET/PATCH /api/recovery/verification/*`: cola privada protegida por `x-recovery-verifier-key` para confirmar casos, clasificar riesgos y contrastar referencias, certificados o matrículas.
+- `POST /api/recovery/helpers`: deja el nombre, el teléfono, la zona y en qué puede ayudar quien se ofrece, y entrega un código y un PIN. Nadie comprueba esos datos: sirven para que quien pide ayuda pueda contactarle. El teléfono nunca es público.
+- `POST /api/recovery/access/recover`: reenvía por correo el código y un PIN nuevo de todo lo publicado con esa dirección. Responde `{ requested: true }` exista o no el correo, y devuelve 503 si el servidor no tiene `EMAIL_*` configurado. Limitado a 3 intentos cada 5 minutos.
+- `GET/PATCH /api/recovery/verification/*`: cola privada protegida por `x-recovery-verifier-key` para confirmar casos y clasificar el riesgo de cada tarea.
 - WebSocket `/recovery`: eventos `recovery.project.created` y `recovery.project.updated`, únicamente para proyectos aprobados.
 - `POST /api/monitoring/digest/run`: genera el resumen a mano. Exige la cabecera `x-digest-token`.
 - WebSocket `/monitoring`: evento `digest.created`.
@@ -64,32 +65,44 @@ calle, taller o negocio artesanal registra su historia, zona aproximada y una pr
 todavía puede vender, también publica productos, comidas, horarios, modalidades de entrega y —solo
 con autorización expresa— un teléfono para pedidos.
 
-Nada se publica automáticamente. Casos, tareas y ayudantes entran a una cola privada protegida por
-`RECOVERY_VERIFIER_KEY`. El equipo llama al responsable, comprueba que el caso exista y asigna el
-riesgo de cada labor. Estructura, electricidad y gas nunca pueden quedar por debajo de riesgo rojo;
-solo admiten perfiles cuya matrícula o licencia fue contrastada en un registro oficial. Construcción,
-plomería, carpintería, soldadura y reparación de equipos exigen un oficio respaldado por certificado
-o referencia comprobada. Incluso las labores de riesgo bajo requieren identidad y teléfono
-confirmados.
+**A quien se ofrece no lo comprueba nadie.** Registrarse es dejar un nombre, un teléfono, la zona y
+en qué puede ayudar; con eso ya puede postularse. No se pide documento, ni certificado, ni matrícula:
+pedir papeles que nadie contrasta solo aparenta una seguridad que no existe y acumula datos
+personales sin función. Lo único que se exige al postularse es haberse ofrecido para ese tipo de
+ayuda. Quien publicó el caso decide con quién habla.
 
-Asignar el nivel profesional exige dejar el nombre y el enlace HTTPS de la consulta realizada. El
-backend solo acepta dominios incluidos en `RECOVERY_TRUSTED_REGISTRY_DOMAINS`; si la lista está
-vacía, no concede ese nivel. La configuración de ejemplo incluye
-[COPNIA](https://www.copnia.gov.co/atencion-al-ciudadano/consultas-en-linea) para ingeniería,
-profesiones afines y maestros de obra, y [CONTE](https://www.conte.org.co/consultas/) para técnicos
-electricistas. El equipo debe revisar esa lista y
-confirmar que la clase o alcance de la matrícula corresponda exactamente a la tarea, no solo que el
-número exista. La fuente queda visible para el responsable del caso, pero el enlace consultado se
-mantiene en la cola privada porque puede contener datos personales.
+El riesgo sí se clasifica, porque describe la labor, no a la persona: estructura, electricidad y gas
+nunca bajan de riesgo rojo, y la interfaz advierte que ese trabajo lo asuma solo quien viva de ese
+oficio. Casos y tareas entran a una cola privada protegida por `RECOVERY_VERIFIER_KEY`, donde el
+equipo confirma que el caso exista y fija el riesgo de cada labor.
 
-Los documentos, referencias, teléfonos de voluntarios y contactos de viviendas no forman parte del
-contrato público ni viajan por Socket.IO. El dueño del caso solo conoce el contacto de quien se
-postuló al abrir la gestión con su PIN; la persona ayudante solo recibe el contacto del responsable
-después de ser aceptada. La ubicación exacta se acuerda fuera del directorio.
+Los teléfonos de quien se ofrece y de quien pide ayuda no forman parte del contrato público ni viajan
+por Socket.IO. El dueño del caso solo conoce el contacto de quien se postuló al abrir la gestión con
+su PIN; la persona ayudante solo recibe el contacto del responsable después de ser aceptada. La
+ubicación exacta se acuerda fuera del directorio.
 
-En restaurantes y ventas de comida, la insignia de verificación solo confirma identidad, contacto y
+En restaurantes y ventas de comida, la insignia de verificación solo confirma el contacto y la
 existencia del caso. La interfaz advierte expresamente que no reemplaza una inspección sanitaria ni
 garantiza la inocuidad de los alimentos.
+
+### Perder el PIN sin perder el caso
+
+El PIN se muestra una sola vez y del lado del servidor solo queda su `scrypt`: nadie —tampoco el
+equipo— puede volver a leerlo. Por eso el formulario pide un **correo opcional**, privado y nunca
+publicado: al publicar el caso o registrar el oficio se envía allí una copia del código y del PIN, y
+`POST /api/recovery/access/recover` la vuelve a enviar cuando se pierden. Como el PIN no se puede
+releer, recuperar el acceso **genera uno nuevo** y el anterior deja de servir; si la dirección no
+está registrada la respuesta es idéntica, para que el formulario no sirva de buscador de personas.
+
+El correo sale por SMTP con las variables `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER` y `EMAIL_PASS`
+(mismo esquema que los demás servicios del equipo). Sin ellas la API arranca igual, no envía nada y
+la recuperación responde 503 en vez de aparentar un envío: quien no dejó correo sigue dependiendo de
+guardar su código y su PIN.
+
+El mensaje lleva los colores, la tipografía y el escudo de la página. La imagen viaja **dentro** del
+correo —los clientes bloquean las imágenes enlazadas— y se toma de `client/assets/brand/`, es decir
+del SPA ya compilado dentro de la imagen de Docker. Si esa carpeta no existe (desarrollo, con el
+frontend en `ng serve`), el encabezado se queda solo con el nombre y el correo se envía igual.
 
 ## Chequeo cada 6 horas
 

@@ -35,6 +35,13 @@
   grid-column: 1 / -1;
 }
 
+/* Aclaración bajo un campo: explica, no rotula, así que va en minúscula y apagada. */
+.inline-form label small {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .inline-form label span {
   color: var(--muted);
   font-size: 10px;

@@ -61,31 +61,28 @@
       </div>
     </div>
   </aside>
-
-  <a class="hero-scroll" href="#mensaje-esperanza">
-    {{ t('landing.scroll') }} <span aria-hidden="true">↓</span>
-  </a>
 </section>
 
 <section id="mensaje-esperanza" class="hope-section" [attr.aria-label]="t('landing.hopeKicker')">
-  <svg
-    class="hope-map"
-    [attr.viewBox]="homeMapViewBox"
-    preserveAspectRatio="xMidYMid meet"
-    aria-hidden="true"
-    focusable="false"
-  >
-    @for (shape of homeMapShapes; track shape.name) {
-      <path [attr.d]="shape.d" />
-    }
-  </svg>
+  <figure class="hope-visual">
+    <img
+      src="/assets/home/redayuda-hope-christ.jpg"
+      [alt]="t('landing.hopeImageAlt')"
+      width="1870"
+      height="841"
+      loading="lazy"
+    />
+  </figure>
   <div class="hope-inner">
     <span class="hope-kicker">{{ t('landing.hopeKicker') }}</span>
     <blockquote>
       <p>{{ t('hero.faithQuote') }}</p>
       <footer>
         <cite>{{ t('hero.faithSource') }}</cite>
-        <span>{{ t('hero.faithNote') }}</span>
+        <div class="hope-message">
+          <strong>{{ t('landing.hopeCredit') }}</strong>
+          <span>{{ t('hero.faithNote') }}</span>
+        </div>
       </footer>
     </blockquote>
   </div>

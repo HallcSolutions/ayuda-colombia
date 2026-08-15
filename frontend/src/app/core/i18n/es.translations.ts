@@ -348,10 +348,10 @@ export const ES_TRANSLATIONS = {
   'hero.titleAccent': 'donde más se necesita.',
   'hero.lead':
     'Conecta directamente a familias afectadas por el desastre con personas que pueden ayudarlas, sin que RedAyuda reciba ni administre el dinero.',
-  'hero.faithQuote': '«Lleven los unos las cargas de los otros».',
+  'hero.faithQuote': '«Lleven los unos las cargas de los otros, y cumplan así la ley de Cristo».',
   'hero.faithSource': 'Gálatas 6:2',
   'hero.faithNote':
-    'Con la ayuda de Dios y las manos de todos, ninguna familia queda sola en la tormenta.',
+    'Su amor nos une por encima de nuestras diferencias y nos inspira a tender la mano con humildad. Que cada gesto de ayuda lleve consuelo, renueve la esperanza y sea un reflejo de su amor.',
   'hero.primaryCta': 'Registrar una familia',
   'hero.secondaryCta': 'Ofrecer ayuda directa',
   'hero.trust': 'El contacto y la ubicación se comparten únicamente con autorización.',
@@ -365,8 +365,10 @@ export const ES_TRANSLATIONS = {
 
   'landing.heroImageAlt':
     'Voluntaria colombiana sostiene una caja con alimentos, agua y una manta para entregar ayuda',
-  'landing.scroll': 'Un mensaje de esperanza',
   'landing.hopeKicker': 'Una palabra de esperanza',
+  'landing.hopeCredit': 'En medio de la tormenta, Dios nos recuerda que no estamos solos.',
+  'landing.hopeImageAlt':
+    'Representación simbólica de Jesús con los brazos abiertos sobre una comunidad unida que entrega ayuda',
   'landing.missionRail': 'Reporta · conecta · moviliza · acompaña · Colombia se cuida',
   'landing.storyEyebrow': 'La red en acción',
   'landing.storyTitle': 'De una necesidad visible a una ayuda que sí llega.',
@@ -547,8 +549,6 @@ export const ES_TRANSLATIONS = {
   'reportForm.needsRequired': 'Selecciona al menos una necesidad.',
   'reportForm.consent':
     'Entiendo que mis datos personales son privados. Autorizo compartir un resumen del caso —sin mi nombre, cédula ni teléfono— para coordinar ayuda humanitaria.',
-  'reportForm.invalid':
-    'Completa los datos mínimos, marca al menos una necesidad y confirma el contacto autorizado.',
   'reportForm.error':
     'No fue posible publicar el reporte. Revisa tu conexión e intenta nuevamente.',
   'reportForm.success':

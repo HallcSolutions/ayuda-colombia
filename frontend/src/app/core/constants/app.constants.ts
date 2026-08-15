@@ -137,6 +137,7 @@ export enum PublicNewsStatus {
 
 export enum RecoveryProjectKind {
   HOME = 'home',
+  PERSON = 'person',
   BUSINESS = 'business',
   RESTAURANT = 'restaurant',
   ARTISAN = 'artisan',
@@ -174,6 +175,8 @@ export enum RecoveryTaskCategory {
   TRANSPORT = 'transport',
   FOOD = 'food',
   MATERIALS = 'materials',
+  ASSISTIVE_DEVICE = 'assistive_device',
+  HOUSEHOLD_GOODS = 'household_goods',
   BUSINESS_SUPPORT = 'business_support',
   DIGITAL = 'digital',
   OTHER = 'other',
@@ -194,32 +197,6 @@ export enum RecoveryTaskStatus {
   CANCELLED = 'cancelled',
 }
 
-export enum HelperVerificationLevel {
-  PENDING = 'pending',
-  IDENTITY = 'identity',
-  TRADE = 'trade',
-  PROFESSIONAL = 'professional',
-  REJECTED = 'rejected',
-  SUSPENDED = 'suspended',
-}
-
-export enum HelperCredentialType {
-  NONE = 'none',
-  PROFESSIONAL_LICENSE = 'professional_license',
-  TRADE_CERTIFICATE = 'trade_certificate',
-  EMPLOYER_REFERENCE = 'employer_reference',
-  COMMUNITY_REFERENCE = 'community_reference',
-}
-
-export enum HelperVerificationMethod {
-  IDENTITY_AND_PHONE = 'identity_and_phone',
-  OFFICIAL_REGISTRY = 'official_registry',
-  TRAINING_CERTIFICATE = 'training_certificate',
-  EMPLOYER_REFERENCE = 'employer_reference',
-  COMMUNITY_REFERENCE = 'community_reference',
-  PRACTICAL_ASSESSMENT = 'practical_assessment',
-}
-
 export enum RecoveryApplicationStatus {
   PENDING = 'pending',
   ACCEPTED = 'accepted',
@@ -232,6 +209,7 @@ export enum RecoveryApplicationStatus {
 export const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 export const MAX_REPORT_PHOTOS = 6;
 export const MAX_MISSING_PHOTOS = 3;
+export const MAX_RECOVERY_PHOTOS = 3;
 export const MAX_PHOTO_SIZE_BYTES = 5 * 1024 * 1024;
 
 export const RELIEF_POINT_TYPES = Object.values(ReliefPointType);
@@ -249,5 +227,11 @@ export const LODGING_STATUSES = Object.values(LodgingStatus);
 export const PUBLIC_NEWS_CATEGORIES = Object.values(PublicNewsCategory);
 export const RECOVERY_PROJECT_KINDS = Object.values(RecoveryProjectKind);
 export const RECOVERY_TASK_CATEGORIES = Object.values(RecoveryTaskCategory);
-export const HELPER_CREDENTIAL_TYPES = Object.values(HelperCredentialType);
 export const RECOVERY_SALES_MODES = Object.values(RecoverySalesMode);
+/** Necesidades que se resuelven entregando una cosa, no poniendo la mano a trabajar. */
+export const RECOVERY_DONATION_CATEGORIES: readonly RecoveryTaskCategory[] = [
+  RecoveryTaskCategory.ASSISTIVE_DEVICE,
+  RecoveryTaskCategory.HOUSEHOLD_GOODS,
+  RecoveryTaskCategory.MATERIALS,
+  RecoveryTaskCategory.FOOD,
+];

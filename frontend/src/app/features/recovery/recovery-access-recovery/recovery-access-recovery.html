@@ -1,0 +1,25 @@
+<button type="button" class="disclose" [attr.aria-expanded]="open()" (click)="toggle()">
+  {{ t('recovery.access.lostAccess') }}
+</button>
+
+@if (open()) {
+  <section class="recover">
+    <p>{{ t('recovery.access.lead') }}</p>
+    <label>
+      <span>{{ t('recovery.access.emailField') }}</span>
+      <input
+        type="email"
+        inputmode="email"
+        autocomplete="email"
+        [value]="email()"
+        (input)="updateEmail($event)"
+      />
+    </label>
+    <button type="button" [disabled]="sending()" (click)="request()">
+      {{ sending() ? t('common.saving') : t('recovery.access.submit') }}
+    </button>
+    @if (noticeKey(); as key) {
+      <p class="notice" [class.error]="failed()" role="status">{{ t(key) }}</p>
+    }
+  </section>
+}

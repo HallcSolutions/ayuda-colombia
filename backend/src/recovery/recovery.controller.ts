@@ -8,11 +8,16 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { Throttle } from '@nestjs/throttler';
+import { MAX_RECOVERY_PHOTOS } from '../common/constants/app.constants';
 import {
   PublishedRecoveryProject,
+  RecoveryAccessRequest,
   RecoveryApplication,
   RecoveryHelperProfile,
   RecoveryProject,
@@ -20,12 +25,13 @@ import {
   RecoveryVerificationQueue,
   RegisteredRecoveryHelper,
 } from '../common/interfaces/recovery.interface';
+import { photoUploadOptions } from '../common/uploads/photo-upload';
 import { CreateRecoveryApplicationDto } from './dto/create-recovery-application.dto';
 import { CreateRecoveryProjectDto } from './dto/create-recovery-project.dto';
 import { CreateRecoveryTaskDto } from './dto/create-recovery-task.dto';
 import { FindRecoveryProjectsQueryDto } from './dto/find-recovery-projects-query.dto';
+import { RecoverRecoveryAccessDto } from './dto/recover-recovery-access.dto';
 import { RegisterRecoveryHelperDto } from './dto/register-recovery-helper.dto';
-import { ReviewRecoveryHelperDto } from './dto/review-recovery-helper.dto';
 import { ReviewRecoveryProjectDto } from './dto/review-recovery-project.dto';
 import { ReviewRecoveryTaskDto } from './dto/review-recovery-task.dto';
 import { UpdateRecoveryApplicationDto } from './dto/update-recovery-application.dto';
@@ -54,10 +60,14 @@ export class RecoveryController {
 
   @Post('projects')
   @Throttle({ default: { limit: 6, ttl: 60_000 } })
+  @UseInterceptors(
+    FilesInterceptor('photos', MAX_RECOVERY_PHOTOS, photoUploadOptions),
+  )
   createProject(
     @Body() dto: CreateRecoveryProjectDto,
+    @UploadedFiles() files: Express.Multer.File[] = [],
   ): Promise<PublishedRecoveryProject> {
-    return this.recovery.createProject(dto);
+    return this.recovery.createProject(dto, files);
   }
 
   @Patch('projects/:id')
@@ -105,6 +115,18 @@ export class RecoveryController {
     @Headers('x-recovery-pin') pin = '',
   ): Promise<RecoveryApplication> {
     return this.recovery.updateApplication(projectId, applicationId, dto, pin);
+  }
+
+  /**
+   * Devuelve el acceso por correo a quien perdió su código o su PIN. Responde igual
+   * exista o no la dirección, para no delatar quién está registrado.
+   */
+  @Post('access/recover')
+  @Throttle({ default: { limit: 3, ttl: 300_000 } })
+  recoverAccess(
+    @Body() dto: RecoverRecoveryAccessDto,
+  ): Promise<RecoveryAccessRequest> {
+    return this.recovery.recoverAccess(dto);
   }
 
   @Post('helpers')
@@ -171,14 +193,5 @@ export class RecoveryController {
     @Body() dto: ReviewRecoveryTaskDto,
   ): Promise<RecoveryTask> {
     return this.recovery.reviewTask(id, dto);
-  }
-
-  @Patch('verification/helpers/:id')
-  @UseGuards(RecoveryVerifierGuard)
-  reviewHelper(
-    @Param('id', new ParseUUIDPipe()) id: string,
-    @Body() dto: ReviewRecoveryHelperDto,
-  ): Promise<RecoveryHelperProfile> {
-    return this.recovery.reviewHelper(id, dto);
   }
 }

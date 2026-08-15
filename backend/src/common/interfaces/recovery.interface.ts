@@ -1,7 +1,4 @@
 import {
-  HelperCredentialType,
-  HelperVerificationLevel,
-  HelperVerificationMethod,
   RecoveryApplicationStatus,
   RecoveryProjectKind,
   RecoveryProjectStatus,
@@ -44,6 +41,7 @@ export interface RecoveryProject {
   priceReference: string;
   salesModes: RecoverySalesMode[];
   schedule: string;
+  photos: string[];
   publicContactPhone: string;
   status: RecoveryProjectStatus;
   verifiedBy: string;
@@ -57,6 +55,8 @@ export interface RecoveryProject {
 
 export interface PublishedRecoveryProject extends RecoveryProject {
   editPin: string;
+  /** Dice si la copia del código y el PIN salió al correo indicado al publicar. */
+  accessEmailSent: boolean;
 }
 
 export interface RecoveryHelperProfile {
@@ -65,40 +65,28 @@ export interface RecoveryHelperProfile {
   department: string;
   municipality: string;
   skills: RecoveryTaskCategory[];
-  verifiedSkills: RecoveryTaskCategory[];
-  bio: string;
-  yearsExperience: number;
-  verificationLevel: HelperVerificationLevel;
-  verificationMethod: HelperVerificationMethod | null;
-  verifiedBy: string;
-  verifiedAt: string | null;
-  verificationSourceName: string;
 }
 
 export interface RegisteredRecoveryHelper extends RecoveryHelperProfile {
   editPin: string;
+  /** Dice si la copia del código y el PIN salió al correo indicado al registrarse. */
+  accessEmailSent: boolean;
 }
 
-/** Solo lo ve el equipo verificador; documento, contacto y credencial nunca son públicos. */
-export interface RecoveryHelperReviewItem {
-  id: string;
-  fullName: string;
-  displayName: string;
-  documentType: string;
-  documentNumber: string;
-  contactPhone: string;
-  department: string;
-  municipality: string;
-  skills: RecoveryTaskCategory[];
-  bio: string;
-  yearsExperience: number;
-  credentialType: HelperCredentialType;
-  credentialNumber: string;
-  credentialIssuer: string;
-  referenceName: string;
-  referencePhone: string;
-  verificationLevel: HelperVerificationLevel;
-  createdAt: string;
+/** Una publicación con su llave privada, tal como se escribe en el correo. */
+export interface RecoveryAccessEntry {
+  title: string;
+  codeLabel: string;
+  code: string;
+  pin: string;
+}
+
+/**
+ * Respuesta de la recuperación por correo: nunca dice si la dirección existe,
+ * para no convertir el formulario en un buscador de personas registradas.
+ */
+export interface RecoveryAccessRequest {
+  requested: true;
 }
 
 export interface RecoveryProjectReviewItem {
@@ -115,6 +103,7 @@ export interface RecoveryProjectReviewItem {
   priceReference: string;
   salesModes: RecoverySalesMode[];
   schedule: string;
+  photos: string[];
   shareContactPublicly: boolean;
   status: RecoveryProjectStatus;
   createdAt: string;
@@ -142,7 +131,6 @@ export interface RecoveryTaskReviewItem {
 export interface RecoveryVerificationQueue {
   projects: RecoveryProjectReviewItem[];
   tasks: RecoveryTaskReviewItem[];
-  helpers: RecoveryHelperReviewItem[];
 }
 
 export interface RecoveryApplication {
@@ -154,10 +142,7 @@ export interface RecoveryApplication {
   helperId: string;
   helperName: string;
   helperPhone: string;
-  helperVerificationLevel: HelperVerificationLevel;
-  helperVerifiedBy: string;
-  helperVerifiedSkills: RecoveryTaskCategory[];
-  helperVerificationSource: string;
+  helperSkills: RecoveryTaskCategory[];
   message: string;
   availability: string;
   status: RecoveryApplicationStatus;

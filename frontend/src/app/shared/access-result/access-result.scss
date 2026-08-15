@@ -69,6 +69,13 @@ dd {
   line-height: 1.55;
 }
 
+/* Confirmación del envío: una viñeta verde, sin recuadro que compita con el PIN. */
+.note.sent {
+  padding-left: 12px;
+  border-left: 2px solid var(--green);
+  color: var(--ink);
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

@@ -4,6 +4,7 @@ export const RECOVERY_ES_TRANSLATIONS = {
   'common.copyAccess': 'Copiar código y PIN',
   'common.copied': 'Copiado ✓',
   'common.saving': 'Guardando…',
+  'common.accessEmailSent': 'Enviamos una copia del código y el PIN a {email}.',
   'nav.recovery': 'Recuperación',
   'helpContactRole.affected_person': 'Persona afectada',
   'helpContactRole.family_member': 'Familiar',
@@ -13,6 +14,7 @@ export const RECOVERY_ES_TRANSLATIONS = {
   'helpContactChannel.both': 'Llamada y WhatsApp',
 
   'recoveryProjectKind.home': 'Vivienda',
+  'recoveryProjectKind.person': 'Persona que necesita algo',
   'recoveryProjectKind.business': 'Negocio local',
   'recoveryProjectKind.restaurant': 'Restaurante o venta de comida',
   'recoveryProjectKind.artisan': 'Artesano o taller',
@@ -36,12 +38,14 @@ export const RECOVERY_ES_TRANSLATIONS = {
   'recoveryTaskCategory.transport': 'Transporte',
   'recoveryTaskCategory.food': 'Alimentación',
   'recoveryTaskCategory.materials': 'Materiales y herramientas',
+  'recoveryTaskCategory.assistive_device': 'Silla de ruedas, muletas o apoyo para moverse',
+  'recoveryTaskCategory.household_goods': 'Colchones, ropa y enseres de la casa',
   'recoveryTaskCategory.business_support': 'Apoyo al negocio',
   'recoveryTaskCategory.digital': 'Diseño y apoyo digital',
   'recoveryTaskCategory.other': 'Otro conocimiento',
-  'recoveryRisk.green': 'Riesgo bajo · identidad confirmada',
-  'recoveryRisk.amber': 'Riesgo medio · oficio comprobado',
-  'recoveryRisk.red': 'Riesgo alto · profesional acreditado',
+  'recoveryRisk.green': 'Riesgo bajo',
+  'recoveryRisk.amber': 'Riesgo medio · oficio técnico',
+  'recoveryRisk.red': 'Riesgo alto · trabajo especializado',
   'recoveryTaskStatus.pending_review': 'Por revisar',
   'recoveryTaskStatus.open': 'Recibe postulaciones',
   'recoveryTaskStatus.blocked': 'Bloqueada por seguridad',
@@ -53,23 +57,6 @@ export const RECOVERY_ES_TRANSLATIONS = {
   'recoverySalesMode.delivery': 'Domicilio',
   'recoverySalesMode.made_to_order': 'Producto por encargo',
   'recoverySalesMode.on_site': 'Atención en el lugar',
-  'helperCredential.none': 'Sin soporte todavía',
-  'helperCredential.professional_license': 'Matrícula o licencia profesional',
-  'helperCredential.trade_certificate': 'Certificado de formación técnica',
-  'helperCredential.employer_reference': 'Referencia laboral',
-  'helperCredential.community_reference': 'Referencia de organización comunitaria',
-  'helperVerification.pending': 'Verificación pendiente',
-  'helperVerification.identity': 'Identidad y teléfono confirmados',
-  'helperVerification.trade': 'Oficio comprobado',
-  'helperVerification.professional': 'Profesional acreditado',
-  'helperVerification.rejected': 'Verificación rechazada',
-  'helperVerification.suspended': 'Verificación suspendida',
-  'helperVerificationMethod.identity_and_phone': 'Identidad y llamada',
-  'helperVerificationMethod.official_registry': 'Registro profesional oficial',
-  'helperVerificationMethod.training_certificate': 'Certificado de formación',
-  'helperVerificationMethod.employer_reference': 'Referencia laboral comprobada',
-  'helperVerificationMethod.community_reference': 'Referencia comunitaria comprobada',
-  'helperVerificationMethod.practical_assessment': 'Evaluación práctica',
   'recoveryApplicationStatus.pending': 'Esperando respuesta',
   'recoveryApplicationStatus.accepted': 'Aceptada',
   'recoveryApplicationStatus.declined': 'No seleccionada',
@@ -79,21 +66,15 @@ export const RECOVERY_ES_TRANSLATIONS = {
   'recovery.eyebrow': 'Recuperación después del terremoto',
   'recovery.title': 'Volvamos a levantar lo nuestro',
   'recovery.lead':
-    'Familias, restaurantes, ventas de calle, talleres y artesanos pueden contar qué necesitan para reparar, volver a abrir o seguir trabajando. Quienes conocen un oficio pueden sumarse de forma organizada.',
+    'Familias, restaurantes, ventas de calle, talleres y artesanos pueden contar qué necesitan para reparar, volver a abrir o seguir trabajando. Una persona también puede pedir que le donen lo que perdió, como una silla de ruedas. Quienes conocen un oficio o pueden donar se suman de forma organizada.',
   'recovery.actionImageAlt':
     'Vecinos y personas con oficio apoyan la reapertura de un taller y negocio local',
   'recovery.actionEyebrow': 'Para familias y negocios afectados',
   'recovery.actionBody':
-    'Cuéntanos qué pasó, qué necesitas recuperar o qué productos todavía puedes ofrecer. Tu publicación aparecerá de inmediato.',
+    'Cuéntanos qué pasó, qué necesitas que te donen o qué productos todavía puedes ofrecer. Puedes adjuntar una foto y tu publicación aparecerá de inmediato.',
   'recovery.needHelp': 'Contar qué necesito',
   'recovery.canHelp': 'Ofrecer mi oficio o mi tiempo',
   'recovery.safetyEyebrow': 'Apoyo con experiencia',
-  'recovery.safetyTitle': 'Cuidamos a quien pide ayuda y a quien la ofrece',
-  'recovery.safetyBody':
-    'Confirmamos los datos de cada caso y la experiencia necesaria para cada labor. Los domicilios particulares y documentos permanecen privados.',
-  'recovery.safetyStep1': 'Confirmamos la identidad y el contacto.',
-  'recovery.safetyStep2': 'Revisamos certificados o referencias cuando la labor lo exige.',
-  'recovery.safetyStep3': 'En trabajos de alto riesgo consultamos la matrícula profesional.',
   'recovery.statsTitle': 'Estado de la recuperación comunitaria',
   'recovery.statsProjects': 'casos publicados',
   'recovery.statsTasks': 'tareas abiertas',
@@ -101,10 +82,10 @@ export const RECOVERY_ES_TRANSLATIONS = {
   'recovery.directoryEyebrow': 'Apoyo cerca de ti',
   'recovery.directoryTitle': 'Necesidades y negocios que siguen adelante',
   'recovery.directoryLead':
-    'Encuentra una tarea en la que puedas ayudar o compra directamente a restaurantes, ventas de calle, talleres y artesanos afectados.',
+    'Encuentra una tarea en la que puedas ayudar, algo que puedas donar o compra directamente a restaurantes, ventas de calle, talleres y artesanos afectados.',
   'recovery.verifyAccess': 'Acceso del equipo verificador',
   'recovery.search': 'Buscar',
-  'recovery.searchPlaceholder': 'Restaurante, artesanía, reparación, limpieza…',
+  'recovery.searchPlaceholder': 'Silla de ruedas, colchón, restaurante, reparación…',
   'recovery.department': 'Departamento',
   'recovery.municipality': 'Municipio',
   'recovery.kind': 'Tipo de caso',
@@ -137,8 +118,15 @@ export const RECOVERY_ES_TRANSLATIONS = {
   'recovery.card.pendingBody':
     'Publicaremos sus detalles cuando el equipo coordinador confirme el riesgo y las condiciones de seguridad.',
   'recovery.card.professionalOnly':
-    'Solo acepta perfiles con acreditación profesional consultada en fuente oficial.',
+    'Trabajo de riesgo alto: preséntate solo si es tu oficio.',
   'recovery.card.offerHelp': 'Postularme para ayudar',
+  'recovery.card.offerDonation': 'Quiero donar lo que necesita',
+  'recovery.card.donateWhatsapp': 'Escribir para donar esto ↗',
+  'recovery.card.directContact': 'Contacto directo',
+  'recovery.card.directContactLead':
+    'Esta persona autorizó publicar su teléfono para que la contactes sin intermediarios. Escríbele o llámala y acuerden la entrega.',
+  'recovery.card.writeWhatsapp': 'Escribir por WhatsApp ↗',
+  'recovery.card.photoAlt': 'Foto del caso de {name}',
   'recovery.card.registerTrade': 'Registrar mi oficio para futuras tareas',
   'recovery.card.applications': 'Ofrecimientos pendientes: {applications}',
   'recovery.card.ownerApplications':
@@ -158,10 +146,12 @@ export const RECOVERY_ES_TRANSLATIONS = {
 
   'recovery.form.title': 'Cuéntanos cómo podemos apoyarte',
   'recovery.form.safetyReview':
-    'El caso y la oferta aparecerán de inmediato. En viviendas mostraremos solo la zona aproximada; en negocios y lugares públicos podrás publicar la dirección para activar el mapa. El teléfono seguirá privado, salvo que autorices usarlo para recibir pedidos. Las tareas técnicas se clasifican por riesgo antes de recibir postulaciones.',
+    'El caso aparecerá de inmediato, y lo que pidas en donación también. En viviendas y en casos de una persona mostraremos solo la zona aproximada; en negocios y lugares públicos podrás publicar la dirección para activar el mapa. El teléfono seguirá privado salvo que autorices publicarlo, y publicarlo es lo que permite que te contacten directo. Solo las tareas técnicas con riesgo (electricidad, gas, estructura) esperan la revisión de un coordinador.',
   'recovery.form.kind': '¿A quién o qué vamos a apoyar?',
   'recovery.form.name': 'Nombre del lugar, negocio o taller',
+  'recovery.form.personName': 'Nombre de la persona que necesita el apoyo',
   'recovery.form.organizer': 'Persona responsable',
+  'recovery.form.personOrganizer': 'Quién publica el caso',
   'recovery.form.phone': 'Teléfono privado de contacto',
   'recovery.form.department': 'Departamento',
   'recovery.form.municipality': 'Municipio',
@@ -170,6 +160,19 @@ export const RECOVERY_ES_TRANSLATIONS = {
   'recovery.form.publicAddress': 'Dirección pública para llegar',
   'recovery.form.publicAddressHint': 'Ejemplo: Carrera 7 # 12-34',
   'recovery.form.story': 'Cuéntanos qué ocurrió y cuál es la situación actual',
+  'recovery.form.personStory': 'Cuéntanos qué le pasó y qué necesita para valerse por sí misma',
+  'recovery.form.photos': 'Fotos de lo que necesitas',
+  'recovery.form.photosLead':
+    'Una foto del daño ayuda a que alguien entienda de un vistazo cómo apoyarte. No subas documentos de identidad.',
+  'recovery.form.photosPersonLead':
+    'Muestra la silla de ruedas rota, la cama, la muleta o lo que haga falta: quien pueda donarlo lo reconocerá enseguida. No subas documentos de identidad.',
+  'recovery.form.selectPhotos': 'Adjuntar una foto',
+  'recovery.form.photoHint': 'Hasta {max} fotos JPG, PNG o WEBP de máximo 5 MB cada una.',
+  'recovery.form.photoPreview': 'Foto adjunta {index}',
+  'recovery.form.removePhoto': 'Quitar la foto {index}',
+  'recovery.form.tooManyPhotos': 'Solo puedes adjuntar {max} fotos.',
+  'recovery.form.invalidPhotoType': 'Solo se aceptan imágenes JPG, PNG o WEBP.',
+  'recovery.form.photoTooLarge': 'La foto {name} pesa más de 5 MB.',
   'recovery.form.sellTitle': 'Lo que todavía puedes ofrecer',
   'recovery.form.sellLead':
     'Artesanos, restaurantes y vendedores de calle pueden mostrar su oferta aunque hayan perdido el local.',
@@ -178,11 +181,23 @@ export const RECOVERY_ES_TRANSLATIONS = {
   'recovery.form.schedule': 'Horario o días de atención',
   'recovery.form.salesMode': 'Cómo vende o entrega',
   'recovery.form.sharePhone': 'Autorizo publicar este teléfono únicamente para recibir pedidos.',
+  'recovery.form.shareDirectContact':
+    'Autorizo publicar este teléfono para que quien pueda ayudar o donar me contacte directamente. Es la forma más rápida de recibir ayuda.',
   'recovery.form.needsHelp':
     'También necesito personas, materiales o conocimiento para recuperarme.',
+  'recovery.form.needsHelpPerson':
+    'Necesito que alguien done algo o que me ayuden con una labor concreta.',
   'recovery.form.firstTask': 'Primera tarea necesaria',
   'recovery.form.firstTaskLead':
     'Descríbela con precisión. Un coordinador confirmará el riesgo real.',
+  'recovery.form.donationTitle': 'Qué necesitas que te donen',
+  'recovery.form.donationLead':
+    'Descríbelo con precisión para que quien pueda entregarlo sepa si sirve. Se publica de inmediato: no hay que esperar ninguna revisión.',
+  'recovery.form.donationItem': 'Qué necesitas (por ejemplo: silla de ruedas)',
+  'recovery.form.donationCategory': 'Tipo de ayuda',
+  'recovery.form.donors': 'Cuántas personas pueden donarlo',
+  'recovery.form.donationDescription': 'Para quién es y para qué lo necesita',
+  'recovery.form.donationDetails': 'Medidas, talla o características que deben servir',
   'recovery.form.taskTitle': 'Nombre corto de la tarea',
   'recovery.form.taskCategory': 'Conocimiento principal',
   'recovery.form.people': 'Personas necesarias',
@@ -190,7 +205,7 @@ export const RECOVERY_ES_TRANSLATIONS = {
   'recovery.form.skills': 'Experiencia o conocimientos necesarios',
   'recovery.form.materials': 'Materiales o herramientas necesarias',
   'recovery.form.consent':
-    'Autorizo publicar la información escrita en este formulario, incluida la dirección cuando corresponda a un lugar público. El teléfono permanecerá privado, salvo que autorice mostrarlo para recibir pedidos.',
+    'Autorizo publicar la información y las fotos de este formulario, incluida la dirección cuando corresponda a un lugar público. El teléfono permanecerá privado, salvo que marque arriba la casilla para publicarlo.',
   'recovery.form.invalid': 'Completa los campos obligatorios, la tarea y la autorización.',
   'recovery.form.error': 'No fue posible registrar el caso. Revisa los datos e intenta de nuevo.',
   'recovery.form.taskError':
@@ -203,66 +218,61 @@ export const RECOVERY_ES_TRANSLATIONS = {
     'Los necesitarás para añadir tareas, revisar postulaciones y cerrar el caso. No volveremos a mostrar el PIN.',
 
   'recovery.helper.title': 'Ofrecer mi oficio o mi tiempo',
-  'recovery.helper.verificationTitle':
-    'Tu experiencia puede ayudar a levantar una familia o un negocio',
-  'recovery.helper.verificationBody':
-    'Para cuidarte y cuidar a quien recibe la ayuda, confirmaremos tu identidad y los soportes necesarios según la labor.',
-  'recovery.helper.levelIdentity': 'Confirmamos tu identidad y un teléfono de contacto.',
-  'recovery.helper.levelTrade': 'Para labores técnicas revisamos un certificado o una referencia.',
-  'recovery.helper.levelProfessional':
-    'Para electricidad, gas o estructura consultamos la matrícula o licencia correspondiente.',
-  'recovery.helper.identityTitle': 'Quién eres',
+  'recovery.helper.lead': 'Deja tus datos y quien te necesite te llama',
+  'recovery.helper.leadBody':
+    'Nadie comprueba nada: aquí solo dejas cómo contactarte y en qué puedes ayudar. Quien publicó el caso decide con quién habla.',
+  'recovery.helper.identityTitle': 'Cómo te contactan',
   'recovery.helper.identityLead':
-    'Estos datos son privados: solo los ve el equipo que hace la verificación.',
-  'recovery.helper.experienceTitle': 'Dónde ayudas y qué sabes hacer',
-  'recovery.helper.skillsHint': 'Elige hasta ocho conocimientos.',
-  'recovery.helper.fullName': 'Nombre completo legal',
+    'Tu teléfono no se publica: se lo damos a quien pide ayuda cuando acepta tu postulación.',
+  'recovery.helper.experienceTitle': 'Dónde ayudas y en qué',
+  'recovery.helper.skillsHint': 'Elige hasta ocho.',
   'recovery.helper.displayName': 'Nombre que verá el responsable del caso',
-  'recovery.helper.documentType': 'Tipo de documento',
-  'recovery.helper.documentNumber': 'Número de documento privado',
-  'recovery.helper.passport': 'Pasaporte',
-  'recovery.helper.phone': 'Teléfono privado',
+  'recovery.helper.phone': 'Teléfono',
   'recovery.helper.department': 'Departamento',
   'recovery.helper.municipality': 'Municipio',
-  'recovery.helper.years': 'Años de experiencia',
-  'recovery.helper.bio': 'Cuéntanos qué trabajos has realizado',
   'recovery.helper.skills': '¿En qué puedes ayudar?',
-  'recovery.helper.credentialTitle': 'Soporte que el equipo puede comprobar',
-  'recovery.helper.credentialLead':
-    'No subas fotos de documentos. Indica el registro, certificado o referencia para contrastarlo directamente.',
-  'recovery.helper.credentialType': 'Tipo de soporte',
-  'recovery.helper.credentialNumber': 'Número de matrícula o certificado',
-  'recovery.helper.credentialIssuer': 'Entidad que lo expidió',
-  'recovery.helper.referenceName': 'Nombre de la referencia',
-  'recovery.helper.referencePhone': 'Teléfono de la referencia',
   'recovery.helper.consent':
-    'Autorizo la verificación privada de mi identidad, teléfono, experiencia y soporte declarado.',
+    'Autorizo que mi teléfono se entregue a quien pide ayuda cuando acepte mi postulación.',
   'recovery.helper.invalid':
-    'Completa los datos, selecciona al menos un conocimiento y autoriza la verificación.',
-  'recovery.helper.error': 'No fue posible registrar tus conocimientos.',
-  'recovery.helper.submit': 'Enviar mis datos a verificación',
-  'recovery.helper.pending': 'Perfil pendiente de verificación',
+    'Completa tus datos, elige al menos un tipo de ayuda y autoriza que te contacten.',
+  'recovery.helper.error': 'No fue posible guardar tus datos.',
+  'recovery.helper.submit': 'Ofrecer mi ayuda',
+  'recovery.helper.registered': 'Ya puedes postularte',
   'recovery.helper.keepAccess': 'Guarda tu código y PIN',
   'recovery.helper.helperCode': 'Código de ayudante',
-  'recovery.helper.pendingBody':
-    'Todavía no puedes postularte. El equipo debe comprobar tu identidad y el nivel real de cada oficio.',
+  'recovery.helper.registeredBody':
+    'Los necesitarás para postularte a una tarea y para seguir tus postulaciones. No volveremos a mostrar el PIN.',
 
   'recovery.apply.title': 'Postularme a una tarea',
   'recovery.apply.professionalOnly':
-    'Esta tarea exige matrícula o licencia profesional verificada.',
+    'Labor de riesgo alto: preséntate solo si trabajas en ese oficio.',
   'recovery.apply.privacy':
-    'Tu teléfono solo se entrega al responsable verificado del caso. La ubicación exacta se acuerda después de aceptar la postulación.',
+    'Tu teléfono solo se entrega a quien publicó el caso cuando acepta tu postulación. La ubicación exacta se acuerda después.',
   'recovery.apply.helperCode': 'Código de ayudante',
   'recovery.apply.pin': 'PIN de ayudante',
   'recovery.apply.availability': 'Cuándo puedes ayudar',
   'recovery.apply.message': 'Mensaje breve para el responsable',
   'recovery.apply.invalid': 'Completa tu código, PIN y disponibilidad.',
   'recovery.apply.error':
-    'No se pudo postular. Comprueba tu PIN, que el perfil ya esté verificado y que el nivel permita esta tarea.',
+    'No se pudo postular. Comprueba tu código y tu PIN, y que te hayas ofrecido para ese tipo de ayuda.',
   'recovery.apply.submit': 'Enviar postulación',
   'recovery.apply.success': 'Postulación enviada',
   'recovery.apply.successBody':
-    'El responsable verá tu nivel comprobado y podrá aceptar o rechazar. Tu contacto no es público.',
+    'Quien publicó el caso verá tu mensaje y podrá aceptar o rechazar. Tu contacto no es público.',
+
+  'recovery.access.emailField': 'Correo para recuperar el acceso (opcional)',
+  'recovery.access.emailHint':
+    'El PIN se muestra una sola vez y no lo guardamos en claro. Si dejas tu correo, te enviamos una copia y podrás recuperar el acceso si la pierdes.',
+  'recovery.access.lostAccess': '¿Perdiste tu código o tu PIN?',
+  'recovery.access.lead':
+    'Escribe el correo con el que publicaste. Te enviaremos tu código y un PIN nuevo; el anterior dejará de funcionar. Si no dejaste un correo, no podemos devolverte el acceso.',
+  'recovery.access.submit': 'Enviarme mi acceso',
+  'recovery.access.sent':
+    'Si ese correo está registrado, allí llegará tu código y un PIN nuevo. Revisa también el correo no deseado.',
+  'recovery.access.invalidEmail': 'Escribe un correo válido.',
+  'recovery.access.error': 'No fue posible enviar el correo. Vuelve a intentarlo en unos minutos.',
+  'recovery.access.unavailable':
+    'El envío de correos no está disponible en este momento. Intenta más tarde.',
 
   'recovery.helperManage.openAccess': 'Ver mis postulaciones',
   'recovery.helperManage.title': 'Mis postulaciones y contactos',
@@ -294,8 +304,7 @@ export const RECOVERY_ES_TRANSLATIONS = {
   'recovery.manage.applicant': 'Persona que ofrece ayuda',
   'recovery.manage.appliedTask': 'Tarea a la que se postuló',
   'recovery.manage.availability': 'Disponibilidad indicada',
-  'recovery.manage.verification': 'Revisión del equipo coordinador',
-  'recovery.manage.verifiedBy': 'Validado por {name}',
+  'recovery.manage.offeredHelp': 'Ayuda que ofrece',
   'recovery.manage.message': 'Mensaje para ti',
   'recovery.manage.contactPhone': 'Teléfono para coordinar',
   'recovery.manage.call': 'Llamar al {phone}',
@@ -309,12 +318,11 @@ export const RECOVERY_ES_TRANSLATIONS = {
   'recovery.manage.addTaskLead': 'Quedará pendiente hasta que el equipo revise oficio y riesgo.',
   'recovery.manage.sendTask': 'Enviar tarea a revisión',
   'recovery.manage.taskPending': 'Tarea recibida y pendiente de revisión.',
-  'recovery.manage.verifiedSource': 'Fuente de verificación del oficio',
 
   'recovery.verify.title': 'Cola de verificación',
   'recovery.verify.privateTitle': 'Datos privados de uso restringido',
   'recovery.verify.privateBody':
-    'Solo coordinadores autorizados pueden ver documentos y contactos. Cada decisión queda asociada al nombre del revisor.',
+    'Solo coordinadores autorizados pueden ver los contactos de cada caso. Cada decisión queda asociada al nombre del revisor.',
   'recovery.verify.reviewer': 'Nombre del revisor',
   'recovery.verify.key': 'Clave del equipo',
   'recovery.verify.openQueue': 'Abrir cola',
@@ -322,11 +330,8 @@ export const RECOVERY_ES_TRANSLATIONS = {
   'recovery.verify.loadError': 'No fue posible abrir la cola. Comprueba la clave.',
   'recovery.verify.actionError':
     'La revisión no se guardó. Comprueba el orden, el riesgo y los datos.',
-  'recovery.verify.evidenceError':
-    'El soporte no permite asignar ese nivel. No apruebes un oficio sin evidencia compatible.',
   'recovery.verify.projects': 'Casos por confirmar',
   'recovery.verify.tasks': 'Tareas por clasificar',
-  'recovery.verify.helpers': 'Personas por verificar',
   'recovery.verify.organizer': 'Responsable',
   'recovery.verify.area': 'Zona',
   'recovery.verify.contact': 'Contacto privado',
@@ -336,19 +341,6 @@ export const RECOVERY_ES_TRANSLATIONS = {
   'recovery.verify.reject': 'Rechazar',
   'recovery.verify.openTask': 'Abrir con este riesgo',
   'recovery.verify.blockTask': 'Bloquear por seguridad',
-  'recovery.verify.sensitive':
-    'No copies ni compartas documentos o teléfonos. Úsalos únicamente para esta comprobación.',
-  'recovery.verify.years': 'años de experiencia declarada',
-  'recovery.verify.evidence': 'Soporte declarado',
-  'recovery.verify.reference': 'Referencia',
-  'recovery.verify.skillsToConfirm': 'Oficios cubiertos por la evidencia comprobada',
-  'recovery.verify.identity': 'Validar solo identidad',
-  'recovery.verify.trade': 'Validar oficio',
-  'recovery.verify.professional': 'Validar profesional',
-  'recovery.verify.sourceName': 'Fuente consultada o persona contactada',
-  'recovery.verify.sourceUrl': 'Enlace del registro oficial (solo nivel profesional)',
-  'recovery.verify.sourceHint':
-    'Comprueba el dato directamente. Para nivel profesional, abre el registro oficial y registra su enlace; el sistema solo acepta dominios autorizados por la coordinación.',
   'recovery.card.foodSafety':
     'La verificación confirma identidad, contacto y existencia del caso; no reemplaza una inspección sanitaria ni garantiza la inocuidad de los alimentos.',
 } as const;

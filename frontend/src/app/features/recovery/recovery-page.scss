@@ -173,6 +173,67 @@
   margin: 0;
 }
 
+.direct-contact {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding-left: 14px;
+  border-left: 3px solid var(--green);
+}
+
+.direct-contact h4 {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.direct-contact p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.direct-contact__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+
+.direct-contact__actions a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.task-contact {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.project-photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.project-photos img {
+  width: min(190px, 100%);
+  height: 140px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+}
+
 .public-location {
   display: grid;
   gap: 10px;

@@ -88,6 +88,76 @@
   line-height: 1.55;
 }
 
+.upload-box {
+  display: grid !important;
+  justify-items: center;
+  gap: 4px !important;
+  padding: 20px;
+  border: 1px dashed #c5cdc4;
+  text-align: center;
+  cursor: pointer;
+}
+
+.upload-box:hover {
+  border-color: var(--green);
+}
+
+.upload-box input {
+  display: none;
+}
+
+.upload-box .upload-icon {
+  color: var(--green);
+  font-size: 24px;
+}
+
+.upload-box strong {
+  font-size: 14px;
+}
+
+.upload-box small {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.photo-previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.photo-previews figure {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+
+.photo-previews img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-previews button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(23, 35, 29, 0.72);
+  color: white;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
 .check-row {
   display: flex !important;
   align-items: flex-start;
@@ -154,7 +224,8 @@
     line-height: 1.15;
   }
 
-  .choice-grid:not(.compact) button:last-child {
+  /* Solo se estira el botón que quedaría solo en su fila: con un número par, ninguno. */
+  .choice-grid:not(.compact) button:nth-child(odd):last-child {
     grid-column: 1 / -1;
     min-height: 52px;
     flex-direction: row;

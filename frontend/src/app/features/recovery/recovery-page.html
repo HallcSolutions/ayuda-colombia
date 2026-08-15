@@ -146,6 +146,37 @@
                 </p>
                 <p class="story">{{ project.story }}</p>
 
+                @if (project.photos.length) {
+                  <div class="project-photos">
+                    @for (photo of project.photos; track photo) {
+                      <img
+                        [src]="photo"
+                        [alt]="t('recovery.card.photoAlt', { name: project.name })"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    }
+                  </div>
+                }
+
+                @if (project.publicContactPhone && !project.productsOrServices) {
+                  <section class="direct-contact">
+                    <h4>{{ t('recovery.card.directContact') }}</h4>
+                    <p>{{ t('recovery.card.directContactLead') }}</p>
+                    <div class="direct-contact__actions">
+                      <a
+                        [href]="whatsapp(project.publicContactPhone)"
+                        target="_blank"
+                        rel="noopener"
+                        >{{ t('recovery.card.writeWhatsapp') }}</a
+                      >
+                      <a [href]="'tel:' + project.publicContactPhone">{{
+                        t('recovery.manage.call', { phone: project.publicContactPhone })
+                      }}</a>
+                    </div>
+                  </section>
+                }
+
                 @if (hasPublicLocation(project)) {
                   <section
                     class="public-location"
@@ -165,9 +196,7 @@
                       {{ t('common.directions') }}
                     </a>
                   </section>
-                } @else if (
-                  project.kind === projectKinds.HOME && project.areaReference.trim().length
-                ) {
+                } @else if (privateAddress(project) && project.areaReference.trim().length) {
                   <section
                     class="public-location public-location--approximate"
                     [attr.aria-label]="t('recovery.card.approxMapTitle', { name: project.name })"
@@ -322,9 +351,26 @@
                           task.status === taskStatuses.OPEN &&
                           task.acceptedHelpers < task.peopleNeeded
                         ) {
-                          <button type="button" (click)="apply(task)">
-                            {{ t('recovery.card.offerHelp') }}
-                          </button>
+                          <!-- Con teléfono publicado, donar es una llamada; no un trámite. -->
+                          @if (isDonation(task) && project.publicContactPhone) {
+                            <a
+                              class="task-contact"
+                              [href]="whatsapp(project.publicContactPhone)"
+                              target="_blank"
+                              rel="noopener"
+                              >{{ t('recovery.card.donateWhatsapp') }}</a
+                            >
+                          } @else {
+                            <button type="button" (click)="apply(task)">
+                              {{
+                                t(
+                                  isDonation(task)
+                                    ? 'recovery.card.offerDonation'
+                                    : 'recovery.card.offerHelp'
+                                )
+                              }}
+                            </button>
+                          }
                         }
                       </article>
                     }
