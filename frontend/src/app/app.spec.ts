@@ -24,7 +24,9 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    return [...compiled.querySelectorAll('.nav-tabs a')].map((tab) => tab.textContent?.trim() ?? '');
+    return [...compiled.querySelectorAll('.nav-tabs a')].map(
+      (tab) => tab.textContent?.trim() ?? '',
+    );
   };
 
   it('should create the app', () => {
@@ -40,6 +42,7 @@ describe('App', () => {
       'A dónde ir',
       'Camiones',
       'Desaparecidos',
+      'Recuperación',
       'Reportar vivienda',
       'Necesidades',
     ]);
@@ -54,6 +57,7 @@ describe('App', () => {
       'Where to go',
       'Trucks',
       'Missing',
+      'Recovery',
       'Report a home',
       'Needs',
     ]);

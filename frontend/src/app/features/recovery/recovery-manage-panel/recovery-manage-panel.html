@@ -1,0 +1,148 @@
+@if (!authenticated()) {
+  <section class="unlock">
+    <p>{{ t('recovery.manage.pinLead') }}</p>
+    <label
+      ><span>{{ t('common.pin') }}</span
+      ><input inputmode="numeric" maxlength="6" [value]="pin()" (input)="updatePin($event)"
+    /></label>
+    <button type="button" [disabled]="loading()" (click)="load()">
+      {{ t('recovery.manage.open') }}
+    </button>
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+  </section>
+} @else {
+  <section class="manage-panel">
+    <div class="manage-actions">
+      <button type="button" (click)="changeProject(RecoveryProjectStatus.IN_PROGRESS)">
+        {{ t('recovery.manage.markProgress') }}
+      </button>
+      <button type="button" (click)="changeProject(RecoveryProjectStatus.COMPLETED)">
+        {{ t('recovery.manage.markCompleted') }}
+      </button>
+    </div>
+
+    <section>
+      <h4>{{ t('recovery.manage.applications') }}</h4>
+      @if (!applications().length) {
+        <p class="empty">{{ t('recovery.manage.noApplications') }}</p>
+      }
+      <div class="application-list">
+        @for (application of applications(); track application.id) {
+          <article>
+            <div class="meta">
+              <span>{{ application.taskTitle }}</span
+              ><span>{{ t(applicationStatusKey(application.status)) }}</span>
+            </div>
+            <h5>{{ application.helperName }}</h5>
+            <p>
+              {{ t(verificationKey(application.helperVerificationLevel)) }} ·
+              {{ application.availability }}
+            </p>
+            @if (application.helperVerificationSource) {
+              <p>
+                <strong>{{ t('recovery.manage.verifiedSource') }}:</strong>
+                {{ application.helperVerificationSource }}
+              </p>
+            }
+            @if (application.message) {
+              <p>{{ application.message }}</p>
+            }
+            @if (application.helperPhone) {
+              <a [href]="'tel:' + application.helperPhone">{{ application.helperPhone }}</a>
+            }
+            @if (application.status === statuses.PENDING) {
+              <footer>
+                <button type="button" (click)="decide(application, statuses.ACCEPTED)">
+                  {{ t('recovery.manage.accept') }}
+                </button>
+                <button
+                  type="button"
+                  class="secondary"
+                  (click)="decide(application, statuses.DECLINED)"
+                >
+                  {{ t('recovery.manage.decline') }}
+                </button>
+              </footer>
+            } @else if (application.status === statuses.ACCEPTED) {
+              <footer>
+                <button type="button" (click)="decide(application, statuses.COMPLETED)">
+                  {{ t('recovery.manage.confirmWork') }}
+                </button>
+              </footer>
+            }
+          </article>
+        }
+      </div>
+    </section>
+
+    <section>
+      <h4>{{ t('recovery.manage.tasks') }}</h4>
+      @for (task of project().tasks; track task.id) {
+        <div class="task-row">
+          <span>{{ task.title }}</span>
+          @if (task.status === taskStatuses.OPEN) {
+            <button type="button" (click)="changeTask(task.id, taskStatuses.IN_PROGRESS)">
+              {{ t('recovery.manage.startTask') }}
+            </button>
+          }
+          @if (task.status === taskStatuses.IN_PROGRESS) {
+            <button type="button" (click)="changeTask(task.id, taskStatuses.COMPLETED)">
+              {{ t('recovery.manage.finishTask') }}
+            </button>
+          }
+        </div>
+      }
+    </section>
+
+    <form class="inline-form" [formGroup]="taskForm" (ngSubmit)="addTask()">
+      <h4>{{ t('recovery.manage.addTask') }}</h4>
+      <p class="hint">{{ t('recovery.manage.addTaskLead') }}</p>
+      <div class="field-grid">
+        <label
+          ><span>{{ t('recovery.form.taskTitle') }}</span
+          ><input formControlName="title"
+        /></label>
+        <label
+          ><span>{{ t('recovery.form.taskCategory') }}</span
+          ><select formControlName="category">
+            @for (category of categories; track category) {
+              <option [value]="category">{{ t(categoryKey(category)) }}</option>
+            }
+          </select></label
+        >
+        <label
+          ><span>{{ t('recovery.form.people') }}</span
+          ><input type="number" min="1" max="100" formControlName="peopleNeeded"
+        /></label>
+        <label class="wide"
+          ><span>{{ t('recovery.form.taskDescription') }}</span
+          ><textarea rows="3" formControlName="description"></textarea>
+        </label>
+        <label class="wide"
+          ><span>{{ t('recovery.form.skills') }}</span
+          ><input formControlName="skillsRequired"
+        /></label>
+        <label class="wide"
+          ><span>{{ t('recovery.form.materials') }}</span
+          ><input formControlName="materialsNeeded"
+        /></label>
+      </div>
+      <div class="form-buttons">
+        <button type="submit" [disabled]="loading() || taskForm.invalid">
+          {{ t('recovery.manage.sendTask') }}
+        </button>
+      </div>
+      @if (taskForm.invalid) {
+        <p class="required-hint">{{ t('common.requiredMissing') }}</p>
+      }
+      @if (taskCreated()) {
+        <p class="form-success">{{ t('recovery.manage.taskPending') }}</p>
+      }
+    </form>
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+  </section>
+}

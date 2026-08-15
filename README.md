@@ -46,6 +46,11 @@ El código de demostración definido en `.env.example` es `brigada-demo-2026`. D
 - WebSocket `/convoys`: eventos `convoy.created`, `convoy.moved` y `convoy.updated`.
 - `GET /api/monitoring/digest`: último resumen del chequeo periódico (acopios nuevos y qué falta).
 - `GET /api/monitoring/status`: si el chequeo sigue vivo (última corrida, próxima y fallos seguidos).
+- `GET /api/recovery/projects`: consulta pública de viviendas, negocios, restaurantes, ventas de calle, talleres y artesanos en recuperación.
+- `POST /api/recovery/projects`: publica el caso y su oferta inmediatamente y entrega un PIN. El teléfono solo sale con autorización expresa; la dirección exacta nunca se publica.
+- `POST /api/recovery/helpers`: registra privadamente identidad, oficio y soporte. Las tareas técnicas no aceptan postulaciones hasta clasificar su riesgo y comprobar el nivel requerido.
+- `GET/PATCH /api/recovery/verification/*`: moderación posterior de casos y verificación previa de tareas y ayudantes, protegida por `RECOVERY_VERIFIER_KEY`.
+- WebSocket `/recovery`: eventos `recovery.project.created` y `recovery.project.updated`.
 - `POST /api/monitoring/digest/run`: genera el resumen a mano. Exige la cabecera `x-digest-token`.
 - WebSocket `/monitoring`: evento `digest.created`.
 

@@ -1,4 +1,5 @@
 import { TranslationCatalog } from './es.translations';
+import { RECOVERY_EN_TRANSLATIONS } from './recovery.en.translations';
 
 export const EN_TRANSLATIONS: TranslationCatalog = {
   'common.cancel': 'Cancel',
@@ -7,7 +8,9 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'common.directions': 'Get directions ↗',
   'common.yes': 'Yes',
   'common.no': 'No',
+  'common.pin': 'PIN',
   'common.requiredMissing': 'Some required details are missing: fill them in to send.',
+  ...RECOVERY_EN_TRANSLATIONS,
 
   'language.label': 'Language',
   'language.es': 'Spanish',

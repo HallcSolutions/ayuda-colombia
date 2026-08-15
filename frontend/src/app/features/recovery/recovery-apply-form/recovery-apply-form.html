@@ -1,0 +1,51 @@
+@if (success()) {
+  <section class="apply-success" role="status">
+    <h4>{{ t('recovery.apply.success') }}</h4>
+    <p>{{ t('recovery.apply.successBody') }}</p>
+    <button type="button" (click)="closed.emit()">{{ t('common.close') }}</button>
+  </section>
+} @else {
+  <form class="inline-form apply-form" [formGroup]="form" (ngSubmit)="submit()">
+    <section class="task-summary">
+      <span>{{ t(categoryKey(task().category)) }} · {{ t(riskKey(task().riskLevel)) }}</span>
+      <h4>{{ task().title }}</h4>
+      <p>{{ task().description }}</p>
+      @if (task().professionalRequired) {
+        <strong>{{ t('recovery.apply.professionalOnly') }}</strong>
+      }
+    </section>
+    <p class="privacy-note">{{ t('recovery.apply.privacy') }}</p>
+    <div class="field-grid">
+      <label class="wide"
+        ><span>{{ t('recovery.apply.helperCode') }}</span
+        ><input formControlName="helperId"
+      /></label>
+      <label
+        ><span>{{ t('recovery.apply.pin') }}</span
+        ><input formControlName="helperPin" inputmode="numeric" maxlength="6" autocomplete="off"
+      /></label>
+      <label
+        ><span>{{ t('recovery.apply.availability') }}</span
+        ><input formControlName="availability"
+      /></label>
+      <label class="wide"
+        ><span>{{ t('recovery.apply.message') }}</span
+        ><textarea rows="3" formControlName="message"></textarea>
+      </label>
+    </div>
+    @if (errorKey(); as key) {
+      <p class="form-error" role="alert">{{ t(key) }}</p>
+    }
+    @if (form.invalid) {
+      <p class="required-hint">{{ t('common.requiredMissing') }}</p>
+    }
+    <div class="form-buttons">
+      <button type="submit" [disabled]="submitting() || form.invalid">
+        {{ submitting() ? t('common.saving') : t('recovery.apply.submit') }}
+      </button>
+      <button type="button" class="secondary" (click)="closed.emit()">
+        {{ t('common.cancel') }}
+      </button>
+    </div>
+  </form>
+}

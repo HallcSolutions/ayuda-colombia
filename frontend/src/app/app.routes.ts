@@ -29,6 +29,10 @@ export const routes: Routes = [
       import('./features/missing/missing-section/missing-section').then((m) => m.MissingSection),
   },
   {
+    path: 'recuperacion',
+    loadComponent: () => import('./features/recovery/recovery-page').then((m) => m.RecoveryPage),
+  },
+  {
     path: 'reportar',
     loadComponent: () =>
       import('./features/report-form/report-form.component').then((m) => m.ReportFormComponent),

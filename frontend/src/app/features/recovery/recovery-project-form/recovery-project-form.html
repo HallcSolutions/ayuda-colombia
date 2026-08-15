@@ -1,0 +1,173 @@
+@if (publishedPin()) {
+  <section class="access-result" role="status">
+    <span>{{ t('recovery.form.sentForReview') }}</span>
+    <h4>{{ t('recovery.form.keepAccess') }}</h4>
+    <dl>
+      <div>
+        <dt>{{ t('recovery.form.projectCode') }}</dt>
+        <dd>{{ publishedId() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('common.pin') }}</dt>
+        <dd class="pin">{{ publishedPin() }}</dd>
+      </div>
+    </dl>
+    <p>{{ t('recovery.form.keepAccessBody') }}</p>
+    <button type="button" (click)="copyAccess()">{{ t('recovery.form.copyAccess') }}</button>
+    <button type="button" class="secondary" (click)="closed.emit()">{{ t('common.close') }}</button>
+  </section>
+} @else {
+  <form class="inline-form recovery-form" [formGroup]="form" (ngSubmit)="submit()">
+    <p class="hint intro-note">{{ t('recovery.form.safetyReview') }}</p>
+
+    <fieldset class="choice-grid">
+      <legend>{{ t('recovery.form.kind') }}</legend>
+      @for (kind of kinds; track kind) {
+        <button
+          type="button"
+          [class.selected]="form.controls.kind.value === kind"
+          [attr.aria-pressed]="form.controls.kind.value === kind"
+          (click)="form.controls.kind.setValue(kind)"
+        >
+          <span class="kind-icon" aria-hidden="true">{{ kindIcons[kind] }}</span>
+          {{ t(kindKey(kind)) }}
+        </button>
+      }
+    </fieldset>
+
+    <div class="field-grid">
+      <label
+        ><span>{{ t('recovery.form.name') }}</span
+        ><input formControlName="name"
+      /></label>
+      <label
+        ><span>{{ t('recovery.form.organizer') }}</span
+        ><input formControlName="organizerName"
+      /></label>
+      <label
+        ><span>{{ t('recovery.form.phone') }}</span
+        ><input formControlName="contactPhone" appPhoneField
+      /></label>
+      <label>
+        <span>{{ t('recovery.form.department') }}</span>
+        <select formControlName="department">
+          <option value="">{{ t('region.selectDepartment') }}</option>
+          @for (department of departments; track department) {
+            <option [value]="department">{{ department }}</option>
+          }
+        </select>
+      </label>
+      <label
+        ><span>{{ t('recovery.form.municipality') }}</span
+        ><input formControlName="municipality"
+      /></label>
+      <label
+        ><span>{{ t('recovery.form.area') }}</span
+        ><input formControlName="areaReference" [placeholder]="t('recovery.form.areaHint')"
+      /></label>
+      <label class="wide"
+        ><span>{{ t('recovery.form.story') }}</span
+        ><textarea formControlName="story" rows="4"></textarea>
+      </label>
+    </div>
+
+    @if (commerce()) {
+      <section class="form-section commerce-fields">
+        <h4>{{ t('recovery.form.sellTitle') }}</h4>
+        <p>{{ t('recovery.form.sellLead') }}</p>
+        <div class="field-grid">
+          <label class="wide"
+            ><span>{{ t('recovery.form.products') }}</span
+            ><textarea formControlName="productsOrServices" rows="3"></textarea>
+          </label>
+          <label
+            ><span>{{ t('recovery.form.prices') }}</span
+            ><input formControlName="priceReference"
+          /></label>
+          <label
+            ><span>{{ t('recovery.form.schedule') }}</span
+            ><input formControlName="schedule"
+          /></label>
+        </div>
+        <fieldset class="choice-grid compact">
+          <legend>{{ t('recovery.form.salesMode') }}</legend>
+          @for (mode of salesModes; track mode) {
+            <button
+              type="button"
+              [class.selected]="selectedSalesModes().includes(mode)"
+              (click)="toggleSalesMode(mode)"
+            >
+              {{ t(salesModeKey(mode)) }}
+            </button>
+          }
+        </fieldset>
+        <label class="check-row">
+          <input type="checkbox" formControlName="shareContactPublicly" />
+          <span>{{ t('recovery.form.sharePhone') }}</span>
+        </label>
+      </section>
+    }
+
+    <label class="check-row task-toggle">
+      <input type="checkbox" formControlName="needsTask" />
+      <span>{{ t('recovery.form.needsHelp') }}</span>
+    </label>
+
+    @if (form.controls.needsTask.value) {
+      <section class="form-section task-fields">
+        <h4>{{ t('recovery.form.firstTask') }}</h4>
+        <p>{{ t('recovery.form.firstTaskLead') }}</p>
+        <div class="field-grid">
+          <label
+            ><span>{{ t('recovery.form.taskTitle') }}</span
+            ><input formControlName="taskTitle"
+          /></label>
+          <label>
+            <span>{{ t('recovery.form.taskCategory') }}</span>
+            <select formControlName="taskCategory">
+              @for (category of taskCategories; track category) {
+                <option [value]="category">{{ t(taskCategoryKey(category)) }}</option>
+              }
+            </select>
+          </label>
+          <label
+            ><span>{{ t('recovery.form.people') }}</span
+            ><input type="number" min="1" max="100" formControlName="peopleNeeded"
+          /></label>
+          <label class="wide"
+            ><span>{{ t('recovery.form.taskDescription') }}</span
+            ><textarea formControlName="taskDescription" rows="3"></textarea>
+          </label>
+          <label class="wide"
+            ><span>{{ t('recovery.form.skills') }}</span
+            ><input formControlName="skillsRequired"
+          /></label>
+          <label class="wide"
+            ><span>{{ t('recovery.form.materials') }}</span
+            ><input formControlName="materialsNeeded"
+          /></label>
+        </div>
+      </section>
+    }
+
+    <label class="check-row consent">
+      <input type="checkbox" formControlName="consentToVerification" />
+      <span>{{ t('recovery.form.consent') }}</span>
+    </label>
+
+    @if (errorKey(); as key) {
+      <p class="form-error" role="alert">{{ t(key) }}</p>
+    }
+    @if (isIncomplete()) {
+      <p class="required-hint">{{ t('common.requiredMissing') }}</p>
+    }
+    <div class="form-buttons">
+      <button type="submit" [disabled]="submitting() || isIncomplete()">
+        {{ submitting() ? t('common.saving') : t('recovery.form.submit') }}
+      </button>
+      <button type="button" class="secondary" (click)="closed.emit()">
+        {{ t('common.cancel') }}
+      </button>
+    </div>
+  </form>
+}

@@ -1,3 +1,5 @@
+import { RECOVERY_ES_TRANSLATIONS } from './recovery.es.translations';
+
 /** Catálogo base. Define las claves disponibles para el resto de idiomas. */
 export const ES_TRANSLATIONS = {
   'common.cancel': 'Cancelar',
@@ -6,7 +8,9 @@ export const ES_TRANSLATIONS = {
   'common.directions': 'Cómo llegar ↗',
   'common.yes': 'Sí',
   'common.no': 'No',
+  'common.pin': 'PIN',
   'common.requiredMissing': 'Faltan datos obligatorios: complétalos para poder enviar.',
+  ...RECOVERY_ES_TRANSLATIONS,
 
   'language.label': 'Idioma',
   'language.es': 'Español',

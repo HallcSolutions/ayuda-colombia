@@ -41,6 +41,7 @@ export class App {
     { path: '/alojamientos', labelKey: 'nav.lodging' },
     { path: '/camiones', labelKey: 'nav.convoys' },
     { path: '/desaparecidos', labelKey: 'nav.missing' },
+    { path: '/recuperacion', labelKey: 'nav.recovery' },
     { path: '/reportar', labelKey: 'nav.report' },
     { path: '/reportes', labelKey: 'nav.needs' },
   ];

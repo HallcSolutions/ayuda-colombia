@@ -1,11 +1,21 @@
 import {
   ConvoyStatus,
   DigestFindingKind,
+  HelperCredentialType,
+  HelperVerificationLevel,
+  HelperVerificationMethod,
   LodgingKind,
   LodgingStatus,
   MealType,
   MissingStatus,
   MissingSubjectKind,
+  RecoveryApplicationStatus,
+  RecoveryProjectKind,
+  RecoveryProjectStatus,
+  RecoveryRiskLevel,
+  RecoverySalesMode,
+  RecoveryTaskCategory,
+  RecoveryTaskStatus,
   ReliefPointStatus,
   ReliefPointType,
   ReportStatus,
@@ -47,6 +57,34 @@ export const convoyStatusKey = (status: ConvoyStatus): TranslationKey => `convoy
 
 export const digestFindingKey = (kind: DigestFindingKind): TranslationKey =>
   `digestFinding.${kind}`;
+
+export const recoveryProjectKindKey = (kind: RecoveryProjectKind): TranslationKey =>
+  `recoveryProjectKind.${kind}`;
+export const recoveryProjectStatusKey = (status: RecoveryProjectStatus): TranslationKey =>
+  `recoveryProjectStatus.${status}`;
+export const recoveryTaskCategoryKey = (category: RecoveryTaskCategory): TranslationKey =>
+  `recoveryTaskCategory.${category}`;
+export const recoveryRiskKey = (risk: RecoveryRiskLevel): TranslationKey => `recoveryRisk.${risk}`;
+export const recoveryTaskStatusKey = (status: RecoveryTaskStatus): TranslationKey =>
+  `recoveryTaskStatus.${status}`;
+export const recoverySalesModeKey = (mode: RecoverySalesMode): TranslationKey =>
+  `recoverySalesMode.${mode}`;
+export const helperCredentialKey = (type: HelperCredentialType): TranslationKey =>
+  `helperCredential.${type}`;
+export const helperVerificationKey = (level: HelperVerificationLevel): TranslationKey =>
+  `helperVerification.${level}`;
+export const helperVerificationMethodKey = (method: HelperVerificationMethod): TranslationKey =>
+  `helperVerificationMethod.${method}`;
+export const recoveryApplicationStatusKey = (status: RecoveryApplicationStatus): TranslationKey =>
+  `recoveryApplicationStatus.${status}`;
+
+export const RECOVERY_PROJECT_KIND_ICONS: Record<RecoveryProjectKind, string> = {
+  [RecoveryProjectKind.HOME]: '🏠',
+  [RecoveryProjectKind.BUSINESS]: '🏪',
+  [RecoveryProjectKind.RESTAURANT]: '🍲',
+  [RecoveryProjectKind.ARTISAN]: '🪵',
+  [RecoveryProjectKind.COMMUNITY]: '🤝',
+};
 
 /** Emoji que acompaña a cada tipo de búsqueda; es decoración, no texto traducible. */
 export const MISSING_KIND_ICONS: Record<MissingSubjectKind, string> = {

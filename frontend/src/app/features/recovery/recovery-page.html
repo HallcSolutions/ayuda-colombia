@@ -1,0 +1,268 @@
+<section class="recovery-page feature-page" aria-labelledby="recovery-title">
+  <header class="section-heading feature-hero">
+    <app-colombia-watermark class="feature-hero-map" />
+
+    <div class="feature-hero__intro">
+      <span class="eyebrow">{{ t('recovery.eyebrow') }}</span>
+      <h2 id="recovery-title">{{ t('recovery.title') }}</h2>
+      <p>{{ t('recovery.lead') }}</p>
+    </div>
+
+    <aside class="feature-action-card">
+      <img
+        src="/assets/actions/redayuda-recovery-workshop.jpg"
+        [alt]="t('recovery.actionImageAlt')"
+        decoding="async"
+        fetchpriority="high"
+      />
+      <div class="feature-action-card__body">
+        <span>{{ t('recovery.actionEyebrow') }}</span>
+        <p>{{ t('recovery.actionBody') }}</p>
+        <button type="button" class="feature-hero__action" (click)="openModal('project')">
+          {{ t('recovery.needHelp') }}
+        </button>
+        <button type="button" class="offer-skill" (click)="openModal('helper')">
+          {{ t('recovery.canHelp') }} <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </aside>
+
+    <dl class="recovery-metrics feature-hero__metrics">
+      <div>
+        <dt>{{ t('recovery.statsProjects') }}</dt>
+        <dd>{{ visibleProjects().length }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('recovery.statsTasks') }}</dt>
+        <dd>{{ openTasks() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('recovery.statsOffers') }}</dt>
+        <dd>{{ localOffers() }}</dd>
+      </div>
+    </dl>
+  </header>
+
+  <div class="feature-content recovery-content">
+    <section class="recovery-directory" aria-labelledby="recovery-directory-title">
+      <header class="directory-heading">
+        <div>
+          <span class="eyebrow">{{ t('recovery.directoryEyebrow') }}</span>
+          <h2 id="recovery-directory-title">{{ t('recovery.directoryTitle') }}</h2>
+          <p>{{ t('recovery.directoryLead') }}</p>
+        </div>
+        <span class="result-count">{{ visibleProjects().length }}</span>
+      </header>
+
+      <div class="toolbar">
+        <label class="search">
+          <span class="visually-hidden">{{ t('recovery.search') }}</span>
+          <input
+            type="search"
+            [value]="search()"
+            [placeholder]="t('recovery.searchPlaceholder')"
+            (input)="updateSearch($event)"
+          />
+        </label>
+        <label>
+          <span class="visually-hidden">{{ t('recovery.department') }}</span>
+          <select [value]="region.department()" (change)="updateDepartment($event)">
+            <option value="">{{ t('map.wholeCountryZone') }}</option>
+            @for (department of departments; track department) {
+              <option [value]="department">{{ department }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          <span class="visually-hidden">{{ t('recovery.municipality') }}</span>
+          <select
+            [disabled]="!region.department()"
+            [value]="region.municipality()"
+            (change)="updateMunicipality($event)"
+          >
+            <option value="">{{ t('recovery.allMunicipalities') }}</option>
+            @for (municipality of municipalities(); track municipality) {
+              <option [value]="municipality">{{ municipality }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          <span class="visually-hidden">{{ t('recovery.kind') }}</span>
+          <select [value]="kind()" (change)="updateKind($event)">
+            <option value="">{{ t('recovery.allKinds') }}</option>
+            @for (itemKind of kinds; track itemKind) {
+              <option [value]="itemKind">{{ t(projectKindKey(itemKind)) }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      <button type="button" class="verify-access" (click)="openModal('verify')">
+        {{ t('recovery.verifyAccess') }} <span aria-hidden="true">→</span>
+      </button>
+
+      @if (recovery.error()) {
+        <p class="state error" role="alert">{{ recovery.error() }}</p>
+      }
+      @if (recovery.loading()) {
+        <p class="state">{{ t('common.loading') }}</p>
+      } @else if (!visibleProjects().length) {
+        <div class="empty-state">
+          <h3>{{ t('recovery.emptyTitle') }}</h3>
+          <p>{{ t('recovery.emptyBody') }}</p>
+          <button type="button" (click)="openModal('project')">{{ t('recovery.needHelp') }}</button>
+        </div>
+      } @else {
+        <div class="project-list">
+          @for (project of visibleProjects(); track project.id) {
+            <article class="project-row">
+              <header class="project-identity">
+                <div class="project-meta">
+                  <span>{{ t(projectKindKey(project.kind)) }}</span>
+                  <span>{{ t(projectStatusKey(project.status)) }}</span>
+                  @if (project.verifiedAt) {
+                    <span class="verified-badge">
+                      <span aria-hidden="true">✓</span>
+                      {{ t('recovery.card.verifiedBy', { name: project.verifiedBy }) }}
+                    </span>
+                  }
+                </div>
+                <h3>{{ project.name }}</h3>
+                <p class="place">
+                  {{ project.areaReference }} · {{ project.municipality }}, {{ project.department }}
+                </p>
+                <p class="story">{{ project.story }}</p>
+                <button type="button" class="manage" (click)="manage(project)">
+                  {{ t('recovery.card.manage') }}
+                </button>
+              </header>
+
+              <div class="project-activity">
+                @if (project.productsOrServices) {
+                  <section class="local-offer">
+                    <span>{{ t('recovery.card.buyLocal') }}</span>
+                    <h4>{{ t('recovery.card.offers') }}</h4>
+                    <p>{{ project.productsOrServices }}</p>
+                    <dl class="offer-facts">
+                      @if (project.priceReference) {
+                        <div>
+                          <dt>{{ t('recovery.card.prices') }}</dt>
+                          <dd>{{ project.priceReference }}</dd>
+                        </div>
+                      }
+                      @if (project.schedule) {
+                        <div>
+                          <dt>{{ t('recovery.card.schedule') }}</dt>
+                          <dd>{{ project.schedule }}</dd>
+                        </div>
+                      }
+                    </dl>
+                    <div class="sales-modes">
+                      @for (mode of project.salesModes; track mode) {
+                        <span>{{ t(salesModeKey(mode)) }}</span>
+                      }
+                    </div>
+                    @if (project.publicContactPhone) {
+                      <a
+                        [href]="whatsapp(project.publicContactPhone)"
+                        target="_blank"
+                        rel="noopener"
+                        >{{ t('recovery.card.orderWhatsapp') }}</a
+                      >
+                    }
+                    @if (project.kind === projectKinds.RESTAURANT) {
+                      <p class="food-safety-note">{{ t('recovery.card.foodSafety') }}</p>
+                    }
+                  </section>
+                }
+
+                @if (project.tasks.length) {
+                  <section class="task-list">
+                    <h4>{{ t('recovery.card.tasks') }}</h4>
+                    @for (task of project.tasks; track task.id) {
+                      <article class="task" [class]="'risk-' + task.riskLevel">
+                        <div class="task-meta">
+                          <span>{{ t(categoryKey(task.category)) }}</span>
+                          <span>{{ t(riskKey(task.riskLevel)) }}</span>
+                          <span>{{ t(taskStatusKey(task.status)) }}</span>
+                        </div>
+                        <h5>{{ task.title }}</h5>
+                        <p>{{ task.description }}</p>
+                        <div class="task-facts">
+                          <span>{{
+                            t('recovery.card.people', {
+                              accepted: task.acceptedHelpers,
+                              total: task.peopleNeeded,
+                            })
+                          }}</span>
+                          @if (task.materialsNeeded) {
+                            <span
+                              >{{ t('recovery.card.materials') }}: {{ task.materialsNeeded }}</span
+                            >
+                          }
+                        </div>
+                        @if (task.professionalRequired) {
+                          <p class="professional-only">{{ t('recovery.card.professionalOnly') }}</p>
+                        }
+                        @if (
+                          task.status === taskStatuses.OPEN &&
+                          task.acceptedHelpers < task.peopleNeeded
+                        ) {
+                          <button type="button" (click)="apply(task)">
+                            {{ t('recovery.card.offerHelp') }}
+                          </button>
+                        }
+                      </article>
+                    }
+                  </section>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </section>
+  </div>
+</section>
+
+@if (modal() === 'project') {
+  <app-modal
+    [title]="t('recovery.form.title')"
+    [eyebrow]="t('recovery.eyebrow')"
+    (closed)="closeModal()"
+    ><app-recovery-project-form (closed)="closeModal()"
+  /></app-modal>
+}
+@if (modal() === 'helper') {
+  <app-modal
+    [title]="t('recovery.helper.title')"
+    [eyebrow]="t('recovery.safetyEyebrow')"
+    (closed)="closeModal()"
+    ><app-recovery-helper-form (closed)="closeModal()"
+  /></app-modal>
+}
+@if (modal() === 'verify') {
+  <app-modal
+    [title]="t('recovery.verify.title')"
+    [eyebrow]="t('recovery.verify.privateTitle')"
+    (closed)="closeModal()"
+    ><app-recovery-verifier-panel
+  /></app-modal>
+}
+@if (modal() === 'apply') {
+  @if (selectedTask(); as task) {
+    <app-modal
+      [title]="t('recovery.apply.title')"
+      [eyebrow]="t('recovery.canHelp')"
+      (closed)="closeModal()"
+      ><app-recovery-apply-form [task]="task" (closed)="closeModal()"
+    /></app-modal>
+  }
+}
+@if (modal() === 'manage') {
+  @if (selectedProject(); as project) {
+    <app-modal [title]="t('recovery.manage.title')" [eyebrow]="project.name" (closed)="closeModal()"
+      ><app-recovery-manage-panel [project]="project"
+    /></app-modal>
+  }
+}

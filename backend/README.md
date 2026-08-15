@@ -29,6 +29,9 @@ Para desactivarlo (por ejemplo, en un despliegue donde se aplican aparte) usa `D
 | `relief_points` | Acopios, comedores, albergues y puestos de salud | `(department, municipality)`, `(status, type)` |
 | `meal_services` | Jornadas de comida por punto (FK con `ON DELETE CASCADE`) | `(reliefPointId, servedOn)` |
 | `aid_alerts` | Alertas de necesidad por punto (FK con `ON DELETE CASCADE`) | `(status, createdAt)` |
+| `recovery_projects` | Casos y ofertas locales publicados | `(department, municipality)`, `(status, kind)` |
+| `recovery_tasks` | Tareas clasificadas por oficio y riesgo | `(projectId, status)`, `(category, status)` |
+| `recovery_helpers` | Perfiles privados y nivel comprobado | `(verificationLevel, department, municipality)` |
 
 ### Comandos
 

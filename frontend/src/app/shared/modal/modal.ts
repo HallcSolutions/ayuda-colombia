@@ -1,5 +1,14 @@
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, inject, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EnvironmentInjector,
+  OnDestroy,
+  afterNextRender,
+  inject,
+  input,
+  output,
+} from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 
 /**
@@ -26,6 +35,7 @@ export class Modal implements OnDestroy {
   private readonly trigger =
     this.document.activeElement instanceof HTMLElement ? this.document.activeElement : null;
   private readonly previousOverflow = this.document.body.style.overflow;
+  private readonly injector = inject(EnvironmentInjector);
 
   constructor() {
     // Mientras la ventana está abierta, lo de detrás no se desplaza.
@@ -35,6 +45,6 @@ export class Modal implements OnDestroy {
   ngOnDestroy(): void {
     this.document.body.style.overflow = this.previousOverflow;
     const trigger = this.trigger;
-    setTimeout(() => trigger?.focus());
+    afterNextRender(() => trigger?.focus(), { injector: this.injector });
   }
 }

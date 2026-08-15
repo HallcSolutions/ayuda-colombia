@@ -1,0 +1,196 @@
+<section class="verifier-intro">
+  <strong>{{ t('recovery.verify.privateTitle') }}</strong>
+  <p>{{ t('recovery.verify.privateBody') }}</p>
+  <div>
+    <label
+      ><span>{{ t('recovery.verify.reviewer') }}</span
+      ><input [value]="reviewer()" (input)="updateReviewer($event)"
+    /></label>
+    <label
+      ><span>{{ t('recovery.verify.key') }}</span
+      ><input type="password" [value]="key()" (input)="updateKey($event)"
+    /></label>
+    <button type="button" [disabled]="loading()" (click)="load()">
+      {{ t('recovery.verify.openQueue') }}
+    </button>
+  </div>
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+</section>
+
+@if (queue(); as items) {
+  <section class="queue-group">
+    <h4>
+      {{ t('recovery.verify.projects') }} <span>{{ items.projects.length }}</span>
+    </h4>
+    @for (project of items.projects; track project.id) {
+      <article>
+        <div class="meta">
+          {{ t(projectKindKey(project.kind)) }} · {{ project.municipality }},
+          {{ project.department }}
+        </div>
+        <h5>{{ project.name }}</h5>
+        <p>{{ project.story }}</p>
+        @if (project.productsOrServices) {
+          <p>
+            <strong>{{ t('recovery.card.offers') }}:</strong> {{ project.productsOrServices }}
+          </p>
+        }
+        <dl>
+          <div>
+            <dt>{{ t('recovery.verify.organizer') }}</dt>
+            <dd>{{ project.organizerName }} · {{ project.contactPhone }}</dd>
+          </div>
+          <div>
+            <dt>{{ t('recovery.verify.area') }}</dt>
+            <dd>{{ project.areaReference }}</dd>
+          </div>
+        </dl>
+        <footer>
+          <button type="button" (click)="reviewProject(project.id, RecoveryProjectStatus.OPEN)">
+            {{ t('recovery.verify.approveProject') }}</button
+          ><button
+            type="button"
+            class="danger"
+            (click)="reviewProject(project.id, RecoveryProjectStatus.REJECTED)"
+          >
+            {{ t('recovery.verify.removeProject') }}
+          </button>
+        </footer>
+      </article>
+    }
+  </section>
+
+  <section class="queue-group">
+    <h4>
+      {{ t('recovery.verify.tasks') }} <span>{{ items.tasks.length }}</span>
+    </h4>
+    @for (task of items.tasks; track task.id) {
+      <article>
+        <div class="meta">{{ task.projectName }} · {{ t(categoryKey(task.category)) }}</div>
+        <h5>{{ task.title }}</h5>
+        <p>{{ task.description }}</p>
+        <p>
+          <strong>{{ t('recovery.verify.contact') }}:</strong> {{ task.organizerName }} ·
+          {{ task.contactPhone }}
+        </p>
+        <label class="risk-select"
+          ><span>{{ t('recovery.verify.risk') }}</span
+          ><select [value]="taskRisks()[task.id]" (change)="updateRisk(task.id, $event)">
+            @for (risk of risks; track risk) {
+              <option [value]="risk">{{ t(riskKey(risk)) }}</option>
+            }
+          </select></label
+        >
+        <footer>
+          <button type="button" (click)="reviewTask(task.id, RecoveryTaskStatus.OPEN)">
+            {{ t('recovery.verify.openTask') }}</button
+          ><button
+            type="button"
+            class="danger"
+            (click)="reviewTask(task.id, RecoveryTaskStatus.BLOCKED)"
+          >
+            {{ t('recovery.verify.blockTask') }}
+          </button>
+        </footer>
+      </article>
+    }
+  </section>
+
+  <section class="queue-group sensitive">
+    <h4>
+      {{ t('recovery.verify.helpers') }} <span>{{ items.helpers.length }}</span>
+    </h4>
+    <p class="sensitive-note">{{ t('recovery.verify.sensitive') }}</p>
+    @for (helper of items.helpers; track helper.id) {
+      <article>
+        <div class="meta">
+          {{ helper.municipality }}, {{ helper.department }} · {{ helper.yearsExperience }}
+          {{ t('recovery.verify.years') }}
+        </div>
+        <h5>{{ helper.fullName }}</h5>
+        <dl>
+          <div>
+            <dt>{{ helper.documentType }}</dt>
+            <dd>{{ helper.documentNumber }}</dd>
+          </div>
+          <div>
+            <dt>{{ t('recovery.verify.contact') }}</dt>
+            <dd>{{ helper.contactPhone }}</dd>
+          </div>
+          <div>
+            <dt>{{ t('recovery.verify.evidence') }}</dt>
+            <dd>
+              {{ t(credentialKey(helper.credentialType)) }} · {{ helper.credentialIssuer }}
+              {{ helper.credentialNumber }}
+            </dd>
+          </div>
+          @if (helper.referenceName) {
+            <div>
+              <dt>{{ t('recovery.verify.reference') }}</dt>
+              <dd>{{ helper.referenceName }} · {{ helper.referencePhone }}</dd>
+            </div>
+          }
+        </dl>
+        <p>{{ helper.bio }}</p>
+        <div class="source-fields">
+          <label
+            ><span>{{ t('recovery.verify.sourceName') }}</span
+            ><input
+              [value]="sourceNames()[helper.id] ?? ''"
+              (input)="updateSourceName(helper.id, $event)"
+          /></label>
+          <label
+            ><span>{{ t('recovery.verify.sourceUrl') }}</span
+            ><input
+              type="url"
+              inputmode="url"
+              placeholder="https://"
+              [value]="sourceUrls()[helper.id] ?? ''"
+              (input)="updateSourceUrl(helper.id, $event)"
+          /></label>
+        </div>
+        <p class="source-hint">{{ t('recovery.verify.sourceHint') }}</p>
+        <fieldset class="skill-checks">
+          <legend>{{ t('recovery.verify.skillsToConfirm') }}</legend>
+          @for (skill of helper.skills; track skill) {
+            <label
+              ><input
+                type="checkbox"
+                [checked]="selectedSkills()[helper.id]?.includes(skill)"
+                (change)="toggleSkill(helper.id, skill)"
+              /><span>{{ t(categoryKey(skill)) }}</span></label
+            >
+          }
+        </fieldset>
+        <footer>
+          <button type="button" (click)="reviewHelper(helper, HelperVerificationLevel.IDENTITY)">
+            {{ t('recovery.verify.identity') }}
+          </button>
+          <button
+            type="button"
+            [disabled]="!canVerifyTrade(helper)"
+            (click)="reviewHelper(helper, HelperVerificationLevel.TRADE)"
+          >
+            {{ t('recovery.verify.trade') }}
+          </button>
+          <button
+            type="button"
+            [disabled]="!canVerifyProfessional(helper)"
+            (click)="reviewHelper(helper, HelperVerificationLevel.PROFESSIONAL)"
+          >
+            {{ t('recovery.verify.professional') }}
+          </button>
+          <button
+            type="button"
+            class="danger"
+            (click)="reviewHelper(helper, HelperVerificationLevel.REJECTED)"
+          >
+            {{ t('recovery.verify.reject') }}
+          </button>
+        </footer>
+      </article>
+    }
+  </section>
+}
