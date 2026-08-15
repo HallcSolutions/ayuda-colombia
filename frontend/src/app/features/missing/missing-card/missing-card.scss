@@ -27,14 +27,19 @@
 .identity {
   display: flex;
   gap: 14px;
+  /* Sin esto la foto se estira a lo alto de toda la fila y se ve una tira. */
+  align-items: start;
   min-width: 0;
 }
 
+/* La foto es lo que hace que alguien reconozca a la persona: se muestra entera,
+   con su propia forma. Recortarla a un cuadro fijo se come la cara. */
 .portrait {
-  flex: 0 0 86px;
-  width: 86px;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
+  flex: 0 0 150px;
+  width: 150px;
+  height: auto;
+  max-height: 210px;
+  object-fit: contain;
   border-radius: 10px;
   background: #eef1ec;
 }
@@ -294,6 +299,12 @@
     gap: 16px 20px;
   }
 
+  .portrait {
+    flex-basis: 126px;
+    width: 126px;
+    max-height: 176px;
+  }
+
   .row-actions {
     grid-column: 1 / -1;
     min-width: 0;
@@ -308,8 +319,9 @@
   }
 
   .portrait {
-    flex-basis: 72px;
-    width: 72px;
+    flex-basis: 108px;
+    width: 108px;
+    max-height: 150px;
   }
 
   /* En el teléfono, llamar es la acción principal y ocupa el ancho. */
