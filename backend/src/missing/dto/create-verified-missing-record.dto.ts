@@ -93,6 +93,12 @@ export class CreateVerifiedMissingRecordDto {
   @MaxLength(500)
   sourceUrl!: string;
 
+  /** Imagen alojada por la misma entidad: se enlaza, nunca se copia al volumen. */
+  @IsUrl({ protocols: ['https'], require_protocol: true })
+  @MaxLength(500)
+  @IsOptional()
+  photoUrl?: string;
+
   @IsDateString()
   sourceVerifiedAt!: string;
 }

@@ -94,6 +94,7 @@ export class MissingService {
     dto: CreateVerifiedMissingRecordDto,
   ): Promise<MissingRecord> {
     this.assertTrustedSource(dto.sourceUrl);
+    if (dto.photoUrl) this.assertTrustedSource(dto.photoUrl);
     const sourceUrl = dto.sourceUrl.trim();
     const name = dto.name.trim();
     const previous = await this.repository.findOneBy({
@@ -115,7 +116,7 @@ export class MissingService {
       longitude: dto.longitude ?? null,
       contactName: dto.contactName.trim(),
       contactPhone: dto.contactPhone.trim(),
-      photos: previous?.photos ?? [],
+      photos: dto.photoUrl ? [dto.photoUrl.trim()] : (previous?.photos ?? []),
       status: dto.status,
       foundAt:
         dto.status === MissingStatus.FOUND

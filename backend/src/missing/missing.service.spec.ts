@@ -182,10 +182,14 @@ describe('MissingService', () => {
       sourceName: 'IDPYBA',
       sourceUrl:
         'https://www.animalesbog.gov.co/wpyba/animalesperdidos/martina',
+      photoUrl:
+        'https://www.animalesbog.gov.co/wpyba/animalesperdidos/images/martina.jpg',
       sourceVerifiedAt: '2026-08-15T16:00:00.000Z',
     });
 
-    expect(record.photos).toEqual([]);
+    expect(record.photos).toEqual([
+      'https://www.animalesbog.gov.co/wpyba/animalesperdidos/images/martina.jpg',
+    ]);
     expect(record.sourceName).toBe('IDPYBA');
     expect(repository.create).toHaveBeenCalledWith(
       expect.objectContaining({
