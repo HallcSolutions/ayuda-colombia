@@ -1,14 +1,23 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
-import { ReportStatus, UrgencyLevel } from '../../core/constants/app.constants';
-import { houseNeedKey, reportStatusKey, urgencyKey } from '../../core/i18n/domain-keys';
-import { TranslationKey } from '../../core/i18n/es.translations';
+import {
+  HelpContactChannel,
+  HelpContactRole,
+  ReportStatus,
+  UrgencyLevel,
+} from '../../core/constants/app.constants';
+import {
+  helpContactRoleKey,
+  houseNeedKey,
+  reportStatusKey,
+  urgencyKey,
+} from '../../core/i18n/domain-keys';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { HouseReport } from '../../core/models/house-report.model';
 import { ReportsService } from '../../core/services/reports.service';
 import { colombiaDateTime } from '../../core/utils/date.util';
 import { mapUrl as directionsUrl } from '../../core/utils/geo.util';
+import { whatsappUrl } from '../../core/utils/phone.util';
 import { ColombiaWatermark } from '../../shared/colombia-watermark/colombia-watermark';
 
 @Component({
@@ -21,14 +30,9 @@ export class ReportsFeedComponent {
   readonly reportsService = inject(ReportsService);
   private readonly i18n = inject(I18nService);
   readonly t = this.i18n.t;
-  readonly reportStatus = ReportStatus;
   readonly searchTerm = signal('');
   readonly statusFilter = signal<'all' | ReportStatus>('all');
-  private readonly errorMessageKey = signal<TranslationKey | null>(null);
-  readonly errorMessage = computed(() => {
-    const key = this.errorMessageKey();
-    return key ? this.t(key) : '';
-  });
+  readonly contactChannel = HelpContactChannel;
 
   readonly filteredReports = computed(() => {
     const search = this.searchTerm().trim().toLowerCase();
@@ -59,17 +63,8 @@ export class ReportsFeedComponent {
     () => this.filteredReports().filter((report) => report.status === ReportStatus.RESOLVED).length,
   );
 
-  async changeStatus(report: HouseReport, status: ReportStatus): Promise<void> {
-    this.errorMessageKey.set(null);
-    try {
-      await firstValueFrom(this.reportsService.updateStatus(report.id, status));
-    } catch {
-      this.errorMessageKey.set('feed.statusError');
-    }
-  }
-
   mapUrl(report: HouseReport): string {
-    return directionsUrl(report.location);
+    return report.location ? directionsUrl(report.location) : '';
   }
 
   urgencyLabel(urgency: UrgencyLevel): string {
@@ -83,6 +78,14 @@ export class ReportsFeedComponent {
   needLabel(need: string): string {
     const key = houseNeedKey(need);
     return key ? this.t(key) : need;
+  }
+
+  contactRoleLabel(role: HelpContactRole): string {
+    return this.t(helpContactRoleKey(role));
+  }
+
+  whatsappLink(phone: string): string {
+    return whatsappUrl(phone);
   }
 
   illustrationFor(report: HouseReport): string {

@@ -11,6 +11,20 @@ export enum UrgencyLevel {
   LOW = 'low',
 }
 
+/** Quién atenderá directamente a la persona que quiere ayudar. */
+export enum HelpContactRole {
+  AFFECTED_PERSON = 'affected_person',
+  FAMILY_MEMBER = 'family_member',
+  LOCAL_SUPPORT = 'local_support',
+}
+
+/** Canal que el contacto autorizó publicar para esta emergencia. */
+export enum HelpContactChannel {
+  PHONE = 'phone',
+  WHATSAPP = 'whatsapp',
+  BOTH = 'both',
+}
+
 export enum ReliefPointType {
   COLLECTION_CENTER = 'collection_center',
   COMMUNITY_KITCHEN = 'community_kitchen',
@@ -114,6 +128,23 @@ export enum DigestRunStatus {
   FAILED = 'failed',
 }
 
+/** Tipo de desastre activo al que pertenece el boletín público. */
+export enum PublicNewsCategory {
+  EARTHQUAKE = 'earthquake',
+  FLOOD = 'flood',
+  LANDSLIDE = 'landslide',
+  WILDFIRE = 'wildfire',
+  STORM = 'storm',
+  DROUGHT = 'drought',
+  OTHER = 'other',
+}
+
+export enum PublicNewsStatus {
+  PUBLISHED = 'published',
+  ARCHIVED = 'archived',
+}
+
+/** Quién necesita recuperar el lugar: sirve para viviendas y para economía local. */
 export enum RecoveryProjectKind {
   HOME = 'home',
   BUSINESS = 'business',
@@ -139,6 +170,7 @@ export enum RecoveryProjectStatus {
   REJECTED = 'rejected',
 }
 
+/** Oficio principal requerido por una tarea de recuperación. */
 export enum RecoveryTaskCategory {
   GENERAL = 'general',
   CLEANING = 'cleaning',
@@ -158,6 +190,7 @@ export enum RecoveryTaskCategory {
   OTHER = 'other',
 }
 
+/** El nivel lo confirma un coordinador; quien publica no puede rebajarlo. */
 export enum RecoveryRiskLevel {
   GREEN = 'green',
   AMBER = 'amber',
@@ -173,6 +206,10 @@ export enum RecoveryTaskStatus {
   CANCELLED = 'cancelled',
 }
 
+/**
+ * `identity` solo comprueba a la persona; `trade` comprueba un oficio y
+ * `professional` una matrícula/licencia consultada en una fuente oficial.
+ */
 export enum HelperVerificationLevel {
   PENDING = 'pending',
   IDENTITY = 'identity',

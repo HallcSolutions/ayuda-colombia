@@ -32,3 +32,13 @@ const STREET_ZOOM = 16;
 export function streetMapUrl({ latitude, longitude }: Coordinates): string {
   return `https://maps.google.com/maps?q=${latitude},${longitude}&z=${STREET_ZOOM}&output=embed`;
 }
+
+/** Ruta hacia una dirección pública declarada, sin necesitar coordenadas ni una clave de API. */
+export function mapUrlForAddress(address: string): string {
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address.trim())}`;
+}
+
+/** Callejero incrustado para una dirección pública declarada. */
+export function streetMapUrlForAddress(address: string): string {
+  return `https://maps.google.com/maps?q=${encodeURIComponent(address.trim())}&z=${STREET_ZOOM}&output=embed`;
+}

@@ -1,0 +1,118 @@
+<form [formGroup]="form" (ngSubmit)="publish()">
+  <p class="form-lead">{{ t('publicNews.form.lead') }}</p>
+
+  <div class="form-grid">
+    <label class="full">
+      <span>{{ t('publicNews.form.publisherKey') }}</span>
+      <input type="password" formControlName="publisherKey" autocomplete="off" />
+      <small>{{ t('publicNews.form.publisherKeyHint') }}</small>
+    </label>
+
+    <label class="full">
+      <span>{{ t('publicNews.form.title') }}</span>
+      <input formControlName="title" [placeholder]="t('publicNews.form.titlePlaceholder')" />
+    </label>
+
+    <label class="full">
+      <span>{{ t('publicNews.form.summary') }}</span>
+      <textarea
+        formControlName="summary"
+        rows="3"
+        [placeholder]="t('publicNews.form.summaryPlaceholder')"
+      ></textarea>
+    </label>
+
+    <label class="full">
+      <span>{{ t('publicNews.form.steps') }}</span>
+      <textarea
+        formControlName="steps"
+        rows="4"
+        [placeholder]="t('publicNews.form.stepsPlaceholder')"
+      ></textarea>
+      <small>{{ t('publicNews.form.onePerLine') }}</small>
+    </label>
+
+    <label class="full">
+      <span>{{ t('publicNews.form.requirements') }}</span>
+      <textarea
+        formControlName="requirements"
+        rows="3"
+        [placeholder]="t('publicNews.form.requirementsPlaceholder')"
+      ></textarea>
+      <small>{{ t('publicNews.form.onePerLine') }}</small>
+    </label>
+
+    <label>
+      <span>{{ t('publicNews.form.category') }}</span>
+      <select formControlName="category">
+        @for (category of categories; track category) {
+          <option [value]="category">{{ t(categoryKey(category)) }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      <span>{{ t('publicNews.form.department') }}</span>
+      <select formControlName="department">
+        <option value="">{{ t('publicNews.scopeNational') }}</option>
+        @for (department of departments; track department) {
+          <option [value]="department">{{ department }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      <span>{{ t('publicNews.form.municipality') }}</span>
+      <input
+        formControlName="municipality"
+        [placeholder]="t('publicNews.form.municipalityPlaceholder')"
+      />
+    </label>
+
+    <label>
+      <span>{{ t('publicNews.form.publishedAt') }}</span>
+      <input type="date" formControlName="publishedAt" />
+    </label>
+
+    <label>
+      <span>{{ t('publicNews.form.validUntil') }}</span>
+      <input type="date" formControlName="validUntil" />
+    </label>
+
+    <label class="full">
+      <span>{{ t('publicNews.form.sourceName') }}</span>
+      <input formControlName="sourceName" />
+    </label>
+
+    <label class="full">
+      <span>{{ t('publicNews.form.sourceUrl') }}</span>
+      <input type="url" formControlName="sourceUrl" placeholder="https://" />
+    </label>
+
+    <label class="full">
+      <span>{{ t('publicNews.form.contact') }}</span>
+      <input
+        formControlName="contactInfo"
+        [placeholder]="t('publicNews.form.contactPlaceholder')"
+      />
+    </label>
+
+    <label class="checkbox full">
+      <input type="checkbox" formControlName="featured" />
+      <span>{{ t('publicNews.form.featured') }}</span>
+    </label>
+  </div>
+
+  @if (feedbackKey(); as key) {
+    <p class="feedback" role="status">{{ t(key) }}</p>
+  }
+
+  <div class="submit-row">
+    <button class="submit-button" type="submit" [disabled]="form.invalid || submitting()">
+      {{ submitting() ? t('publicNews.form.submitting') : t('publicNews.form.submit') }}
+    </button>
+    @if (form.invalid) {
+      <p class="required-hint">{{ t('common.requiredMissing') }}</p>
+    }
+  </div>
+</form>

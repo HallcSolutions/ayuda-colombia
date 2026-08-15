@@ -13,6 +13,16 @@ import {
 import { ReliefPointStatus } from '../../common/constants/app.constants';
 
 export class UpdateReliefPointDto {
+  @IsString()
+  @MaxLength(120)
+  @IsOptional()
+  name?: string;
+
+  @IsString()
+  @MaxLength(180)
+  @IsOptional()
+  addressReference?: string;
+
   @IsEnum(ReliefPointStatus)
   @IsOptional()
   status?: ReliefPointStatus;

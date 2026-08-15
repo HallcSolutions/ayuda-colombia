@@ -13,8 +13,15 @@ import {
   Max,
   MaxLength,
   Min,
+  ValidateBy,
+  ValidateIf,
 } from 'class-validator';
-import { UrgencyLevel } from '../../common/constants/app.constants';
+import {
+  HelpContactChannel,
+  HelpContactRole,
+  UrgencyLevel,
+} from '../../common/constants/app.constants';
+import { hasValidReportNeeds } from '../report-needs';
 
 export class CreateReportDto {
   @IsString()
@@ -28,13 +35,25 @@ export class CreateReportDto {
    * la ayuda justo a quien menos respaldo tiene.
    */
   @IsString()
+  @IsOptional()
   @Matches(/^[A-Za-z0-9-]{5,20}$/)
-  documentId!: string;
+  documentId?: string;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(30)
+  @Matches(/^[0-9+()\s-]{7,20}$/)
   contactPhone!: string;
+
+  @IsEnum(HelpContactRole)
+  contactRole!: HelpContactRole;
+
+  @IsEnum(HelpContactChannel)
+  contactChannel!: HelpContactChannel;
+
+  @Transform(({ value }) => value === true || value === 'true')
+  @IsBoolean()
+  consentToDirectContact!: boolean;
 
   @IsString()
   @IsNotEmpty()
@@ -62,20 +81,34 @@ export class CreateReportDto {
 
   @IsString()
   @IsNotEmpty()
+  @MaxLength(1200)
+  @ValidateBy({
+    name: 'hasValidReportNeeds',
+    validator: {
+      validate: hasValidReportNeeds,
+      defaultMessage: () => 'Debes indicar entre 1 y 12 necesidades válidas',
+    },
+  })
   needs!: string;
 
   @IsString()
-  @IsNotEmpty()
   @MaxLength(800)
-  notice!: string;
+  @IsOptional()
+  notice?: string;
 
+  @ValidateIf((dto: CreateReportDto) =>
+    Boolean(dto.latitude !== undefined || dto.longitude !== undefined),
+  )
   @Type(() => Number)
   @IsLatitude()
-  latitude!: number;
+  latitude?: number;
 
+  @ValidateIf((dto: CreateReportDto) =>
+    Boolean(dto.latitude !== undefined || dto.longitude !== undefined),
+  )
   @Type(() => Number)
   @IsLongitude()
-  longitude!: number;
+  longitude?: number;
 
   @Type(() => Number)
   @IsNumber()
@@ -85,5 +118,6 @@ export class CreateReportDto {
 
   @Transform(({ value }) => value === true || value === 'true')
   @IsBoolean()
-  consentToShareLocation!: boolean;
+  @IsOptional()
+  consentToShareLocation?: boolean;
 }

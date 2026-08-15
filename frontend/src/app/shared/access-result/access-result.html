@@ -1,0 +1,24 @@
+<section class="access-result" role="status">
+  <p class="eyebrow">{{ t(status()) }}</p>
+  <h4>{{ t(title()) }}</h4>
+
+  <dl>
+    <div class="code-block">
+      <dt>{{ t(codeLabel()) }}</dt>
+      <dd class="code">{{ code() }}</dd>
+    </div>
+    <div class="pin-block">
+      <dt>{{ t('common.pin') }}</dt>
+      <dd class="pin">{{ pin() }}</dd>
+    </div>
+  </dl>
+
+  <p class="note">{{ t(note()) }}</p>
+
+  <div class="actions">
+    <button type="button" class="copy" [class.done]="copied()" (click)="copy()">
+      {{ copied() ? t('common.copied') : t('common.copyAccess') }}
+    </button>
+    <button type="button" class="quiet" (click)="closed.emit()">{{ t('common.close') }}</button>
+  </div>
+</section>

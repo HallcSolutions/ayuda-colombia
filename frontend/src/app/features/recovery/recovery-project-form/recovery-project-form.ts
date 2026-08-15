@@ -21,11 +21,12 @@ import { TranslationKey } from '../../../core/i18n/es.translations';
 import { NewRecoveryProject, NewRecoveryTask } from '../../../core/models/recovery.model';
 import { RecoveryService } from '../../../core/services/recovery.service';
 import { PHONE_PATTERN } from '../../../core/utils/phone.util';
+import { AccessResult } from '../../../shared/access-result/access-result';
 import { PhoneFieldDirective } from '../../../shared/phone-field/phone-field.directive';
 
 @Component({
   selector: 'app-recovery-project-form',
-  imports: [ReactiveFormsModule, PhoneFieldDirective],
+  imports: [ReactiveFormsModule, PhoneFieldDirective, AccessResult],
   templateUrl: './recovery-project-form.html',
   styleUrl: './recovery-project-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,6 +56,10 @@ export class RecoveryProjectForm {
       RecoveryProjectKind.RESTAURANT,
       RecoveryProjectKind.ARTISAN,
     ].includes(this.form.controls.kind.value);
+  }
+
+  publicPlace(): boolean {
+    return this.form.controls.kind.value !== RecoveryProjectKind.HOME;
   }
 
   readonly form = this.fb.nonNullable.group({
@@ -120,16 +125,6 @@ export class RecoveryProjectForm {
       this.errorKey.set(this.publishedPin() ? 'recovery.form.taskError' : 'recovery.form.error');
     } finally {
       this.submitting.set(false);
-    }
-  }
-
-  async copyAccess(): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(
-        `${this.t('recovery.form.projectCode')}: ${this.publishedId()}\nPIN: ${this.publishedPin()}`,
-      );
-    } catch {
-      // Ambos valores permanecen visibles para copiarlos a mano.
     }
   }
 

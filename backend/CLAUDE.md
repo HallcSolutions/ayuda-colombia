@@ -1,7 +1,9 @@
 <!-- chalc:start -->
+
 ## ⚙️ Chalc
 
 ### ✅ Mandatory principles (ALWAYS)
+
 Minimal implementation, Clean Code, SOLID and **modular architecture** apply to **all** code in this project — no exceptions:
 high cohesion and low coupling, small units, explicit names, one responsibility per file/folder/symbol,
 code that is testable by design, and the smallest change that satisfies the current approved requirement
@@ -10,25 +12,28 @@ dependencies, tooling or layers. The `minimal-implementation`, `clean-code`, `so
 `modular-architecture` skills define the detail — **open and apply them by default**, not only when explicitly asked.
 
 ### Skills activas
+
 - `clean-code`
 - `minimal-implementation`
 - `solid-principles`
 - `modular-architecture`
 - `mutation-testing`
 - `nestjs-best-practices`
+
 <!-- chalc:end -->
 
 ## 🧱 Módulos del dominio
 
-| Módulo | Ruta base | Para qué |
-| --- | --- | --- |
-| `reports` | `/api/reports` | Viviendas afectadas, con fotos y ubicación. |
-| `relief-points` | `/api/relief-points` | Puntos de acopio, comedores, albergues y puestos de salud. |
-| `meals` | `/api/meal-services` | Jornadas de comida por punto (raciones planeadas vs entregadas). |
-| `alerts` | `/api/alerts` | Alertas de necesidad de un punto; se difunden a toda la red. |
-| `missing` | `/api/missing` | Personas y animales desaparecidos, con foto, último avistamiento y contacto. |
-| `lodging` | `/api/lodging` | Dormidas ofrecidas por familias, hoteles y moteles: cupos que se ocupan y se liberan. |
-| `convoys` | `/api/convoys` | Camiones que llevan ayuda a un acopio: recorrido en vivo y hora de llegada. |
+| Módulo          | Ruta base            | Para qué                                                                                      |
+| --------------- | -------------------- | --------------------------------------------------------------------------------------------- |
+| `reports`       | `/api/reports`       | Viviendas afectadas, con fotos y ubicación.                                                   |
+| `relief-points` | `/api/relief-points` | Puntos de acopio, comedores, albergues y puestos de salud.                                    |
+| `meals`         | `/api/meal-services` | Jornadas de comida por punto (raciones planeadas vs entregadas).                              |
+| `alerts`        | `/api/alerts`        | Alertas de necesidad de un punto; se difunden a toda la red.                                  |
+| `missing`       | `/api/missing`       | Personas y animales desaparecidos, con foto, último avistamiento y contacto.                  |
+| `lodging`       | `/api/lodging`       | Dormidas ofrecidas por familias, hoteles y moteles: cupos que se ocupan y se liberan.         |
+| `convoys`       | `/api/convoys`       | Camiones que llevan ayuda a un acopio: recorrido en vivo y hora de llegada.                   |
+| `news`          | `/api/news`          | Boletines oficiales ligados exclusivamente a desastres activos, por departamento y municipio. |
 
 Reglas: un módulo = una carpeta con `*.controller.ts`, `*.service.ts`, `*.gateway.ts`, `dto/` e
 `infrastructure/entities/`. Los contratos que salen por la API viven en `common/interfaces` y **nunca**
@@ -74,15 +79,19 @@ La ayuda se coordina por departamento y municipio en todo el país, no en una so
   (`alert.created`, `alert.resolved`, `relief-point.updated`, `meal-service.created`).
 - El servicio emite **después** de persistir y siempre el contrato ya mapeado, nunca la entidad.
 
-## 🔑 Escrituras autorizadas
+## 🔑 Escrituras públicas y protección
 
-- Todo `POST`/`PATCH` va detrás de `ReporterAccessGuard` (cabecera `x-reporter-key`,
-  códigos en `REPORTER_ACCESS_CODES`). Las lecturas son públicas.
-- **Excepciones: `missing`, `convoys` y `lodging`.** Publicar una búsqueda de persona o animal
-  desaparecido, anunciar el viaje de un camión u ofrecer una dormida es abierto: ni quien busca a un
-  familiar, ni quien presta su camión, ni el hotel o la familia que abre su casa tienen código de
-  brigadista, y exigirlo dejaría esos módulos sin uso. No les añadas el guard. El abuso se contiene
-  con `@Throttle` y con los máximos de cada módulo.
+- `POST /reports` es público y no pide correo, cuenta, inicio de sesión ni código de brigada. Se protege
+  con `@Throttle`; cada caso nuevo queda `fieldVerified: false` hasta que exista una comprobación real.
+  No añadas una llave compartida ni marques el caso como verificado solo por haber llenado el formulario.
+- No expongas un `PATCH /reports` público sin un mecanismo privado perteneciente al propio caso: cualquier
+  visitante podría cerrar o alterar la solicitud. La ausencia de edición es preferible a un código general.
+- `news` usa una llave editorial separada (`NEWS_PUBLISHER_KEY` en `x-news-publisher-key`) para que
+  solo fuentes verificadas lleguen al directorio público. No publiques allí subsidios, trámites o
+  convocatorias generales: cada entrada debe corresponder a un sismo, inundación, deslizamiento,
+  incendio forestal, tormenta, sequía u otro desastre activo.
+- `missing`, `convoys` y `lodging` también son públicos al crear. El abuso se contiene con `@Throttle`
+  y con los máximos de cada módulo.
 - Editar esas publicaciones sí está protegido, pero con su propia llave: al crearlas se genera un PIN de
   6 dígitos (`common/security/edit-pin.ts`) que se devuelve **una sola vez** en la respuesta y del que
   solo se guarda `salt:hash` de `scrypt`. El `PATCH` lo exige en la cabecera `x-missing-pin`,

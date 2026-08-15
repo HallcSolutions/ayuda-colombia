@@ -184,6 +184,20 @@ describe('NeedsCheckService', () => {
     });
   });
 
+  it('omite las alertas abiertas que pertenecen a un punto cerrado', async () => {
+    const closedPoint = point({ status: ReliefPointStatus.CLOSED });
+    const service = await build({
+      points: [closedPoint],
+      activeAlerts: [alert({ reliefPoint: closedPoint })],
+    });
+
+    const content = await collect(service);
+
+    expect(content.points).toEqual([]);
+    expect(content.totals.activeAlerts).toBe(0);
+    expect(content.totals.pointsNeedingHelp).toBe(0);
+  });
+
   it('señala la alerta crítica que lleva demasiadas horas abierta', async () => {
     const service = await build({
       points: [point()],

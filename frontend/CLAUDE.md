@@ -1,7 +1,9 @@
 <!-- chalc:start -->
+
 ## ⚙️ Chalc
 
 ### ✅ Mandatory principles (ALWAYS)
+
 Minimal implementation, Clean Code, SOLID and **modular architecture** apply to **all** code in this project — no exceptions:
 high cohesion and low coupling, small units, explicit names, one responsibility per file/folder/symbol,
 code that is testable by design, and the smallest change that satisfies the current approved requirement
@@ -10,6 +12,7 @@ dependencies, tooling or layers. The `minimal-implementation`, `clean-code`, `so
 `modular-architecture` skills define the detail — **open and apply them by default**, not only when explicitly asked.
 
 ### Skills activas
+
 - `angular-component`
 - `angular-di`
 - `angular-directives`
@@ -31,7 +34,9 @@ dependencies, tooling or layers. The `minimal-implementation`, `clean-code`, `so
 - `mutation-testing`
 
 ### Servidores MCP
+
 - `angular-cli` — Servidor MCP oficial del Angular CLI (on-demand, no requiere instalar nada).
+
 <!-- chalc:end -->
 
 ## 🌐 Multilenguaje (obligatorio)
@@ -62,6 +67,7 @@ La emergencia es de todo el país: **ninguna vista puede quedar amarrada a un so
 - Los departamentos salen de `core/constants/colombia.constants.ts`; los municipios se descubren de los
   puntos ya registrados (`ReliefPointsService.municipalitiesOf`).
 - Toda carga de datos añade la zona con `withRegionParams(...)` y toda lista se filtra con `region.matches(item)`.
+- Las noticias nacionales tienen departamento y municipio vacíos: deben seguir visibles al filtrar una zona.
 - Los listados se muestran **agrupados por departamento → ciudad** (ver `relief-points-section`).
 - Al añadir una entidad nueva con ubicación: expón `department` y `municipality` en el modelo y respeta lo anterior.
 
@@ -85,15 +91,31 @@ con un celular en la mano y datos malos: el teléfono es la medida, no el escrit
 
 ## 🧾 Formularios
 
+- Registrar una familia es público: nunca añadas correo, cuenta, inicio de sesión ni código de brigada.
+  La prevención de abuso ocurre en la API y el caso nuevo se muestra como no verificado.
 - El botón de enviar está **deshabilitado mientras el formulario no sea válido** y mientras se
   envía: no se ofrece un botón que no va a funcionar.
 - Al lado del botón deshabilitado va siempre el aviso de qué falta (`common.requiredMissing`),
   para que se entienda por qué no se puede publicar todavía.
 
+## ⏱️ Prohibido `setTimeout` (obligatorio)
+
+**No se escribe `setTimeout`, `setInterval` ni `requestAnimationFrame` sueltos.** Es una espera a
+ciegas: nadie la cancela, sobrevive al componente que la creó, no se prueba bien y esconde la
+condición real por la que se está esperando detrás de un número de milisegundos inventado.
+
+- Esperar un rato → `timer(ms)` o `delay(ms)` de RxJS, **siempre** con `takeUntilDestroyed()`.
+- Agrupar una ráfaga de eventos → `debounceTime` / `auditTime`, nunca un temporizador propio.
+- Esperar a que el navegador pinte → `afterNextRender` / `afterEveryRender`.
+- Esperar el final de una animación o transición → los eventos `transitionend` / `animationend`.
+- Un reloj que avanza en pantalla → `interval(ms)` de RxJS con `takeUntilDestroyed()`.
+- Y antes que nada: espera **a la cosa**, no a un número. Un evento, una petición, un signal.
+  Si no hay a qué esperar, casi siempre es que la condición está mal planteada.
+
 ## 🚫 Nada de tarjetas (obligatorio)
 
 **No se diseñan más tarjetas.** Ni recuadros con borde y sombra, ni cajas dentro de cajas,
-ni rejillas de *cards*. Es una decisión explícita del producto: la pantalla se llenaba de
+ni rejillas de _cards_. Es una decisión explícita del producto: la pantalla se llenaba de
 marcos que compiten entre sí y el contenido dejaba de leerse.
 
 - Para separar bloques usa **aire y una línea fina** (`border-top: 1px solid var(--line)`),
@@ -114,10 +136,19 @@ marcos que compiten entre sí y el contenido dejaba de leerse.
 - Muéstralo siempre como **viñeta de verificado** junto al nombre, no como un bloque de
   texto aparte.
 
+## 📰 Noticias de desastres
+
+- `/news` muestra únicamente novedades nacidas de desastres activos: afectaciones, censos,
+  cierres, ayudas de emergencia y pasos concretos publicados por una fuente oficial.
+- No mezcles programas sociales, trámites permanentes, convocatorias generales ni noticias de
+  ciudad que no respondan directamente al desastre.
+- El filtro principal es el tipo de desastre; las publicaciones vencidas no forman parte de la
+  vista pública.
+
 ## 📡 Tiempo real
 
 - Un solo socket por namespace mediante `RealtimeService.listen(namespace, handlers)`.
 - Namespaces: `/reports`, `/relief-points`, `/meals`, `/alerts`, `/missing`, `/lodging`, `/convoys`,
-  `/monitoring`. Eventos: `<entidad>.<acción>`.
-- Los servicios de `core/services` se suscriben en su constructor y hacen *upsert* sobre su signal;
+  `/monitoring`, `/news`. Eventos: `<entidad>.<acción>`.
+- Los servicios de `core/services` se suscriben en su constructor y hacen _upsert_ sobre su signal;
   los componentes nunca abren sockets.

@@ -4,10 +4,11 @@ import { MissingRecordEntity } from './infrastructure/entities/missing-record.en
 import { MissingController } from './missing.controller';
 import { MissingGateway } from './missing.gateway';
 import { MissingService } from './missing.service';
+import { PhotoStorageService } from '../common/uploads/photo-upload';
 
 @Module({
   imports: [TypeOrmModule.forFeature([MissingRecordEntity])],
   controllers: [MissingController],
-  providers: [MissingGateway, MissingService],
+  providers: [PhotoStorageService, MissingGateway, MissingService],
 })
 export class MissingModule {}

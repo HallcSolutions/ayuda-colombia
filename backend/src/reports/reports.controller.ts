@@ -5,7 +5,6 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
-  Patch,
   Post,
   Query,
   UploadedFiles,
@@ -16,8 +15,6 @@ import { Throttle } from '@nestjs/throttler';
 import { MAX_REPORT_PHOTOS } from '../common/constants/app.constants';
 import { photoUploadOptions } from '../common/uploads/photo-upload';
 import { CreateReportDto } from './dto/create-report.dto';
-import { UpdateLocationDto } from './dto/update-location.dto';
-import { UpdateReportDto } from './dto/update-report.dto';
 import { HouseReport } from '../common/interfaces/house-report.interface';
 import { ReportsService } from './reports.service';
 import { FindReportsQueryDto } from './dto/find-reports-query.dto';
@@ -45,29 +42,14 @@ export class ReportsController {
     @Body() dto: CreateReportDto,
     @UploadedFiles() files: Express.Multer.File[] = [],
   ): Promise<HouseReport> {
-    if (!files.length)
-      throw new BadRequestException('Debes adjuntar al menos una foto');
-    if (!dto.consentToShareLocation) {
+    if (
+      dto.consentToShareLocation &&
+      (dto.latitude === undefined || dto.longitude === undefined)
+    ) {
       throw new BadRequestException(
-        'Se requiere autorización para compartir la ubicación',
+        'Para compartir la ubicación debes capturar el punto completo',
       );
     }
     return this.reportsService.create(dto, files);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id', new ParseUUIDPipe()) id: string,
-    @Body() dto: UpdateReportDto,
-  ): Promise<HouseReport> {
-    return this.reportsService.update(id, dto);
-  }
-
-  @Patch(':id/location')
-  updateLocation(
-    @Param('id', new ParseUUIDPipe()) id: string,
-    @Body() dto: UpdateLocationDto,
-  ): Promise<HouseReport> {
-    return this.reportsService.updateLocation(id, dto);
   }
 }

@@ -5,10 +5,16 @@ import { ReportsGateway } from './reports.gateway';
 import { ReportsService } from './reports.service';
 import { ReportEntity } from './infrastructure/entities/report.entity';
 import { ReportsRepository } from './infrastructure/repositories/reports.repository';
+import { PhotoStorageService } from '../common/uploads/photo-upload';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ReportEntity])],
   controllers: [ReportsController],
-  providers: [ReportsGateway, ReportsRepository, ReportsService],
+  providers: [
+    PhotoStorageService,
+    ReportsGateway,
+    ReportsRepository,
+    ReportsService,
+  ],
 })
 export class ReportsModule {}

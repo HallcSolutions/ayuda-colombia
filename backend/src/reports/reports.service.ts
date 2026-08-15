@@ -1,20 +1,24 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ReportStatus } from '../common/constants/app.constants';
 import { HouseReport } from '../common/interfaces/house-report.interface';
-import { photoUrl } from '../common/uploads/photo-upload';
+import { PhotoStorageService } from '../common/uploads/photo-upload';
 import { CreateReportDto } from './dto/create-report.dto';
-import { UpdateLocationDto } from './dto/update-location.dto';
-import { UpdateReportDto } from './dto/update-report.dto';
 import { ReportEntity } from './infrastructure/entities/report.entity';
 import { ReportsRepository } from './infrastructure/repositories/reports.repository';
 import { ReportFilters } from './interfaces/report-filters.interface';
 import { ReportsGateway } from './reports.gateway';
+import { parseReportNeeds } from './report-needs';
 
 @Injectable()
 export class ReportsService {
   constructor(
     private readonly repository: ReportsRepository,
     private readonly gateway: ReportsGateway,
+    private readonly photoStorage: PhotoStorageService,
   ) {}
 
   async findAll(filters: ReportFilters): Promise<HouseReport[]> {
@@ -32,52 +36,51 @@ export class ReportsService {
     files: Express.Multer.File[],
   ): Promise<HouseReport> {
     const now = new Date();
-    const entity = this.repository.create({
-      reporterName: dto.reporterName.trim(),
-      documentId: dto.documentId.trim(),
-      contactPhone: dto.contactPhone.trim(),
-      department: dto.department.trim(),
-      municipality: dto.municipality.trim(),
-      addressReference: dto.addressReference.trim(),
-      householdSize: dto.householdSize,
-      urgency: dto.urgency,
-      needs: this.parseNeeds(dto.needs),
-      notice: dto.notice.trim(),
-      photos: files.map(photoUrl),
-      latitude: dto.latitude,
-      longitude: dto.longitude,
-      accuracy: dto.accuracy ?? null,
-      locationCapturedAt: now,
-      status: ReportStatus.OPEN,
-      consentToShareLocation: dto.consentToShareLocation,
-    });
-    const report = this.toContract(await this.repository.save(entity));
+    const needs = parseReportNeeds(dto.needs);
+    if (!needs.length) {
+      throw new BadRequestException(
+        'Debes indicar al menos una necesidad válida',
+      );
+    }
+    const sharesLocation = Boolean(
+      dto.consentToShareLocation &&
+      dto.latitude !== undefined &&
+      dto.longitude !== undefined,
+    );
+    const photos = await this.photoStorage.store(files);
+    let saved: ReportEntity;
+    try {
+      const entity = this.repository.create({
+        reporterName: dto.reporterName.trim(),
+        documentId: dto.documentId?.trim() ?? '',
+        contactPhone: dto.contactPhone.trim(),
+        contactRole: dto.contactRole,
+        contactChannel: dto.contactChannel,
+        consentToDirectContact: dto.consentToDirectContact,
+        department: dto.department.trim(),
+        municipality: dto.municipality.trim(),
+        addressReference: dto.addressReference.trim(),
+        householdSize: dto.householdSize,
+        urgency: dto.urgency,
+        needs,
+        notice: dto.notice?.trim() ?? '',
+        photos,
+        latitude: sharesLocation ? dto.latitude : null,
+        longitude: sharesLocation ? dto.longitude : null,
+        accuracy: sharesLocation ? (dto.accuracy ?? null) : null,
+        locationCapturedAt: sharesLocation ? now : null,
+        status: ReportStatus.OPEN,
+        consentToShareLocation: sharesLocation,
+        fieldVerified: false,
+        verifiedAt: null,
+      });
+      saved = await this.repository.save(entity);
+    } catch (error) {
+      await this.photoStorage.remove(photos);
+      throw error;
+    }
+    const report = this.toContract(saved);
     this.gateway.reportCreated(report);
-    return report;
-  }
-
-  async update(id: string, dto: UpdateReportDto): Promise<HouseReport> {
-    const entity = await this.findEntity(id);
-    if (dto.status) entity.status = dto.status;
-    if (dto.urgency) entity.urgency = dto.urgency;
-    if (dto.notice !== undefined) entity.notice = dto.notice.trim();
-    if (dto.needs !== undefined) entity.needs = this.parseNeeds(dto.needs);
-    const report = this.toContract(await this.repository.save(entity));
-    this.gateway.reportUpdated(report);
-    return report;
-  }
-
-  async updateLocation(
-    id: string,
-    dto: UpdateLocationDto,
-  ): Promise<HouseReport> {
-    const entity = await this.findEntity(id);
-    entity.latitude = dto.latitude;
-    entity.longitude = dto.longitude;
-    entity.accuracy = dto.accuracy ?? null;
-    entity.locationCapturedAt = new Date();
-    const report = this.toContract(await this.repository.save(entity));
-    this.gateway.reportUpdated(report);
     return report;
   }
 
@@ -87,27 +90,13 @@ export class ReportsService {
     return entity;
   }
 
-  private parseNeeds(value: string): string[] {
-    try {
-      const parsed = JSON.parse(value) as unknown;
-      if (Array.isArray(parsed)) {
-        return parsed
-          .map(String)
-          .map((item) => item.trim())
-          .filter(Boolean)
-          .slice(0, 12);
-      }
-    } catch {
-      // También acepta texto separado por comas.
-    }
-    return value
-      .split(',')
-      .map((item) => item.trim())
-      .filter(Boolean)
-      .slice(0, 12);
-  }
-
   private toContract(entity: ReportEntity): HouseReport {
+    const sharesLocation = Boolean(
+      entity.consentToShareLocation &&
+      entity.latitude !== null &&
+      entity.longitude !== null &&
+      entity.locationCapturedAt,
+    );
     return {
       id: entity.id,
       department: entity.department,
@@ -118,14 +107,26 @@ export class ReportsService {
       needs: entity.needs,
       notice: entity.notice,
       photos: entity.photos,
-      location: {
-        latitude: entity.latitude,
-        longitude: entity.longitude,
-        accuracy: entity.accuracy,
-        capturedAt: entity.locationCapturedAt.toISOString(),
-      },
+      location: sharesLocation
+        ? {
+            latitude: entity.latitude!,
+            longitude: entity.longitude!,
+            accuracy: entity.accuracy,
+            capturedAt: entity.locationCapturedAt!.toISOString(),
+          }
+        : null,
+      directContact: entity.consentToDirectContact
+        ? {
+            name: entity.reporterName,
+            phone: entity.contactPhone,
+            role: entity.contactRole,
+            channel: entity.contactChannel,
+          }
+        : null,
+      fieldVerified: entity.fieldVerified,
+      verifiedAt: entity.verifiedAt?.toISOString() ?? null,
       status: entity.status,
-      consentToShareLocation: entity.consentToShareLocation,
+      consentToShareLocation: sharesLocation,
       createdAt: entity.createdAt.toISOString(),
       updatedAt: entity.updatedAt.toISOString(),
     };

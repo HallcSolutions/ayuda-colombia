@@ -1,0 +1,88 @@
+@if (!authenticated()) {
+  <section class="unlock">
+    <p>{{ t('recovery.helperManage.accessLead') }}</p>
+    <label>
+      <span>{{ t('recovery.helper.helperCode') }}</span>
+      <input [value]="helperId()" autocomplete="username" (input)="updateHelperId($event)" />
+    </label>
+    <label>
+      <span>{{ t('common.pin') }}</span>
+      <input
+        inputmode="numeric"
+        maxlength="6"
+        autocomplete="current-password"
+        [value]="pin()"
+        (input)="updatePin($event)"
+      />
+    </label>
+    <button type="button" [disabled]="loading()" (click)="load()">
+      {{ t('recovery.helperManage.open') }}
+    </button>
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+  </section>
+} @else {
+  <section class="helper-management">
+    @if (profile(); as helper) {
+      <header>
+        <span>{{ t('recovery.helperManage.profile') }}</span>
+        <h4>{{ helper.displayName }}</h4>
+        <p>{{ t(verificationKey(helper.verificationLevel)) }}</p>
+      </header>
+    }
+
+    <div class="section-heading">
+      <h4>{{ t('recovery.helperManage.applications') }}</h4>
+      <button type="button" class="secondary" [disabled]="loading()" (click)="load()">
+        {{ t('recovery.helperManage.refresh') }}
+      </button>
+    </div>
+
+    @if (!applications().length) {
+      <p class="empty">{{ t('recovery.helperManage.empty') }}</p>
+    }
+    <div class="application-list">
+      @for (application of applications(); track application.id) {
+        <article>
+          <div class="meta">
+            <span>{{ application.projectName }}</span>
+            <span>{{ t(applicationStatusKey(application.status)) }}</span>
+          </div>
+          <h5>{{ application.taskTitle }}</h5>
+          <p>
+            <strong>{{ t('recovery.helperManage.availability') }}:</strong>
+            {{ application.availability }}
+          </p>
+          @if (application.message) {
+            <p>{{ application.message }}</p>
+          }
+          @if (application.projectContactPhone) {
+            <div class="accepted" role="status">
+              <strong>{{ t('recovery.helperManage.acceptedNotice') }}</strong>
+              <span
+                >{{ t('recovery.helperManage.contact') }}:
+                {{ application.projectContactName }}</span
+              >
+              <a [href]="'tel:' + application.projectContactPhone">
+                {{ application.projectContactPhone }}
+              </a>
+            </div>
+          }
+          @if (
+            application.status === statuses.PENDING || application.status === statuses.ACCEPTED
+          ) {
+            <footer>
+              <button type="button" class="secondary" (click)="withdraw(application)">
+                {{ t('recovery.helperManage.withdraw') }}
+              </button>
+            </footer>
+          }
+        </article>
+      }
+    </div>
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+  </section>
+}

@@ -131,7 +131,7 @@
       </div>
     </article>
 
-    <article class="story-row story-row--shelter">
+    <article class="story-row story-row--reverse">
       <div class="story-copy">
         <span class="story-kicker">{{ t('landing.shelterKicker') }}</span>
         <h3>{{ t('landing.shelterTitle') }}</h3>
@@ -140,16 +140,95 @@
           {{ t('landing.shelterCta') }} <span aria-hidden="true">↗</span>
         </a>
       </div>
-      <figure class="story-media">
-        <img
-          src="/assets/home/redayuda-shelter.jpg"
-          [alt]="t('landing.shelterImageAlt')"
-          width="1400"
-          height="735"
-          loading="lazy"
-        />
+      <figure class="story-media story-media--places">
+        <div class="story-place-images">
+          <img
+            src="/assets/actions/redayuda-lodging-home.jpg"
+            [alt]="t('landing.shelterImageAlt')"
+            width="1400"
+            height="788"
+            loading="lazy"
+          />
+          <img
+            src="/assets/actions/redayuda-health-post.jpg"
+            [alt]="t('landing.healthImageAlt')"
+            width="1400"
+            height="788"
+            loading="lazy"
+          />
+          <img
+            src="/assets/actions/redayuda-veterinary.jpg"
+            [alt]="t('landing.veterinaryImageAlt')"
+            width="1400"
+            height="788"
+            loading="lazy"
+          />
+        </div>
         <figcaption><span>02</span>{{ t('landing.shelterCaption') }}</figcaption>
       </figure>
+    </article>
+
+    <article class="story-row">
+      <figure class="story-media">
+        <img
+          src="/assets/reports/report-damage-illustration.jpg"
+          [alt]="t('landing.registerImageAlt')"
+          width="1200"
+          height="800"
+          loading="lazy"
+        />
+        <figcaption><span>03</span>{{ t('landing.registerCaption') }}</figcaption>
+      </figure>
+      <div class="story-copy">
+        <span class="story-kicker">{{ t('landing.registerKicker') }}</span>
+        <h3>{{ t('landing.registerTitle') }}</h3>
+        <p>{{ t('landing.registerBody') }}</p>
+        <a class="story-link" routerLink="/reportar">
+          {{ t('landing.registerCta') }} <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </article>
+
+    <article class="story-row story-row--reverse">
+      <div class="story-copy">
+        <span class="story-kicker">{{ t('landing.newsKicker') }}</span>
+        <h3>{{ t('landing.newsTitle') }}</h3>
+        <p>{{ t('landing.newsBody') }}</p>
+        <a class="story-link" routerLink="/noticias">
+          {{ t('landing.newsCta') }} <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <figure class="story-media">
+        <img
+          src="/assets/home/redayuda-verified-news.jpg"
+          [alt]="t('landing.newsImageAlt')"
+          width="1774"
+          height="887"
+          loading="lazy"
+        />
+        <figcaption><span>04</span>{{ t('landing.newsCaption') }}</figcaption>
+      </figure>
+    </article>
+
+    <article class="story-row">
+      <figure class="story-media">
+        <img
+          src="/assets/actions/redayuda-recovery-workshop.jpg"
+          [alt]="t('landing.recoveryImageAlt')"
+          width="1400"
+          height="788"
+          loading="lazy"
+        />
+        <figcaption><span>05</span>{{ t('landing.recoveryCaption') }}</figcaption>
+      </figure>
+      <div class="story-copy">
+        <span class="story-kicker">{{ t('landing.recoveryKicker') }}</span>
+        <h3>{{ t('landing.recoveryTitle') }}</h3>
+        <p>{{ t('landing.recoveryBody') }}</p>
+        <a class="story-link" routerLink="/recuperacion">
+          {{ t('landing.recoveryCta') }} <span aria-hidden="true">↗</span>
+        </a>
+      </div>
     </article>
   </div>
 </section>
@@ -241,6 +320,13 @@
       <span
         ><strong>{{ t('process.publishStep') }}</strong
         ><small>{{ t('process.publishTail') }}</small></span
+      >
+    </li>
+    <li>
+      <span class="step-number">04</span>
+      <span
+        ><strong>{{ t('process.connectStep') }}</strong
+        ><small>{{ t('process.connectTail') }}</small></span
       >
     </li>
   </ol>

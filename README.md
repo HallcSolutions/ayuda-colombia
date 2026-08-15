@@ -1,31 +1,30 @@
 # RedAyuda Colombia
 
-Portal humanitario para registrar viviendas afectadas, fotografías, ubicación autorizada, puntos de acopio, comedores, alojamientos ofrecidos para dormir y necesidades de las familias. La consulta es pública; la creación y actualización requiere un código entregado a brigadistas o líderes autorizados, sin cuentas ni inicio de sesión.
+Portal humanitario creado para responder al desastre natural del 10 de agosto de 2026 en Colombia. Conecta directamente a familias afectadas con personas que quieren ayudarlas: RedAyuda no recibe, retiene ni reparte dinero. Consultar y registrar familias es público, sin correo, cuentas, inicio de sesión ni códigos de brigada.
+
+El registro de una familia no exige cédula, fotografías ni GPS. Solo pide la zona, las necesidades actuales y un contacto cercano para coordinación. El nombre y teléfono se muestran al público únicamente con autorización expresa; las fotos y la ubicación exacta siguen siendo opcionales. Cada publicación nueva aparece como no verificada: la plataforma no traslada esa carga a quienes acaban de perderlo todo ni inventa una verificación automática.
 
 ## Estructura
 
 - `frontend/`: Angular 22, español/inglés en tiempo real, formularios reactivos, geolocalización, directorio nacional y Socket.IO.
-- `backend/`: NestJS 11, TypeORM, PostgreSQL, carga local de imágenes, Swagger, autorización por código y Socket.IO.
+- `backend/`: NestJS 11, TypeORM, PostgreSQL, carga local de imágenes, Swagger, controles de abuso y Socket.IO.
 
 La ilustración de portada está en `frontend/public/assets/redayuda-colombia-hero.png`.
 
 ## Desarrollo local
 
-1. En `backend/`, copia `.env.example` como `.env` y cambia `REPORTER_ACCESS_CODES`.
+1. En `backend/`, copia `.env.example` como `.env`.
 2. Ejecuta `docker compose up -d` dentro de `backend/`.
 3. Ejecuta `npm install` y luego `npm run start:dev` dentro de `backend/`.
 4. Ejecuta `npm install` y luego `npm start` dentro de `frontend/`.
 5. Abre `http://localhost:4200`. La documentación de la API queda en `http://localhost:3000/api/docs`.
 
-El código de demostración definido en `.env.example` es `brigada-demo-2026`. Debe reemplazarse antes de publicar el sistema.
-
 ## Contrato principal
 
 - `GET /api/reports`: consulta pública.
-- `POST /api/reports`: crea un reporte con `multipart/form-data` y encabezado `x-reporter-key`.
-- `PATCH /api/reports/:id`: actualiza necesidades, urgencia o estado con código autorizado.
-- `PATCH /api/reports/:id/location`: actualiza la ubicación con código autorizado.
-- WebSocket `/reports`: eventos `report.created` y `report.updated`.
+- `POST /api/reports`: registra públicamente una familia con `multipart/form-data`; no pide correo, cuenta ni código. Cédula, fotos y GPS son opcionales y el abuso se limita por IP.
+- Los reportes no exponen un `PATCH` público: otra persona no puede cambiar o cerrar el caso desde el directorio.
+- WebSocket `/reports`: evento `report.created`.
 - `GET /api/relief-points`: directorio público de puntos de acopio, comedores, albergues y puestos de salud.
 - `POST/PATCH /api/relief-points`: registro y actualización con código autorizado.
 - `GET/POST/PATCH /api/meal-services`: jornadas y raciones entregadas.
@@ -46,13 +45,50 @@ El código de demostración definido en `.env.example` es `brigada-demo-2026`. D
 - WebSocket `/convoys`: eventos `convoy.created`, `convoy.moved` y `convoy.updated`.
 - `GET /api/monitoring/digest`: último resumen del chequeo periódico (acopios nuevos y qué falta).
 - `GET /api/monitoring/status`: si el chequeo sigue vivo (última corrida, próxima y fallos seguidos).
-- `GET /api/recovery/projects`: consulta pública de viviendas, negocios, restaurantes, ventas de calle, talleres y artesanos en recuperación.
-- `POST /api/recovery/projects`: publica el caso y su oferta inmediatamente y entrega un PIN. El teléfono solo sale con autorización expresa; la dirección exacta nunca se publica.
-- `POST /api/recovery/helpers`: registra privadamente identidad, oficio y soporte. Las tareas técnicas no aceptan postulaciones hasta clasificar su riesgo y comprobar el nivel requerido.
-- `GET/PATCH /api/recovery/verification/*`: moderación posterior de casos y verificación previa de tareas y ayudantes, protegida por `RECOVERY_VERIFIER_KEY`.
-- WebSocket `/recovery`: eventos `recovery.project.created` y `recovery.project.updated`.
+- `GET /api/news`: boletines de desastres activos, filtrables por `category`, `department` y `municipality`; las emergencias nacionales siempre acompañan el resultado y las publicaciones vencidas se ocultan.
+- `POST/PATCH /api/news`: publicación editorial con la cabecera `x-news-publisher-key`. Solo admite categorías de desastre (sismo, inundación, deslizamiento, incendio, tormenta, sequía u otro); no es un directorio de programas generales.
+- `GET /api/recovery/projects`: casos verificados de recuperación tras el terremoto, con tareas revisadas y oferta local de artesanos, restaurantes, ventas ambulantes y pequeños negocios.
+- `POST /api/recovery/projects`: registra un caso o negocio para revisión y entrega un PIN. El contacto solo se publica para pedidos cuando el titular lo autoriza; documentos y direcciones exactas nunca salen en el listado.
+- `POST /api/recovery/helpers`: registra privadamente identidad, oficio y soporte. Nadie puede postularse hasta que el equipo asigne un nivel comprobado.
+- `GET/PATCH /api/recovery/verification/*`: cola privada protegida por `x-recovery-verifier-key` para confirmar casos, clasificar riesgos y contrastar referencias, certificados o matrículas.
+- WebSocket `/recovery`: eventos `recovery.project.created` y `recovery.project.updated`, únicamente para proyectos aprobados.
 - `POST /api/monitoring/digest/run`: genera el resumen a mano. Exige la cabecera `x-digest-token`.
 - WebSocket `/monitoring`: evento `digest.created`.
+
+## Manos a la obra después del terremoto
+
+La pestaña «Recuperación» reúne dos acciones que deben ocurrir juntas: volver seguro y habitable
+un lugar afectado, y devolverle ingresos a quien vivía de él. Una vivienda, restaurante, venta de
+calle, taller o negocio artesanal registra su historia, zona aproximada y una primera tarea. Si
+todavía puede vender, también publica productos, comidas, horarios, modalidades de entrega y —solo
+con autorización expresa— un teléfono para pedidos.
+
+Nada se publica automáticamente. Casos, tareas y ayudantes entran a una cola privada protegida por
+`RECOVERY_VERIFIER_KEY`. El equipo llama al responsable, comprueba que el caso exista y asigna el
+riesgo de cada labor. Estructura, electricidad y gas nunca pueden quedar por debajo de riesgo rojo;
+solo admiten perfiles cuya matrícula o licencia fue contrastada en un registro oficial. Construcción,
+plomería, carpintería, soldadura y reparación de equipos exigen un oficio respaldado por certificado
+o referencia comprobada. Incluso las labores de riesgo bajo requieren identidad y teléfono
+confirmados.
+
+Asignar el nivel profesional exige dejar el nombre y el enlace HTTPS de la consulta realizada. El
+backend solo acepta dominios incluidos en `RECOVERY_TRUSTED_REGISTRY_DOMAINS`; si la lista está
+vacía, no concede ese nivel. La configuración de ejemplo incluye
+[COPNIA](https://www.copnia.gov.co/atencion-al-ciudadano/consultas-en-linea) para ingeniería,
+profesiones afines y maestros de obra, y [CONTE](https://www.conte.org.co/consultas/) para técnicos
+electricistas. El equipo debe revisar esa lista y
+confirmar que la clase o alcance de la matrícula corresponda exactamente a la tarea, no solo que el
+número exista. La fuente queda visible para el responsable del caso, pero el enlace consultado se
+mantiene en la cola privada porque puede contener datos personales.
+
+Los documentos, referencias, teléfonos de voluntarios y contactos de viviendas no forman parte del
+contrato público ni viajan por Socket.IO. El dueño del caso solo conoce el contacto de quien se
+postuló al abrir la gestión con su PIN; la persona ayudante solo recibe el contacto del responsable
+después de ser aceptada. La ubicación exacta se acuerda fuera del directorio.
+
+En restaurantes y ventas de comida, la insignia de verificación solo confirma identidad, contacto y
+existencia del caso. La interfaz advierte expresamente que no reemplaza una inspección sanitaria ni
+garantiza la inocuidad de los alimentos.
 
 ## Chequeo cada 6 horas
 
@@ -114,7 +150,7 @@ Al publicar, la respuesta entrega **una sola vez** un PIN de 6 dígitos que solo
 
 ## Datos verificados
 
-`npm run db:seed` en `backend/` carga de forma idempotente 24 puntos de acopio corroborados para la emergencia del 10 de agosto de 2026, con dirección, coordenadas, responsable, horario conocido, necesidades, fecha de verificación y fuente. La carga cubre Antioquia, Atlántico, Bogotá D.C., Bolívar, Cauca, Risaralda y Valle del Cauca; también crea una alerta activa por punto con los elementos solicitados.
+`npm run db:seed` en `backend/` carga de forma idempotente los 73 lugares corroborados para la emergencia del 10 de agosto de 2026: 70 abiertos y 3 cierres conservados como historial. Incluye acopios, albergues, bancos de alimentos, 11 puestos médicos de Cali y 4 centros veterinarios en 17 departamentos o distritos, con dirección, coordenadas, responsable, horario, fecha de verificación y fuentes públicas completas. Solo crea alertas para los 44 puntos que publicaron necesidades vigentes y cierra cualquier alerta residual de un lugar cerrado.
 
 Las fuentes principales son el directorio colaborativo [Terremoto.com.co](https://terremoto.com.co/collection-points), la [guía de ayuda de EL PAÍS](https://elpais.com/america-colombia/2026-08-10/como-ayudar-a-las-personas-damnificadas-por-el-terremoto-en-colombia.html), su [recopilación de iniciativas nacionales](https://elpais.com/america-colombia/2026-08-12/la-columna-mas-aburrida-del-mundo.html) y publicaciones de las entidades operadoras. Los avisos sin dirección precisa, sin corroboración o que reportaban no estar recibiendo ayudas no se cargaron como activos.
 

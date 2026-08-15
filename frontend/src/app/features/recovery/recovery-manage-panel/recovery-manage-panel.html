@@ -15,12 +15,19 @@
 } @else {
   <section class="manage-panel">
     <div class="manage-actions">
-      <button type="button" (click)="changeProject(RecoveryProjectStatus.IN_PROGRESS)">
-        {{ t('recovery.manage.markProgress') }}
-      </button>
-      <button type="button" (click)="changeProject(RecoveryProjectStatus.COMPLETED)">
-        {{ t('recovery.manage.markCompleted') }}
-      </button>
+      @if (
+        projectStatus() === RecoveryProjectStatus.OPEN ||
+        projectStatus() === RecoveryProjectStatus.PAUSED
+      ) {
+        <button type="button" (click)="changeProject(RecoveryProjectStatus.IN_PROGRESS)">
+          {{ t('recovery.manage.markProgress') }}
+        </button>
+      }
+      @if (projectStatus() !== RecoveryProjectStatus.COMPLETED) {
+        <button type="button" (click)="changeProject(RecoveryProjectStatus.COMPLETED)">
+          {{ t('recovery.manage.markCompleted') }}
+        </button>
+      }
     </div>
 
     <section>
@@ -31,26 +38,50 @@
       <div class="application-list">
         @for (application of applications(); track application.id) {
           <article>
-            <div class="meta">
-              <span>{{ application.taskTitle }}</span
-              ><span>{{ t(applicationStatusKey(application.status)) }}</span>
+            <div class="application-heading">
+              <div>
+                <span>{{ t('recovery.manage.applicant') }}</span>
+                <h5>{{ application.helperName }}</h5>
+              </div>
+              <span class="application-status" [class]="'status-' + application.status">
+                {{ t(applicationStatusKey(application.status)) }}
+              </span>
             </div>
-            <h5>{{ application.helperName }}</h5>
-            <p>
-              {{ t(verificationKey(application.helperVerificationLevel)) }} ·
-              {{ application.availability }}
-            </p>
-            @if (application.helperVerificationSource) {
-              <p>
-                <strong>{{ t('recovery.manage.verifiedSource') }}:</strong>
-                {{ application.helperVerificationSource }}
-              </p>
-            }
+
+            <dl class="application-facts">
+              <div>
+                <dt>{{ t('recovery.manage.appliedTask') }}</dt>
+                <dd>{{ application.taskTitle }}</dd>
+              </div>
+              <div>
+                <dt>{{ t('recovery.manage.availability') }}</dt>
+                <dd>{{ application.availability }}</dd>
+              </div>
+              <div>
+                <dt>{{ t('recovery.manage.verification') }}</dt>
+                <dd>{{ t(verificationKey(application.helperVerificationLevel)) }}</dd>
+              </div>
+              @if (application.helperVerificationSource) {
+                <div>
+                  <dt>{{ t('recovery.manage.verifiedSource') }}</dt>
+                  <dd>{{ application.helperVerificationSource }}</dd>
+                </div>
+              }
+            </dl>
+
             @if (application.message) {
-              <p>{{ application.message }}</p>
+              <div class="application-message">
+                <strong>{{ t('recovery.manage.message') }}</strong>
+                <p>{{ application.message }}</p>
+              </div>
             }
             @if (application.helperPhone) {
-              <a [href]="'tel:' + application.helperPhone">{{ application.helperPhone }}</a>
+              <div class="application-contact">
+                <span>{{ t('recovery.manage.contactPhone') }}</span>
+                <a [href]="'tel:' + application.helperPhone">
+                  {{ t('recovery.manage.call', { phone: application.helperPhone }) }}
+                </a>
+              </div>
             }
             @if (application.status === statuses.PENDING) {
               <footer>
@@ -79,7 +110,7 @@
 
     <section>
       <h4>{{ t('recovery.manage.tasks') }}</h4>
-      @for (task of project().tasks; track task.id) {
+      @for (task of tasks(); track task.id) {
         <div class="task-row">
           <span>{{ task.title }}</span>
           @if (task.status === taskStatuses.OPEN) {

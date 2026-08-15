@@ -24,6 +24,9 @@
         <button type="button" class="offer-skill" (click)="openModal('helper')">
           {{ t('recovery.canHelp') }} <span aria-hidden="true">→</span>
         </button>
+        <button type="button" class="offer-skill" (click)="openModal('helper-manage')">
+          {{ t('recovery.helperManage.openAccess') }} <span aria-hidden="true">→</span>
+        </button>
       </div>
     </aside>
 
@@ -80,7 +83,7 @@
             [value]="region.municipality()"
             (change)="updateMunicipality($event)"
           >
-            <option value="">{{ t('recovery.allMunicipalities') }}</option>
+            <option value="">{{ t('publicNews.allMunicipalities') }}</option>
             @for (municipality of municipalities(); track municipality) {
               <option [value]="municipality">{{ municipality }}</option>
             }
@@ -114,7 +117,8 @@
         </div>
       } @else {
         <div class="project-list">
-          @for (project of visibleProjects(); track project.id) {
+          @for (row of rows(); track row.project.id) {
+            @let project = row.project;
             <article class="project-row">
               <header class="project-identity">
                 <div class="project-meta">
@@ -125,16 +129,100 @@
                       <span aria-hidden="true">✓</span>
                       {{ t('recovery.card.verifiedBy', { name: project.verifiedBy }) }}
                     </span>
+                  } @else {
+                    <span class="unverified-badge">{{ t('recovery.card.unverified') }}</span>
                   }
                 </div>
                 <h3>{{ project.name }}</h3>
                 <p class="place">
                   {{ project.areaReference }} · {{ project.municipality }}, {{ project.department }}
+                  ·
+                  {{
+                    t('recovery.card.published', {
+                      date:
+                        (project.createdAt | date: 'd MMM y' : colombiaTime : i18n.locale()) ?? '',
+                    })
+                  }}
                 </p>
                 <p class="story">{{ project.story }}</p>
-                <button type="button" class="manage" (click)="manage(project)">
-                  {{ t('recovery.card.manage') }}
-                </button>
+
+                @if (hasPublicLocation(project)) {
+                  <section
+                    class="public-location"
+                    [attr.aria-label]="t('recovery.card.mapTitle', { name: project.name })"
+                  >
+                    <div class="public-location__heading">
+                      <h4>{{ t('recovery.card.location') }}</h4>
+                      <span>{{ t('recovery.card.locationDeclared') }}</span>
+                    </div>
+                    <iframe
+                      [src]="streetMap(project)"
+                      [title]="t('recovery.card.mapTitle', { name: project.name })"
+                      loading="lazy"
+                      referrerpolicy="no-referrer-when-downgrade"
+                    ></iframe>
+                    <a [href]="directions(project)" target="_blank" rel="noopener noreferrer">
+                      {{ t('common.directions') }}
+                    </a>
+                  </section>
+                } @else if (
+                  project.kind === projectKinds.HOME && project.areaReference.trim().length
+                ) {
+                  <section
+                    class="public-location public-location--approximate"
+                    [attr.aria-label]="t('recovery.card.approxMapTitle', { name: project.name })"
+                  >
+                    <div class="public-location__heading">
+                      <h4>{{ t('recovery.card.approxLocation') }}</h4>
+                      <span>{{ t('recovery.card.approxLocationDeclared') }}</span>
+                    </div>
+                    <iframe
+                      [src]="streetMap(project)"
+                      [title]="t('recovery.card.approxMapTitle', { name: project.name })"
+                      loading="lazy"
+                      referrerpolicy="no-referrer-when-downgrade"
+                    ></iframe>
+                    <a [href]="directions(project)" target="_blank" rel="noopener noreferrer">
+                      {{ t('recovery.card.approxDirections') }}
+                    </a>
+                  </section>
+                }
+
+                <p class="needs-summary">
+                  @if (row.missingPeople) {
+                    {{
+                      t('recovery.card.needsPeople', {
+                        people: row.missingPeople,
+                        tasks: row.openTasks,
+                      })
+                    }}
+                  } @else if (row.openTasks) {
+                    {{ t('recovery.card.needsOpenTasks', { tasks: row.openTasks }) }}
+                  } @else if (project.tasks.length) {
+                    {{ t('recovery.card.needsCovered') }}
+                  } @else if (project.pendingTaskCount) {
+                    {{ t('recovery.card.needsPending', { tasks: project.pendingTaskCount }) }}
+                  } @else {
+                    {{ t('recovery.card.needsNothingYet') }}
+                  }
+                </p>
+
+                <p class="owner-access" [attr.role]="row.pendingApplications ? 'status' : null">
+                  @if (row.pendingApplications) {
+                    <span class="application-alert">
+                      {{
+                        t('recovery.card.ownerApplications', {
+                          applications: row.pendingApplications,
+                        })
+                      }}
+                    </span>
+                  } @else {
+                    <span>{{ t('recovery.card.ownerHint') }}</span>
+                  }
+                  <button type="button" class="manage" (click)="manage(project)">
+                    {{ t('recovery.card.manage') }}
+                  </button>
+                </p>
               </header>
 
               <div class="project-activity">
@@ -200,6 +288,32 @@
                               >{{ t('recovery.card.materials') }}: {{ task.materialsNeeded }}</span
                             >
                           }
+                          @if (task.skillsRequired) {
+                            <span>{{ t('recovery.card.skills') }}: {{ task.skillsRequired }}</span>
+                          }
+                          @if (task.scheduledFor) {
+                            <span>
+                              {{ t('recovery.card.scheduled') }}:
+                              {{
+                                task.scheduledFor
+                                  | date: 'd MMM y, h:mm a' : colombiaTime : i18n.locale()
+                              }}
+                            </span>
+                          }
+                          @if (task.durationHours) {
+                            <span>
+                              {{ t('recovery.card.durationHours', { hours: task.durationHours }) }}
+                            </span>
+                          }
+                          @if (task.applicationCount) {
+                            <span class="application-alert">
+                              {{
+                                t('recovery.card.applications', {
+                                  applications: task.applicationCount,
+                                })
+                              }}
+                            </span>
+                          }
                         </div>
                         @if (task.professionalRequired) {
                           <p class="professional-only">{{ t('recovery.card.professionalOnly') }}</p>
@@ -214,6 +328,23 @@
                         }
                       </article>
                     }
+                  </section>
+                }
+
+                @if (!project.tasks.length && !project.productsOrServices) {
+                  <section class="no-activity">
+                    <span>{{ t('recovery.card.tasks') }}</span>
+                    @if (project.pendingTaskCount) {
+                      <h4>{{ t('recovery.card.pendingTitle') }}</h4>
+                      <p>{{ t('recovery.card.pendingBody') }}</p>
+                    } @else {
+                      <h4>{{ t('recovery.card.noTasksTitle') }}</h4>
+                      <p>{{ t('recovery.card.noTasksBody') }}</p>
+                    }
+                    <!-- Registrar el perfil no equivale a postularse a este caso. -->
+                    <button type="button" class="offer-skill" (click)="openModal('helper')">
+                      {{ t('recovery.card.registerTrade') }} <span aria-hidden="true">→</span>
+                    </button>
                   </section>
                 }
               </div>
@@ -239,6 +370,14 @@
     [eyebrow]="t('recovery.safetyEyebrow')"
     (closed)="closeModal()"
     ><app-recovery-helper-form (closed)="closeModal()"
+  /></app-modal>
+}
+@if (modal() === 'helper-manage') {
+  <app-modal
+    [title]="t('recovery.helperManage.title')"
+    [eyebrow]="t('recovery.canHelp')"
+    (closed)="closeModal()"
+    ><app-recovery-helper-manage-panel
   /></app-modal>
 }
 @if (modal() === 'verify') {

@@ -79,6 +79,19 @@ export class ReliefPointDetail {
 
   readonly isVerified = computed(() => isVerifiedPlace(this.point()));
 
+  /** Enlaces HTTP(S) publicados dentro de la nota, sin puntuación editorial al final. */
+  readonly sourceUrls = computed(() => [
+    ...new Set(
+      (this.point().notes.match(/https?:\/\/[^\s]+/gu) ?? []).map((url) =>
+        url.replace(/[),.;!?]+$/u, ''),
+      ),
+    ),
+  ]);
+
+  sourceHost(url: string): string {
+    return url.replace(/^https?:\/\/(?:www\.)?/u, '').split('/')[0];
+  }
+
   /** Lo que hace falta aquí, una necesidad por línea. */
   needsOf(alert: AidAlert): string[] {
     return alertNeeds(alert);

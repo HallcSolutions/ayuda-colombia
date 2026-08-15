@@ -11,6 +11,18 @@ export enum UrgencyLevel {
   LOW = 'low',
 }
 
+export enum HelpContactRole {
+  AFFECTED_PERSON = 'affected_person',
+  FAMILY_MEMBER = 'family_member',
+  LOCAL_SUPPORT = 'local_support',
+}
+
+export enum HelpContactChannel {
+  PHONE = 'phone',
+  WHATSAPP = 'whatsapp',
+  BOTH = 'both',
+}
+
 export enum ReliefPointType {
   COLLECTION_CENTER = 'collection_center',
   COMMUNITY_KITCHEN = 'community_kitchen',
@@ -105,6 +117,21 @@ export enum DigestFindingKind {
 export enum DigestRunStatus {
   OK = 'ok',
   FAILED = 'failed',
+}
+
+export enum PublicNewsCategory {
+  EARTHQUAKE = 'earthquake',
+  FLOOD = 'flood',
+  LANDSLIDE = 'landslide',
+  WILDFIRE = 'wildfire',
+  STORM = 'storm',
+  DROUGHT = 'drought',
+  OTHER = 'other',
+}
+
+export enum PublicNewsStatus {
+  PUBLISHED = 'published',
+  ARCHIVED = 'archived',
 }
 
 export enum RecoveryProjectKind {
@@ -211,11 +238,14 @@ export const RELIEF_POINT_STATUSES = Object.values(ReliefPointStatus);
 export const MEAL_TYPES = Object.values(MealType);
 export const SUPPLY_CATEGORIES = Object.values(SupplyCategory);
 export const URGENCY_LEVELS = Object.values(UrgencyLevel);
+export const HELP_CONTACT_ROLES = Object.values(HelpContactRole);
+export const HELP_CONTACT_CHANNELS = Object.values(HelpContactChannel);
 export const MISSING_SUBJECT_KINDS = Object.values(MissingSubjectKind);
 export const MISSING_STATUSES = Object.values(MissingStatus);
 export const CONVOY_STATUSES = Object.values(ConvoyStatus);
 export const LODGING_KINDS = Object.values(LodgingKind);
 export const LODGING_STATUSES = Object.values(LodgingStatus);
+export const PUBLIC_NEWS_CATEGORIES = Object.values(PublicNewsCategory);
 export const RECOVERY_PROJECT_KINDS = Object.values(RecoveryProjectKind);
 export const RECOVERY_TASK_CATEGORIES = Object.values(RecoveryTaskCategory);
 export const HELPER_CREDENTIAL_TYPES = Object.values(HelperCredentialType);

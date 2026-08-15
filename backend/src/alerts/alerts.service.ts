@@ -5,7 +5,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AlertStatus } from '../common/constants/app.constants';
+import {
+  AlertStatus,
+  ReliefPointStatus,
+} from '../common/constants/app.constants';
 import { applyRegionFilters } from '../common/database/region-filters';
 import { AidAlert } from '../common/interfaces/aid-alert.interface';
 import { ReliefPointsService } from '../relief-points/relief-points.service';
@@ -29,8 +32,14 @@ export class AlertsService {
       .createQueryBuilder('alert')
       .leftJoinAndSelect('alert.reliefPoint', 'reliefPoint')
       .orderBy('alert.createdAt', 'DESC');
-    if (filters.status)
+    if (filters.status) {
       query.andWhere('alert.status = :status', { status: filters.status });
+      if (filters.status === AlertStatus.ACTIVE) {
+        query.andWhere('reliefPoint.status != :closedStatus', {
+          closedStatus: ReliefPointStatus.CLOSED,
+        });
+      }
+    }
     if (filters.category)
       query.andWhere('alert.category = :category', {
         category: filters.category,

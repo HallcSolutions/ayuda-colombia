@@ -1,0 +1,201 @@
+<section class="news-page feature-page" aria-labelledby="public-news-title">
+  <header class="section-heading feature-hero">
+    <app-colombia-watermark class="feature-hero-map" />
+
+    <div class="feature-hero__intro">
+      <span class="eyebrow">{{ t('publicNews.eyebrow') }}</span>
+      <h1 id="public-news-title">{{ t('publicNews.title') }}</h1>
+      <p>{{ t('publicNews.lead') }}</p>
+    </div>
+
+    <aside class="feature-action-card">
+      <img
+        src="/assets/reports/report-damage-illustration.jpg"
+        [alt]="t('publicNews.actionImageAlt')"
+        decoding="async"
+        fetchpriority="high"
+      />
+      <div class="feature-action-card__body">
+        <span>{{ t('publicNews.actionEyebrow') }}</span>
+        <p>{{ t('publicNews.trustNote') }}</p>
+        <button type="button" class="feature-hero__action" (click)="toggleEditor()">
+          {{ t('publicNews.publish') }}
+        </button>
+      </div>
+    </aside>
+
+    <dl class="feature-hero__metrics">
+      <div>
+        <dt>{{ t('publicNews.stats.active') }}</dt>
+        <dd>{{ verifiedCount() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('publicNews.stats.departments') }}</dt>
+        <dd>{{ departmentCount() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('publicNews.stats.municipalities') }}</dt>
+        <dd>{{ municipalityCount() }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('publicNews.stats.sources') }}</dt>
+        <dd>{{ sourceCount() }}</dd>
+      </div>
+    </dl>
+  </header>
+
+  @if (showEditor()) {
+    <app-modal
+      [eyebrow]="t('publicNews.eyebrow')"
+      [title]="t('publicNews.form.heading')"
+      (closed)="toggleEditor()"
+    >
+      <app-public-news-form (created)="published()" />
+    </app-modal>
+  }
+
+  <section class="news-directory feature-content" [attr.aria-label]="t('publicNews.directory')">
+    <header class="directory-heading">
+      <div>
+        <span class="eyebrow">{{ t('publicNews.directoryEyebrow') }}</span>
+        <h2>{{ t('publicNews.directory') }}</h2>
+        <p>{{ t('publicNews.directoryLead') }}</p>
+      </div>
+      <span class="result-count" [attr.aria-label]="t('publicNews.verifiedCount')">
+        {{ visibleItems().length }}
+      </span>
+    </header>
+
+    <div class="filters toolbar">
+      <label class="search search-filter">
+        <span class="visually-hidden">{{ t('publicNews.search') }}</span>
+        <input
+          type="search"
+          [value]="search()"
+          [placeholder]="t('publicNews.searchPlaceholder')"
+          (input)="updateSearch($event)"
+        />
+      </label>
+      <label>
+        <span class="visually-hidden">{{ t('publicNews.department') }}</span>
+        <select [value]="region.department()" (change)="updateDepartment($event)">
+          <option value="">{{ t('map.wholeCountryZone') }}</option>
+          @for (department of departments; track department) {
+            <option [value]="department">{{ department }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        <span class="visually-hidden">{{ t('publicNews.municipality') }}</span>
+        <select
+          [value]="region.municipality()"
+          [disabled]="!region.department()"
+          (change)="updateMunicipality($event)"
+        >
+          <option value="">{{ t('publicNews.allMunicipalities') }}</option>
+          @for (municipality of municipalities(); track municipality) {
+            <option [value]="municipality">{{ municipality }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        <span class="visually-hidden">{{ t('publicNews.category') }}</span>
+        <select [value]="category()" (change)="updateCategory($event)">
+          <option value="">{{ t('publicNews.allCategories') }}</option>
+          @for (itemCategory of categories; track itemCategory) {
+            <option [value]="itemCategory">{{ t(categoryKey(itemCategory)) }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    @if (newsService.error()) {
+      <p class="state-message error" role="alert">{{ newsService.error() }}</p>
+    }
+
+    @if (newsService.loading()) {
+      <p class="state-message">{{ t('common.loading') }}</p>
+    } @else if (!visibleItems().length) {
+      <div class="empty-state">
+        <h3>{{ t('publicNews.emptyTitle') }}</h3>
+        <p>{{ t('publicNews.emptyBody') }}</p>
+      </div>
+    } @else {
+      <ol class="news-list">
+        @for (item of visibleItems(); track item.id) {
+          <li [class.expired]="isExpired(item)">
+            <article>
+              <div class="news-meta">
+                <span class="category">{{ t(categoryKey(item.category)) }}</span>
+                <span>{{ scopeOf(item) }}</span>
+                @if (item.featured) {
+                  <span class="featured">{{ t('publicNews.featured') }}</span>
+                }
+                @if (isExpired(item)) {
+                  <span class="expired-label">{{ t('publicNews.expired') }}</span>
+                }
+              </div>
+
+              <h3>{{ item.title }}</h3>
+              <p class="summary">{{ item.summary }}</p>
+
+              <details>
+                <summary>{{ t('publicNews.whatToDo') }}</summary>
+                <div class="guidance">
+                  <section>
+                    <h4>{{ t('publicNews.steps') }}</h4>
+                    <ol>
+                      @for (step of item.steps; track $index) {
+                        <li>{{ step }}</li>
+                      }
+                    </ol>
+                  </section>
+                  @if (item.requirements.length) {
+                    <section>
+                      <h4>{{ t('publicNews.requirements') }}</h4>
+                      <ul>
+                        @for (requirement of item.requirements; track $index) {
+                          <li>{{ requirement }}</li>
+                        }
+                      </ul>
+                    </section>
+                  }
+                </div>
+              </details>
+
+              @if (item.contactInfo) {
+                <p class="contact">
+                  <strong>{{ t('publicNews.contact') }}</strong> {{ item.contactInfo }}
+                </p>
+              }
+
+              <footer>
+                <div class="dates">
+                  <span>
+                    {{ t('publicNews.verifiedOn') }}
+                    {{ item.verifiedAt | date: 'd MMM y' : colombiaTime : i18n.locale() }}
+                  </span>
+                  @if (item.validUntil) {
+                    <span>
+                      {{
+                        t('publicNews.validUntil', {
+                          date:
+                            (item.validUntil | date: 'd MMM y' : colombiaTime : i18n.locale()) ??
+                            '',
+                        })
+                      }}
+                    </span>
+                  }
+                </div>
+                <a [href]="item.sourceUrl" target="_blank" rel="noopener noreferrer">
+                  {{ t('publicNews.officialSource', { source: item.sourceName }) }}
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </footer>
+            </article>
+          </li>
+        }
+      </ol>
+    }
+  </section>
+</section>

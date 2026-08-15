@@ -111,6 +111,10 @@
 
 .ghost,
 .directory-link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
   border: 1px solid transparent;
   border-radius: 999px;
   padding: 8px 14px;

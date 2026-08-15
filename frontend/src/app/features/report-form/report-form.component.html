@@ -35,11 +35,7 @@
   </header>
 
   <div class="feature-content report-form-content">
-    <aside
-      class="report-privacy"
-      id="privacidad-del-reporte"
-      aria-labelledby="report-privacy-title"
-    >
+    <aside class="report-privacy" aria-labelledby="report-privacy-title">
       <span class="report-privacy__mark" aria-hidden="true">✓</span>
       <div class="report-privacy__content">
         <span class="report-privacy__eyebrow">{{ t('reportForm.privacyEyebrow') }}</span>
@@ -50,22 +46,16 @@
           <li><span>02</span>{{ t('reportForm.privacyContact') }}</li>
           <li><span>03</span>{{ t('reportForm.privacyPublic') }}</li>
         </ul>
-        <div class="report-privacy__footer">
-          <small>{{ t('reportForm.privacyWarning') }}</small>
-          <a href="https://wa.me/573207147271" target="_blank" rel="noopener noreferrer">
-            {{ t('reportForm.privacyContactAction') }} <span aria-hidden="true">↗</span>
-          </a>
-        </div>
       </div>
     </aside>
 
     <form
-      class="report-form"
-      id="datos-del-reporte"
+      class="report-form report-form--quick"
+      id="registro-rapido"
       [formGroup]="reportForm"
       (ngSubmit)="submitReport()"
     >
-      <div class="form-card form-card--person">
+      <section class="form-card form-card--person">
         <div class="card-heading">
           <span>1</span>
           <div>
@@ -73,184 +63,199 @@
             <p>{{ t('reportForm.step1Subtitle') }}</p>
           </div>
         </div>
+
         <div class="form-grid">
-          <label
-            ><span>{{ t('reportForm.reporterName') }}</span
-            ><input
-              formControlName="reporterName"
-              [placeholder]="t('reportForm.reporterNamePlaceholder')"
-          /></label>
-          <label
-            ><span>{{ t('reportForm.documentId') }}</span
-            ><input
-              formControlName="documentId"
-              inputmode="text"
-              [placeholder]="t('reportForm.documentIdPlaceholder')"
-            /><small>{{ t('reportForm.documentIdHint') }}</small></label
-          >
-          <label
-            ><span>{{ t('reportForm.contactPhone') }}</span
-            ><input
-              formControlName="contactPhone"
-              appPhoneField
-              [placeholder]="t('reportForm.contactPhonePlaceholder')"
-          /></label>
-          <label
-            ><span>{{ t('reportForm.department') }}</span
-            ><select formControlName="department">
+          <label>
+            <span>{{ t('reportForm.department') }}</span>
+            <select
+              formControlName="department"
+              required
+              aria-required="true"
+              [attr.aria-invalid]="
+                reportForm.controls.department.touched && reportForm.controls.department.invalid
+                  ? 'true'
+                  : null
+              "
+              [attr.aria-describedby]="
+                reportForm.controls.department.touched && reportForm.controls.department.invalid
+                  ? 'report-department-error'
+                  : null
+              "
+            >
               <option value="" disabled>{{ t('reportForm.departmentPlaceholder') }}</option>
               @for (department of departments; track department) {
                 <option [value]="department">{{ department }}</option>
               }
-            </select></label
-          >
-          <label class="municipality-field"
-            ><span>{{ t('reportForm.municipality') }}</span>
-            <div class="address-combobox">
-              <input
-                formControlName="municipality"
-                autocomplete="address-level2"
-                role="combobox"
-                aria-autocomplete="list"
-                aria-controls="report-municipality-suggestions"
-                [attr.aria-expanded]="municipalitySuggestionsOpen()"
-                [placeholder]="t('reportForm.municipalityPlaceholder')"
-                (focus)="showMunicipalitySuggestions()"
-                (blur)="hideMunicipalitySuggestions()"
-              />
-              @if (municipalitySearching()) {
-                <span class="address-search-spinner" aria-hidden="true"></span>
-              }
-              @if (municipalitySuggestionsOpen()) {
-                <div
-                  class="address-suggestions municipality-suggestions"
-                  id="report-municipality-suggestions"
-                  role="listbox"
-                >
-                  @for (municipality of municipalitySuggestions(); track municipality) {
-                    <button
-                      type="button"
-                      role="option"
-                      (mousedown)="$event.preventDefault()"
-                      (click)="selectMunicipality(municipality)"
-                    >
-                      <span aria-hidden="true">⌖</span>
-                      <span
-                        ><strong>{{ municipality }}</strong></span
-                      >
-                    </button>
-                  }
-                </div>
-              }
-            </div>
-            <small class="field-hint">{{ t('reportForm.municipalitySearchHint') }}</small></label
-          >
-          <label class="address-field"
-            ><span>{{ t('reportForm.address') }}</span>
-            <div class="address-combobox">
-              <input
-                formControlName="addressReference"
-                autocomplete="off"
-                role="combobox"
-                aria-autocomplete="list"
-                aria-controls="report-address-suggestions"
-                [attr.aria-expanded]="addressSuggestionsOpen()"
-                [placeholder]="t('reportForm.addressPlaceholder')"
-                (focus)="showAddressSuggestions()"
-                (blur)="hideAddressSuggestions()"
-              />
-              @if (addressSearching()) {
-                <span class="address-search-spinner" aria-hidden="true"></span>
-              }
-              @if (addressSuggestionsOpen()) {
-                <div class="address-suggestions" id="report-address-suggestions" role="listbox">
-                  @for (suggestion of addressSuggestions(); track suggestion.id) {
-                    <button
-                      type="button"
-                      role="option"
-                      (mousedown)="$event.preventDefault()"
-                      (click)="selectAddress(suggestion)"
-                    >
-                      <span aria-hidden="true">⌖</span>
-                      <span>
-                        <strong>{{ suggestion.label }}</strong>
-                        @if (suggestion.municipality || suggestion.department) {
-                          <small>
-                            {{ suggestion.municipality }}
-                            @if (suggestion.municipality && suggestion.department) {
-                              ·
-                            }
-                            {{ suggestion.department }}
-                          </small>
-                        }
-                      </span>
-                    </button>
-                  }
-                  @if (addressSearchUnavailable()) {
-                    <p class="address-search-message">
-                      {{ t('reportForm.addressSearchUnavailable') }}
-                    </p>
-                  }
-                </div>
-              }
-            </div>
-            <small class="field-hint">{{ t('reportForm.addressSearchHint') }}</small></label
-          >
-          <label
-            ><span>{{ t('reportForm.householdSize') }}</span
-            ><input formControlName="householdSize" type="number" min="1" max="50"
-          /></label>
-          <label
-            ><span>{{ t('reportForm.urgency') }}</span
-            ><select formControlName="urgency">
+            </select>
+            @if (reportForm.controls.department.touched && reportForm.controls.department.invalid) {
+              <small id="report-department-error" class="field-error" role="alert">
+                {{ t('reportForm.requiredField') }}
+              </small>
+            }
+          </label>
+          <label>
+            <span>{{ t('reportForm.municipality') }}</span>
+            <input
+              formControlName="municipality"
+              autocomplete="address-level2"
+              required
+              aria-required="true"
+              [attr.aria-invalid]="
+                reportForm.controls.municipality.touched && reportForm.controls.municipality.invalid
+                  ? 'true'
+                  : null
+              "
+              [attr.aria-describedby]="
+                reportForm.controls.municipality.touched && reportForm.controls.municipality.invalid
+                  ? 'report-municipality-error'
+                  : null
+              "
+              [placeholder]="t('reportForm.municipalityPlaceholder')"
+            />
+            @if (
+              reportForm.controls.municipality.touched && reportForm.controls.municipality.invalid
+            ) {
+              <small id="report-municipality-error" class="field-error" role="alert">
+                {{ t('reportForm.invalidText') }}
+              </small>
+            }
+          </label>
+          <label class="wide">
+            <span>{{ t('reportForm.address') }}</span>
+            <input
+              formControlName="addressReference"
+              autocomplete="off"
+              required
+              aria-required="true"
+              [attr.aria-invalid]="
+                reportForm.controls.addressReference.touched &&
+                reportForm.controls.addressReference.invalid
+                  ? 'true'
+                  : null
+              "
+              [attr.aria-describedby]="
+                reportForm.controls.addressReference.touched &&
+                reportForm.controls.addressReference.invalid
+                  ? 'report-address-hint report-address-error'
+                  : 'report-address-hint'
+              "
+              [placeholder]="t('reportForm.addressPlaceholder')"
+            />
+            <small id="report-address-hint">{{ t('reportForm.addressMinimalHint') }}</small>
+            @if (
+              reportForm.controls.addressReference.touched &&
+              reportForm.controls.addressReference.invalid
+            ) {
+              <small id="report-address-error" class="field-error" role="alert">
+                {{ t('reportForm.invalidAddress') }}
+              </small>
+            }
+          </label>
+          <label>
+            <span>{{ t('reportForm.householdSize') }}</span>
+            <input
+              formControlName="householdSize"
+              type="number"
+              min="1"
+              max="50"
+              required
+              aria-required="true"
+              [attr.aria-invalid]="
+                reportForm.controls.householdSize.touched &&
+                reportForm.controls.householdSize.invalid
+                  ? 'true'
+                  : null
+              "
+              [attr.aria-describedby]="
+                reportForm.controls.householdSize.touched &&
+                reportForm.controls.householdSize.invalid
+                  ? 'report-household-error'
+                  : null
+              "
+            />
+            @if (
+              reportForm.controls.householdSize.touched && reportForm.controls.householdSize.invalid
+            ) {
+              <small id="report-household-error" class="field-error" role="alert">
+                {{ t('reportForm.invalidHousehold') }}
+              </small>
+            }
+          </label>
+          <label>
+            <span>{{ t('reportForm.urgency') }}</span>
+            <select formControlName="urgency" required aria-required="true">
               <option value="critical">{{ t('reportForm.urgencyCritical') }}</option>
               <option value="high">{{ t('reportForm.urgencyHigh') }}</option>
               <option value="medium">{{ t('urgency.medium') }}</option>
               <option value="low">{{ t('urgency.low') }}</option>
-            </select></label
-          >
+            </select>
+          </label>
         </div>
-      </div>
+      </section>
 
-      <div class="form-card form-card--photos">
+      <section class="form-card form-card--damage full-width">
         <div class="card-heading">
           <span>2</span>
           <div>
-            <h3>{{ t('reportForm.step2Title') }}</h3>
+            <h3 id="report-needs-title">{{ t('reportForm.step2Title') }}</h3>
             <p>{{ t('reportForm.step2Subtitle') }}</p>
           </div>
         </div>
-        <label class="upload-zone">
-          <input
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            multiple
-            (change)="onPhotosSelected($event)"
-          />
-          <span class="upload-icon">＋</span><strong>{{ t('reportForm.selectPhotos') }}</strong
-          ><small>{{ t('reportForm.photoHint') }}</small>
-        </label>
-        @if (selectedPhotos().length) {
-          <div class="photo-preview-list">
-            @for (photo of selectedPhotos(); track photo.previewUrl; let index = $index) {
-              <figure>
-                <img
-                  [src]="photo.previewUrl"
-                  [alt]="t('reportForm.photoPreview', { index: index + 1 })"
-                /><button
-                  type="button"
-                  (click)="removePhoto(index)"
-                  [attr.aria-label]="t('reportForm.removePhoto', { index: index + 1 })"
-                >
-                  ×
-                </button>
-              </figure>
-            }
-          </div>
+        <div
+          class="needs-grid"
+          role="group"
+          aria-labelledby="report-needs-title"
+          [attr.aria-describedby]="
+            submitAttempted() && !selectedNeeds().length ? 'report-needs-error' : null
+          "
+        >
+          @for (need of needOptions; track need.value) {
+            <button
+              type="button"
+              [class.selected]="selectedNeeds().includes(need.value)"
+              [attr.aria-pressed]="selectedNeeds().includes(need.value)"
+              (click)="toggleNeed(need.value)"
+            >
+              <span>{{ selectedNeeds().includes(need.value) ? '✓' : '+' }}</span
+              >{{ t(need.key) }}
+            </button>
+          }
+        </div>
+        @if (submitAttempted() && !selectedNeeds().length) {
+          <small id="report-needs-error" class="field-error needs-error" role="alert">
+            {{ t('reportForm.needsRequired') }}
+          </small>
         }
-      </div>
+        <label class="notice-field">
+          <span>{{ t('reportForm.notice') }} ({{ t('common.optional') }})</span>
+          <textarea
+            formControlName="notice"
+            rows="3"
+            maxlength="800"
+            [attr.aria-invalid]="
+              reportForm.controls.notice.touched && reportForm.controls.notice.invalid
+                ? 'true'
+                : null
+            "
+            [attr.aria-describedby]="
+              reportForm.controls.notice.touched && reportForm.controls.notice.invalid
+                ? 'report-notice-counter report-notice-error'
+                : 'report-notice-counter'
+            "
+            [placeholder]="t('reportForm.noticePlaceholder')"
+          ></textarea>
+          <small id="report-notice-counter"
+            >{{ reportForm.controls.notice.value.length }}/800</small
+          >
+          @if (reportForm.controls.notice.touched && reportForm.controls.notice.invalid) {
+            <small id="report-notice-error" class="field-error" role="alert">
+              {{ t('reportForm.noticeTooLong') }}
+            </small>
+          }
+        </label>
+      </section>
 
-      <div class="form-card form-card--location">
+      <section class="form-card form-card--contact full-width">
         <div class="card-heading">
           <span>3</span>
           <div>
@@ -258,101 +263,189 @@
             <p>{{ t('reportForm.step3Subtitle') }}</p>
           </div>
         </div>
-        <div class="location-box" [class.active]="reportForm.value.latitude !== null">
-          <div class="location-symbol">⌖</div>
-          <div>
-            <strong>{{
-              reportForm.value.latitude !== null
-                ? t('reportForm.locationReady')
-                : t('reportForm.locationPrompt')
-            }}</strong>
-            <p>{{ locationMessage() }}</p>
-          </div>
-          <button
-            type="button"
-            class="secondary-button"
-            [disabled]="resolvingCurrentAddress()"
-            (click)="captureCurrentLocation()"
-          >
-            {{
-              resolvingCurrentAddress()
-                ? t('reportForm.resolvingCurrentAddress')
-                : t('reliefPointForm.useCurrentLocation')
-            }}
-          </button>
+        <div class="form-grid">
+          <label>
+            <span>{{ t('reportForm.reporterName') }}</span>
+            <input
+              formControlName="reporterName"
+              required
+              aria-required="true"
+              [attr.aria-invalid]="
+                reportForm.controls.reporterName.touched && reportForm.controls.reporterName.invalid
+                  ? 'true'
+                  : null
+              "
+              [attr.aria-describedby]="
+                reportForm.controls.reporterName.touched && reportForm.controls.reporterName.invalid
+                  ? 'report-name-error'
+                  : null
+              "
+              [placeholder]="t('reportForm.reporterNamePlaceholder')"
+            />
+            @if (
+              reportForm.controls.reporterName.touched && reportForm.controls.reporterName.invalid
+            ) {
+              <small id="report-name-error" class="field-error" role="alert">
+                {{ t('reportForm.invalidText') }}
+              </small>
+            }
+          </label>
+          <label>
+            <span>{{ t('reportForm.contactPhone') }}</span>
+            <input
+              formControlName="contactPhone"
+              appPhoneField
+              required
+              aria-required="true"
+              inputmode="tel"
+              autocomplete="tel"
+              [attr.aria-invalid]="
+                reportForm.controls.contactPhone.touched && reportForm.controls.contactPhone.invalid
+                  ? 'true'
+                  : null
+              "
+              [attr.aria-describedby]="
+                reportForm.controls.contactPhone.touched && reportForm.controls.contactPhone.invalid
+                  ? 'report-phone-error'
+                  : null
+              "
+              [placeholder]="t('reportForm.contactPhonePlaceholder')"
+            />
+            @if (
+              reportForm.controls.contactPhone.touched && reportForm.controls.contactPhone.invalid
+            ) {
+              <small id="report-phone-error" class="field-error" role="alert">
+                {{ t('reportForm.invalidPhone') }}
+              </small>
+            }
+          </label>
+          <label>
+            <span>{{ t('reportForm.contactRole') }}</span>
+            <select formControlName="contactRole" required aria-required="true">
+              @for (role of contactRoles; track role) {
+                <option [value]="role">{{ t(contactRoleKey(role)) }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>{{ t('reportForm.contactChannel') }}</span>
+            <select formControlName="contactChannel" required aria-required="true">
+              @for (channel of contactChannels; track channel) {
+                <option [value]="channel">{{ t(contactChannelKey(channel)) }}</option>
+              }
+            </select>
+          </label>
         </div>
-        @if (locationMap(); as map) {
-          <div class="report-location-map">
-            <iframe
-              [src]="map"
-              [title]="t('reportForm.locationMapTitle')"
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-            ></iframe>
-            <span>{{ t('reportForm.locationMapReady') }}</span>
-          </div>
-        } @else {
-          <div class="report-location-map empty">
-            <span class="map-placeholder-pin" aria-hidden="true">⌖</span>
-            <p>{{ t('reportForm.locationMapPending') }}</p>
-          </div>
-        }
-        <button
-          type="button"
-          class="tracking-toggle"
-          [class.active]="trackingLocation()"
-          (click)="toggleLocationTracking()"
-        >
-          <span></span
-          >{{ trackingLocation() ? t('reportForm.stopTracking') : t('reportForm.startTracking') }}
-        </button>
-      </div>
+        <label class="consent direct-contact-consent">
+          <input type="checkbox" formControlName="consentToDirectContact" />
+          <span>{{ t('reportForm.directContactConsent') }}</span>
+        </label>
+      </section>
 
-      <div class="form-card form-card--damage full-width">
-        <div class="card-heading">
+      <details class="form-card form-card--optional full-width">
+        <summary>
           <span>4</span>
-          <div>
-            <h3>{{ t('reportForm.step4Title') }}</h3>
-            <p>{{ t('reportForm.step4Subtitle') }}</p>
-          </div>
+          <span>
+            <strong>{{ t('reportForm.step4Title') }}</strong>
+            <small>{{ t('reportForm.step4Subtitle') }}</small>
+          </span>
+        </summary>
+
+        <div class="optional-evidence">
+          <section>
+            <h4>{{ t('reportForm.optionalPhotosTitle') }}</h4>
+            <p>{{ t('reportForm.optionalPhotosBody') }}</p>
+            <label class="upload-zone">
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                multiple
+                (change)="onPhotosSelected($event)"
+              />
+              <span class="upload-icon" aria-hidden="true">＋</span>
+              <strong>{{ t('reportForm.selectPhotos') }}</strong>
+              <small>{{ t('reportForm.photoHint') }}</small>
+            </label>
+            @if (selectedPhotos().length) {
+              <div class="photo-preview-list">
+                @for (photo of selectedPhotos(); track photo.previewUrl; let index = $index) {
+                  <figure>
+                    <img
+                      [src]="photo.previewUrl"
+                      [alt]="t('reportForm.photoPreview', { index: index + 1 })"
+                    />
+                    <button
+                      type="button"
+                      (click)="removePhoto(index)"
+                      [attr.aria-label]="t('reportForm.removePhoto', { index: index + 1 })"
+                    >
+                      ×
+                    </button>
+                  </figure>
+                }
+              </div>
+            }
+          </section>
+
+          <section>
+            <h4>{{ t('reportForm.optionalLocationTitle') }}</h4>
+            <p>{{ t('reportForm.optionalLocationBody') }}</p>
+            <div class="location-box" [class.active]="hasLocation()">
+              <span class="location-symbol" aria-hidden="true">⌖</span>
+              <div>
+                <strong>{{
+                  hasLocation() ? t('reportForm.locationReady') : t('reportForm.locationPrompt')
+                }}</strong>
+                <p aria-live="polite">{{ locationMessage() }}</p>
+              </div>
+              <button
+                type="button"
+                class="secondary-button"
+                [disabled]="capturingLocation()"
+                (click)="captureCurrentLocation()"
+              >
+                {{
+                  capturingLocation()
+                    ? t('reportForm.locationLoading')
+                    : t('reliefPointForm.useCurrentLocation')
+                }}
+              </button>
+              @if (hasLocation()) {
+                <button type="button" class="text-button" (click)="clearLocation()">
+                  {{ t('reportForm.clearLocation') }}
+                </button>
+              }
+            </div>
+            <label class="consent" [class.disabled]="!hasLocation()">
+              <input type="checkbox" formControlName="consentToShareLocation" />
+              <span>{{ t('reportForm.locationConsent') }}</span>
+            </label>
+          </section>
         </div>
-        <div class="needs-grid">
-          @for (damage of damageOptions; track damage.value) {
-            <button
-              type="button"
-              [class.selected]="selectedDamage().includes(damage.value)"
-              (click)="toggleDamage(damage.value)"
-            >
-              <span>{{ selectedDamage().includes(damage.value) ? '✓' : '+' }}</span
-              >{{ t(damage.key) }}
-            </button>
-          }
-        </div>
-        <label class="notice-field"
-          ><span>{{ t('reportForm.notice') }}</span
-          ><textarea
-            formControlName="notice"
-            rows="5"
-            [placeholder]="t('reportForm.noticePlaceholder')"
-          ></textarea
-          ><small>{{ reportForm.value.notice?.length || 0 }}/800</small></label
-        >
-        <label class="consent"
-          ><input type="checkbox" formControlName="consentToShareLocation" /><span>{{
-            t('reportForm.consent')
-          }}</span></label
-        >
+      </details>
+
+      <div class="form-submit-row full-width">
         @if (errorMessage()) {
           <div class="form-message error" role="alert">{{ errorMessage() }}</div>
         }
         @if (successMessage()) {
           <div class="form-message success" role="status">{{ successMessage() }}</div>
         }
-        @if (reportForm.invalid) {
-          <p class="required-hint">{{ t('common.requiredMissing') }}</p>
+        @if (reportForm.invalid || !selectedNeeds().length) {
+          <p id="report-required-hint" class="required-hint">
+            {{ t('common.requiredMissing') }}
+          </p>
         }
-        <button class="submit-button" type="submit" [disabled]="submitting() || reportForm.invalid">
-          {{ submitting() ? t('reportForm.submitting') : t('reportForm.submit') }} <span>→</span>
+        <button
+          class="submit-button"
+          type="submit"
+          [disabled]="submitting()"
+          [attr.aria-describedby]="
+            reportForm.invalid || !selectedNeeds().length ? 'report-required-hint' : null
+          "
+        >
+          {{ submitting() ? t('reportForm.submitting') : t('reportForm.submit') }}
+          <span aria-hidden="true">→</span>
         </button>
       </div>
     </form>

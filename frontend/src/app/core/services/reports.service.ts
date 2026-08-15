@@ -1,7 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { ReportStatus } from '../constants/app.constants';
 import { I18nService } from '../i18n/i18n.service';
 import { ApiResponse } from '../interfaces/api-response.interface';
 import { HouseReport } from '../models/house-report.model';
@@ -29,7 +28,6 @@ export class ReportsService {
   constructor(realtime: RealtimeService) {
     realtime.listen<HouseReport>('/reports', {
       'report.created': (report) => this.upsert(report),
-      'report.updated': (report) => this.upsert(report),
     });
   }
 
@@ -51,12 +49,6 @@ export class ReportsService {
   createReport(payload: FormData): Observable<HouseReport> {
     return this.http
       .post<ApiResponse<HouseReport>>(ENDPOINT, payload)
-      .pipe(map((response) => response.data));
-  }
-
-  updateStatus(id: string, status: ReportStatus): Observable<HouseReport> {
-    return this.http
-      .patch<ApiResponse<HouseReport>>(`${ENDPOINT}/${id}`, { status })
       .pipe(map((response) => response.data));
   }
 

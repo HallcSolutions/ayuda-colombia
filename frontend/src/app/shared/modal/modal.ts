@@ -35,6 +35,7 @@ export class Modal implements OnDestroy {
   private readonly trigger =
     this.document.activeElement instanceof HTMLElement ? this.document.activeElement : null;
   private readonly previousOverflow = this.document.body.style.overflow;
+  /** El de la aplicación, no el del componente: al devolver el foco esta ventana ya no existe. */
   private readonly injector = inject(EnvironmentInjector);
 
   constructor() {
@@ -45,6 +46,7 @@ export class Modal implements OnDestroy {
   ngOnDestroy(): void {
     this.document.body.style.overflow = this.previousOverflow;
     const trigger = this.trigger;
+    // El foco vuelve cuando la ventana ya se ha quitado de la pantalla, no antes.
     afterNextRender(() => trigger?.focus(), { injector: this.injector });
   }
 }

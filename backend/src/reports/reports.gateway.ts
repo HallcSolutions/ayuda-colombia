@@ -10,8 +10,4 @@ export class ReportsGateway {
   reportCreated(report: HouseReport): void {
     this.server.emit('report.created', report);
   }
-
-  reportUpdated(report: HouseReport): void {
-    this.server.emit('report.updated', report);
-  }
 }

@@ -1,21 +1,13 @@
 @if (helperPin()) {
-  <section class="helper-result" role="status">
-    <span>{{ t('recovery.helper.pending') }}</span>
-    <h4>{{ t('recovery.helper.keepAccess') }}</h4>
-    <dl>
-      <div>
-        <dt>{{ t('recovery.helper.helperCode') }}</dt>
-        <dd>{{ helperId() }}</dd>
-      </div>
-      <div>
-        <dt>{{ t('common.pin') }}</dt>
-        <dd class="pin">{{ helperPin() }}</dd>
-      </div>
-    </dl>
-    <p>{{ t('recovery.helper.pendingBody') }}</p>
-    <button type="button" (click)="copyAccess()">{{ t('recovery.form.copyAccess') }}</button>
-    <button type="button" class="secondary" (click)="closed.emit()">{{ t('common.close') }}</button>
-  </section>
+  <app-access-result
+    status="recovery.helper.pending"
+    title="recovery.helper.keepAccess"
+    codeLabel="recovery.helper.helperCode"
+    [code]="helperId()"
+    [pin]="helperPin()"
+    note="recovery.helper.pendingBody"
+    (closed)="closed.emit()"
+  />
 } @else {
   <form class="inline-form helper-form" [formGroup]="form" (ngSubmit)="submit()">
     <aside class="verification-explainer">
@@ -28,71 +20,85 @@
       </ol>
     </aside>
 
-    <div class="field-grid">
-      <label
-        ><span>{{ t('recovery.helper.fullName') }}</span
-        ><input formControlName="fullName"
-      /></label>
-      <label
-        ><span>{{ t('recovery.helper.displayName') }}</span
-        ><input formControlName="displayName"
-      /></label>
-      <label
-        ><span>{{ t('recovery.helper.documentType') }}</span
-        ><select formControlName="documentType">
-          <option value="CC">CC</option>
-          <option value="CE">CE</option>
-          <option value="PPT">PPT</option>
-          <option value="PA">{{ t('recovery.helper.passport') }}</option>
-        </select></label
-      >
-      <label
-        ><span>{{ t('recovery.helper.documentNumber') }}</span
-        ><input formControlName="documentNumber" autocomplete="off"
-      /></label>
-      <label
-        ><span>{{ t('recovery.helper.phone') }}</span
-        ><input formControlName="contactPhone" appPhoneField
-      /></label>
-      <label>
-        <span>{{ t('recovery.helper.department') }}</span>
-        <select formControlName="department">
-          <option value="">{{ t('region.selectDepartment') }}</option>
-          @for (department of departments; track department) {
-            <option [value]="department">{{ department }}</option>
-          }
-        </select>
-      </label>
-      <label
-        ><span>{{ t('recovery.helper.municipality') }}</span
-        ><input formControlName="municipality"
-      /></label>
-      <label
-        ><span>{{ t('recovery.helper.years') }}</span
-        ><input type="number" min="0" max="80" formControlName="yearsExperience"
-      /></label>
-      <label class="wide"
-        ><span>{{ t('recovery.helper.bio') }}</span
-        ><textarea rows="3" formControlName="bio"></textarea>
-      </label>
-    </div>
-
-    <fieldset class="skill-grid">
-      <legend>{{ t('recovery.helper.skills') }}</legend>
-      @for (category of categories; track category) {
-        <button
-          type="button"
-          [class.selected]="selectedSkills().includes(category)"
-          (click)="toggleSkill(category)"
+    <section class="form-section">
+      <h4>{{ t('recovery.helper.identityTitle') }}</h4>
+      <p class="section-lead">{{ t('recovery.helper.identityLead') }}</p>
+      <div class="field-grid">
+        <label
+          ><span>{{ t('recovery.helper.fullName') }}</span
+          ><input formControlName="fullName"
+        /></label>
+        <label
+          ><span>{{ t('recovery.helper.displayName') }}</span
+          ><input formControlName="displayName"
+        /></label>
+        <label
+          ><span>{{ t('recovery.helper.documentType') }}</span
+          ><select formControlName="documentType">
+            <option value="CC">CC</option>
+            <option value="CE">CE</option>
+            <option value="PPT">PPT</option>
+            <option value="PA">{{ t('recovery.helper.passport') }}</option>
+          </select></label
         >
-          {{ t(categoryKey(category)) }}
-        </button>
-      }
-    </fieldset>
+        <label
+          ><span>{{ t('recovery.helper.documentNumber') }}</span
+          ><input formControlName="documentNumber" autocomplete="off"
+        /></label>
+        <label
+          ><span>{{ t('recovery.helper.phone') }}</span
+          ><input formControlName="contactPhone" appPhoneField
+        /></label>
+      </div>
+    </section>
 
-    <section class="form-section credential-fields">
+    <section class="form-section">
+      <h4>{{ t('recovery.helper.experienceTitle') }}</h4>
+      <div class="field-grid">
+        <label>
+          <span>{{ t('recovery.helper.department') }}</span>
+          <select formControlName="department">
+            <option value="">{{ t('region.selectDepartment') }}</option>
+            @for (department of departments; track department) {
+              <option [value]="department">{{ department }}</option>
+            }
+          </select>
+        </label>
+        <label
+          ><span>{{ t('recovery.helper.municipality') }}</span
+          ><input formControlName="municipality"
+        /></label>
+        <label class="narrow"
+          ><span>{{ t('recovery.helper.years') }}</span
+          ><input type="number" min="0" max="80" formControlName="yearsExperience"
+        /></label>
+        <label class="wide"
+          ><span>{{ t('recovery.helper.bio') }}</span
+          ><textarea rows="4" formControlName="bio"></textarea>
+        </label>
+      </div>
+
+      <fieldset class="skill-grid">
+        <legend>{{ t('recovery.helper.skills') }}</legend>
+        <p class="section-lead">{{ t('recovery.helper.skillsHint') }}</p>
+        <div class="skill-chips">
+          @for (category of categories; track category) {
+            <button
+              type="button"
+              [class.selected]="selectedSkills().includes(category)"
+              [attr.aria-pressed]="selectedSkills().includes(category)"
+              (click)="toggleSkill(category)"
+            >
+              {{ t(categoryKey(category)) }}
+            </button>
+          }
+        </div>
+      </fieldset>
+    </section>
+
+    <section class="form-section">
       <h4>{{ t('recovery.helper.credentialTitle') }}</h4>
-      <p>{{ t('recovery.helper.credentialLead') }}</p>
+      <p class="section-lead">{{ t('recovery.helper.credentialLead') }}</p>
       <div class="field-grid">
         <label>
           <span>{{ t('recovery.helper.credentialType') }}</span>
@@ -129,9 +135,6 @@
     @if (errorKey(); as key) {
       <p class="form-error" role="alert">{{ t(key) }}</p>
     }
-    @if (isIncomplete()) {
-      <p class="required-hint">{{ t('common.requiredMissing') }}</p>
-    }
     <div class="form-buttons">
       <button type="submit" [disabled]="submitting() || isIncomplete()">
         {{ submitting() ? t('common.saving') : t('recovery.helper.submit') }}
@@ -139,6 +142,9 @@
       <button type="button" class="secondary" (click)="closed.emit()">
         {{ t('common.cancel') }}
       </button>
+      @if (isIncomplete()) {
+        <p class="required-hint">{{ t('common.requiredMissing') }}</p>
+      }
     </div>
   </form>
 }

@@ -14,11 +14,12 @@ import { TranslationKey } from '../../../core/i18n/es.translations';
 import { NewRecoveryHelper } from '../../../core/models/recovery.model';
 import { RecoveryService } from '../../../core/services/recovery.service';
 import { PHONE_PATTERN } from '../../../core/utils/phone.util';
+import { AccessResult } from '../../../shared/access-result/access-result';
 import { PhoneFieldDirective } from '../../../shared/phone-field/phone-field.directive';
 
 @Component({
   selector: 'app-recovery-helper-form',
-  imports: [ReactiveFormsModule, PhoneFieldDirective],
+  imports: [ReactiveFormsModule, PhoneFieldDirective, AccessResult],
   templateUrl: './recovery-helper-form.html',
   styleUrl: './recovery-helper-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -92,16 +93,6 @@ export class RecoveryHelperForm {
       this.errorKey.set('recovery.helper.error');
     } finally {
       this.submitting.set(false);
-    }
-  }
-
-  async copyAccess(): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(
-        `${this.t('recovery.helper.helperCode')}: ${this.helperId()}\nPIN: ${this.helperPin()}`,
-      );
-    } catch {
-      // Los valores continúan visibles.
     }
   }
 

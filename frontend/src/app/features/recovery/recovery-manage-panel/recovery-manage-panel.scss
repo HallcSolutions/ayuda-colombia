@@ -56,31 +56,121 @@ button.secondary {
 }
 .application-list article {
   display: grid;
-  gap: 8px;
-  padding: 16px 0;
+  gap: 14px;
+  padding: 22px 0;
   border-bottom: 1px solid var(--line);
 }
+
+.application-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.application-heading > div {
+  display: grid;
+  gap: 4px;
+}
+
+.application-heading > div > span,
+.application-facts dt,
+.application-message strong,
+.application-contact span {
+  color: var(--green);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.application-list h5 {
+  font: 650 22px/1.15 var(--serif);
+}
+
 .application-list h5,
-.application-list p {
+.application-list p,
+.application-facts,
+.application-facts dd {
   margin: 0;
 }
+
 .application-list p {
   color: var(--muted);
   line-height: 1.45;
 }
-.application-list footer {
-  display: flex;
-  gap: 8px;
+
+.application-status {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: var(--sage-wash);
+  color: var(--green);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
-.meta {
+
+.application-status.status-declined,
+.application-status.status-withdrawn {
+  background: #f1efea;
+  color: var(--muted);
+}
+
+.application-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 24px;
+}
+
+.application-facts div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.application-facts dd {
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.application-message {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border-left: 3px solid #d8bd64;
+  background: rgba(216, 189, 100, 0.1);
+}
+
+.application-contact {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
+  gap: 8px 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.application-contact a {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  padding: 8px 13px;
+  border-radius: 8px;
+  background: var(--green);
+  color: white;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.application-list footer {
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  color: var(--green);
-  font-size: 10px;
-  font-weight: 850;
-  text-transform: uppercase;
 }
 .task-row {
   display: flex;
@@ -113,4 +203,25 @@ button.secondary {
   margin: 0;
   color: #8c5a13;
   font-size: 12px;
+}
+
+@media (max-width: 560px) {
+  .application-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .application-status {
+    width: fit-content;
+  }
+
+  .application-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .application-contact a,
+  .application-list footer button {
+    width: 100%;
+    justify-content: center;
+  }
 }

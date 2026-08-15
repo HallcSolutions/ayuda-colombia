@@ -42,9 +42,10 @@ describe('App', () => {
       'A dónde ir',
       'Camiones',
       'Desaparecidos',
+      'Noticias',
       'Recuperación',
-      'Reportar vivienda',
-      'Necesidades',
+      'Registrar familia',
+      'Ayuda directa',
     ]);
   });
 
@@ -57,9 +58,10 @@ describe('App', () => {
       'Where to go',
       'Trucks',
       'Missing',
+      'News',
       'Recovery',
-      'Report a home',
-      'Needs',
+      'Register a family',
+      'Direct aid',
     ]);
   });
 });

@@ -138,6 +138,11 @@
 .selected-actions button,
 .row-actions a,
 .row-actions button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   border: 1px solid var(--green);
   border-radius: 8px;
   text-align: center;
@@ -272,6 +277,9 @@
 
 /* El nombre abre la ficha completa: se ve como texto, se comporta como botón. */
 .point-name {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
   padding: 0;
   border: 0;
   color: inherit;

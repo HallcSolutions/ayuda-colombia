@@ -1,4 +1,5 @@
 import { ReportStatus, UrgencyLevel } from '../constants/app.constants';
+import { DirectHelpContact } from './direct-help-contact.model';
 
 export interface HouseReport {
   id: string;
@@ -15,7 +16,10 @@ export interface HouseReport {
     longitude: number;
     accuracy: number | null;
     capturedAt: string;
-  };
+  } | null;
+  directContact: DirectHelpContact | null;
+  fieldVerified: boolean;
+  verifiedAt: string | null;
   status: ReportStatus;
   consentToShareLocation: boolean;
   createdAt: string;

@@ -89,21 +89,33 @@ export class NeedsCheckService {
   ) {}
 
   async collect(window: DigestWindow): Promise<DigestContent> {
-    const [created, activeAlerts, allPoints, lastAlerts, lastMeals, served] =
-      await Promise.all([
-        this.points.find({
-          where: { createdAt: Between(window.from, window.to) },
-          order: { createdAt: 'ASC' },
-        }),
-        this.alerts.find({
-          where: { status: AlertStatus.ACTIVE },
-          order: { createdAt: 'ASC' },
-        }),
-        this.points.find(),
-        this.lastActivity(this.alerts.createQueryBuilder('row'), 'createdAt'),
-        this.lastActivity(this.meals.createQueryBuilder('row'), 'updatedAt'),
-        this.pointsWithUpcomingMeals(window.to),
-      ]);
+    const [
+      created,
+      storedActiveAlerts,
+      allPoints,
+      lastAlerts,
+      lastMeals,
+      served,
+    ] = await Promise.all([
+      this.points.find({
+        where: { createdAt: Between(window.from, window.to) },
+        order: { createdAt: 'ASC' },
+      }),
+      this.alerts.find({
+        where: { status: AlertStatus.ACTIVE },
+        order: { createdAt: 'ASC' },
+      }),
+      this.points.find(),
+      this.lastActivity(this.alerts.createQueryBuilder('row'), 'createdAt'),
+      this.lastActivity(this.meals.createQueryBuilder('row'), 'updatedAt'),
+      this.pointsWithUpcomingMeals(window.to),
+    ]);
+
+    // Un cierre de punto invalida sus solicitudes abiertas: nunca deben reaparecer
+    // en el digest aunque una alerta histórica haya quedado sin resolver.
+    const activeAlerts = storedActiveAlerts.filter(
+      (alert) => alert.reliefPoint.status !== ReliefPointStatus.CLOSED,
+    );
 
     const needs = this.groupByPoint(activeAlerts);
     const findings = this.findSignals(

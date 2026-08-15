@@ -12,7 +12,7 @@ import {
   PublishedMissingRecord,
 } from '../common/interfaces/missing-record.interface';
 import { createEditPin, matchesEditPin } from '../common/security/edit-pin';
-import { photoUrl } from '../common/uploads/photo-upload';
+import { PhotoStorageService } from '../common/uploads/photo-upload';
 import { CreateMissingRecordDto } from './dto/create-missing-record.dto';
 import { UpdateMissingRecordDto } from './dto/update-missing-record.dto';
 import { MissingGateway } from './missing.gateway';
@@ -25,6 +25,7 @@ export class MissingService {
     @InjectRepository(MissingRecordEntity)
     private readonly repository: Repository<MissingRecordEntity>,
     private readonly gateway: MissingGateway,
+    private readonly photoStorage: PhotoStorageService,
   ) {}
 
   async findAll(filters: MissingFilters): Promise<MissingRecord[]> {
@@ -48,26 +49,34 @@ export class MissingService {
     files: Express.Multer.File[],
   ): Promise<PublishedMissingRecord> {
     const editPin = createEditPin();
-    const entity = this.repository.create({
-      kind: dto.kind,
-      name: dto.name.trim(),
-      ageYears: dto.ageYears ?? null,
-      description: dto.description.trim(),
-      department: dto.department.trim(),
-      municipality: dto.municipality.trim(),
-      lastSeenPlace: dto.lastSeenPlace.trim(),
-      lastSeenAt: new Date(dto.lastSeenAt),
-      latitude: dto.latitude ?? null,
-      longitude: dto.longitude ?? null,
-      contactName: dto.contactName.trim(),
-      contactPhone: dto.contactPhone.trim(),
-      photos: files.map(photoUrl),
-      status: MissingStatus.SEARCHING,
-      foundAt: null,
-      consentToPublish: dto.consentToPublish,
-      editPinHash: editPin.hash,
-    });
-    const record = this.toContract(await this.repository.save(entity));
+    const photos = await this.photoStorage.store(files);
+    let saved: MissingRecordEntity;
+    try {
+      const entity = this.repository.create({
+        kind: dto.kind,
+        name: dto.name.trim(),
+        ageYears: dto.ageYears ?? null,
+        description: dto.description.trim(),
+        department: dto.department.trim(),
+        municipality: dto.municipality.trim(),
+        lastSeenPlace: dto.lastSeenPlace.trim(),
+        lastSeenAt: new Date(dto.lastSeenAt),
+        latitude: dto.latitude ?? null,
+        longitude: dto.longitude ?? null,
+        contactName: dto.contactName.trim(),
+        contactPhone: dto.contactPhone.trim(),
+        photos,
+        status: MissingStatus.SEARCHING,
+        foundAt: null,
+        consentToPublish: dto.consentToPublish,
+        editPinHash: editPin.hash,
+      });
+      saved = await this.repository.save(entity);
+    } catch (error) {
+      await this.photoStorage.remove(photos);
+      throw error;
+    }
+    const record = this.toContract(saved);
     // El evento en vivo lleva el contrato público; el PIN solo vuelve a quien publica.
     this.gateway.recordCreated(record);
     return { ...record, editPin: editPin.pin };

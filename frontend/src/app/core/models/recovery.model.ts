@@ -48,6 +48,7 @@ export interface RecoveryProject {
   status: RecoveryProjectStatus;
   verifiedBy: string;
   verifiedAt: string | null;
+  pendingTaskCount: number;
   tasks: RecoveryTask[];
   createdAt: string;
   updatedAt: string;

@@ -1,0 +1,156 @@
+:host {
+  display: block;
+}
+
+.access-result {
+  display: grid;
+  gap: 16px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+h4 {
+  margin: -8px 0 0;
+  font: 700 26px/1.15 var(--serif);
+}
+
+dl {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding-block: 20px;
+  border-block: 1px solid var(--line);
+}
+
+dl div {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+
+dt {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+dd {
+  margin: 0;
+  -webkit-user-select: all;
+  user-select: all;
+}
+
+.code {
+  overflow-wrap: anywhere;
+  color: #3c4a43;
+  font: 600 14px/1.5 ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+.pin {
+  font: 700 40px/1 var(--serif);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.16em;
+}
+
+.note {
+  margin: 0;
+  max-width: 56ch;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+  padding-top: 2px;
+}
+
+.actions button {
+  min-height: 46px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.copy {
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--green);
+  color: white;
+  font-weight: 750;
+  letter-spacing: 0.01em;
+  transition: background-color 0.15s ease;
+}
+
+.copy:hover {
+  background: #0d4331;
+}
+
+.copy.done {
+  background: var(--sage-wash);
+  color: var(--green);
+  box-shadow: inset 0 0 0 1px rgba(18, 88, 64, 0.35);
+}
+
+.quiet {
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.quiet:hover {
+  color: var(--ink);
+}
+
+.actions button:focus-visible {
+  outline: 3px solid rgba(18, 88, 64, 0.25);
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+
+/* En pantalla ancha el código y el PIN caben lado a lado, con una línea fina entre ellos. */
+@media (min-width: 641px) {
+  dl {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 26px;
+  }
+
+  .pin-block {
+    padding-left: 26px;
+    border-left: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 640px) {
+  h4 {
+    font-size: 23px;
+  }
+
+  .pin {
+    font-size: 34px;
+  }
+
+  .actions {
+    gap: 10px;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+}

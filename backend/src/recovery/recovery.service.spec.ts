@@ -4,6 +4,7 @@ import {
   HelperCredentialType,
   HelperVerificationLevel,
   HelperVerificationMethod,
+  RecoveryApplicationStatus,
   RecoveryProjectKind,
   RecoveryProjectStatus,
   RecoveryRiskLevel,
@@ -147,6 +148,7 @@ describe('RecoveryService', () => {
       existsBy: jest.fn().mockResolvedValue(false),
       create: jest.fn(),
       save: jest.fn(),
+      createQueryBuilder: jest.fn(),
     } as unknown as jest.Mocked<Repository<RecoveryApplicationEntity>>;
     service = new RecoveryService(projects, tasks, helpers, applications, {
       projectCreated: jest.fn(),
@@ -171,6 +173,7 @@ describe('RecoveryService', () => {
 
     expect(created.status).toBe(RecoveryProjectStatus.OPEN);
     expect(created.publicContactPhone).toBe('3001234567');
+    expect(created.pendingTaskCount).toBe(0);
     expect(created.editPin).toHaveLength(6);
   });
 
@@ -315,5 +318,43 @@ describe('RecoveryService', () => {
         helperPin.pin,
       ),
     ).rejects.toBeInstanceOf(UnauthorizedException);
+  });
+
+  it('revela el teléfono del voluntario al proyecto solo después de aceptar', async () => {
+    projects.findOneBy.mockResolvedValue(projectEntity());
+    const application = {
+      id: '44444444-4444-4444-8444-444444444444',
+      taskId: taskEntity().id,
+      task: taskEntity(),
+      helperId: helperEntity().id,
+      helper: helperEntity({
+        verificationLevel: HelperVerificationLevel.IDENTITY,
+      }),
+      message: 'Puedo ayudar',
+      availability: 'Mañana',
+      status: RecoveryApplicationStatus.PENDING,
+      createdAt: now,
+      updatedAt: now,
+    } as RecoveryApplicationEntity;
+    const query = {
+      innerJoinAndSelect: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
+      getMany: jest.fn().mockResolvedValue([application]),
+    };
+    applications.createQueryBuilder.mockReturnValue(query as never);
+
+    const pending = await service.getProjectApplications(
+      projectEntity().id,
+      projectPin.pin,
+    );
+    expect(pending[0].helperPhone).toBe('');
+
+    application.status = RecoveryApplicationStatus.ACCEPTED;
+    const accepted = await service.getProjectApplications(
+      projectEntity().id,
+      projectPin.pin,
+    );
+    expect(accepted[0].helperPhone).toBe('3101234567');
   });
 });

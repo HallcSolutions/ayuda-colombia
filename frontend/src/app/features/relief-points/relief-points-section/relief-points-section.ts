@@ -1,6 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  Injector,
+  afterNextRender,
   computed,
   effect,
   inject,
@@ -50,6 +52,7 @@ export class ReliefPointsSection {
   readonly reliefPointsService = inject(ReliefPointsService);
   readonly mealsService = inject(MealsService);
   readonly alertsService = inject(AlertsService);
+  private readonly injector = inject(Injector);
 
   protected readonly t = inject(I18nService).t;
   protected readonly pointTypes = RELIEF_POINT_TYPES;
@@ -129,7 +132,10 @@ export class ReliefPointsSection {
     });
   });
 
-  readonly totalPoints = computed(() => this.visiblePoints().length);
+  readonly totalPoints = computed(
+    () => this.visiblePoints().filter((point) => point.status !== ReliefPointStatus.CLOSED).length,
+  );
+  readonly totalResults = computed(() => this.visiblePoints().length);
   readonly totalKitchens = computed(
     () =>
       this.visiblePoints().filter((point) => point.type === ReliefPointType.COMMUNITY_KITCHEN)
@@ -187,11 +193,14 @@ export class ReliefPointsSection {
       previousDepartment = department;
       this.selectedPointId.set(null);
       if (!department) return;
-      window.setTimeout(() =>
-        document.getElementById('directorio-ayuda')?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        }),
+      // Se baja al directorio cuando ya está pintado con los puntos del departamento nuevo.
+      afterNextRender(
+        () =>
+          document.getElementById('directorio-ayuda')?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          }),
+        { injector: this.injector },
       );
     });
   }

@@ -1,10 +1,9 @@
 @if (loading.visible()) {
   <div
     class="app-loader"
-    [class.is-initial]="loading.isInitial()"
     role="status"
     aria-live="polite"
-    [attr.aria-label]="t(loading.isInitial() ? 'loading.title' : 'loading.updating')"
+    [attr.aria-label]="t('loading.updating')"
   >
     <span class="loader-track" aria-hidden="true"><i></i></span>
   </div>
@@ -60,7 +59,7 @@
 
 <app-alert-banner />
 
-<main id="inicio" [attr.aria-busy]="loading.visible()">
+<main id="inicio" [attr.aria-busy]="loading.busy()">
   <router-outlet />
 </main>
 

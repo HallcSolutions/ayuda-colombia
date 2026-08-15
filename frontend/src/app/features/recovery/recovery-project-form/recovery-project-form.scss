@@ -77,14 +77,12 @@
   border-top: 1px solid var(--line);
 }
 
-.form-section h4,
-.access-result h4 {
+.form-section h4 {
   margin: 0;
   font: 700 24px/1.15 var(--serif);
 }
 
-.form-section p,
-.access-result p {
+.form-section p {
   margin: 0;
   color: var(--muted);
   line-height: 1.55;
@@ -131,66 +129,13 @@
   font-size: 12px;
 }
 
-.access-result {
-  display: grid;
-  gap: 14px;
-  padding-block: 6px;
-}
-
-.access-result > span {
-  color: var(--green);
-  font-size: 10px;
-  font-weight: 850;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.access-result dl {
-  display: grid;
-  gap: 8px;
-  margin: 0;
-  padding-block: 14px;
-  border-block: 1px solid var(--line);
-}
-
-.access-result dl div {
-  display: grid;
-  gap: 4px;
-}
-
-.access-result dt {
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.access-result dd {
-  margin: 0;
-  overflow-wrap: anywhere;
-  font-weight: 750;
-}
-
-.access-result dd.pin {
-  font: 700 34px/1 var(--serif);
-  letter-spacing: 0.12em;
-}
-
-.access-result button {
-  width: fit-content;
-  min-height: 44px;
-  padding: 0 17px;
-  border: 0;
-  border-radius: 8px;
-  background: var(--green);
-  color: white;
-  font-weight: 800;
-}
-
-.access-result button.secondary {
-  border: 1px solid var(--green);
-  background: transparent;
-  color: var(--green);
+.published-warning {
+  margin: 16px 0 0;
+  padding: 11px 14px;
+  border: 1px solid #f3c9c1;
+  border-radius: 9px;
+  background: #fdeceb;
+  color: #8c2f1c;
 }
 
 @media (max-width: 640px) {
@@ -215,14 +160,12 @@
     flex-direction: row;
   }
 
-  .choice-grid.compact button,
-  .access-result button {
+  .choice-grid.compact button {
     flex: 1 1 min(9rem, 100%);
     justify-content: center;
   }
 
-  .form-buttons button,
-  .access-result button {
+  .form-buttons button {
     width: 100%;
   }
 }

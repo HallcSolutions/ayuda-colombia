@@ -86,6 +86,16 @@
             <span aria-hidden="true">✓</span>{{ t('reliefPointCard.verifiedInformation') }}
           </h4>
           <p>{{ point().notes }}</p>
+          @if (sourceUrls().length) {
+            <nav class="source-links" [attr.aria-label]="t('reliefPointCard.sources')">
+              @for (url of sourceUrls(); track url) {
+                <a [href]="url" target="_blank" rel="noopener noreferrer">
+                  {{ t('reliefPointCard.openSource') }}: {{ sourceHost(url) }}
+                  <span aria-hidden="true">↗</span>
+                </a>
+              }
+            </nav>
+          }
         </section>
       }
 

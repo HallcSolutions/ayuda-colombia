@@ -344,6 +344,33 @@
   white-space: pre-line;
 }
 
+.source-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.source-links a {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 7px 10px;
+  color: var(--green);
+  font-size: 12.5px;
+  font-weight: 800;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  background: #eef6ef;
+  border: 1px solid rgba(18, 88, 64, 0.15);
+  border-radius: 999px;
+}
+
+.source-links a:hover {
+  text-decoration: underline;
+  background: #e4f0e6;
+}
+
 .meal-list {
   display: grid;
   gap: 0;

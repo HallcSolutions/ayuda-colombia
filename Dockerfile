@@ -5,7 +5,7 @@
 # dos dominios distintos obligaría a parametrizar cada servicio del cliente.
 
 # ---------- Compila el SPA de Angular ----------
-FROM node:22-alpine AS frontend
+FROM node:22.22.3-alpine AS frontend
 WORKDIR /build/frontend
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
@@ -13,7 +13,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # ---------- Compila el API de NestJS ----------
-FROM node:22-alpine AS backend
+FROM node:22.22.3-alpine AS backend
 WORKDIR /build/backend
 COPY backend/package.json backend/package-lock.json ./
 RUN npm ci
@@ -21,7 +21,7 @@ COPY backend/ ./
 RUN npm run build
 
 # ---------- Imagen final ----------
-FROM node:22-alpine AS runtime
+FROM node:22.22.3-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 

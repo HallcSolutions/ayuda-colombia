@@ -1,14 +1,17 @@
 import {
   ConvoyStatus,
   DigestFindingKind,
-  HelperCredentialType,
-  HelperVerificationLevel,
-  HelperVerificationMethod,
+  HelpContactChannel,
+  HelpContactRole,
   LodgingKind,
   LodgingStatus,
   MealType,
   MissingStatus,
   MissingSubjectKind,
+  PublicNewsCategory,
+  HelperCredentialType,
+  HelperVerificationLevel,
+  HelperVerificationMethod,
   RecoveryApplicationStatus,
   RecoveryProjectKind,
   RecoveryProjectStatus,
@@ -41,6 +44,12 @@ export const supplyCategoryKey = (category: SupplyCategory): TranslationKey =>
 
 export const urgencyKey = (urgency: UrgencyLevel): TranslationKey => `urgency.${urgency}`;
 
+export const helpContactRoleKey = (role: HelpContactRole): TranslationKey =>
+  `helpContactRole.${role}`;
+
+export const helpContactChannelKey = (channel: HelpContactChannel): TranslationKey =>
+  `helpContactChannel.${channel}`;
+
 export const reportStatusKey = (status: ReportStatus): TranslationKey => `reportStatus.${status}`;
 
 export const missingKindKey = (kind: MissingSubjectKind): TranslationKey => `missingKind.${kind}`;
@@ -57,6 +66,9 @@ export const convoyStatusKey = (status: ConvoyStatus): TranslationKey => `convoy
 
 export const digestFindingKey = (kind: DigestFindingKind): TranslationKey =>
   `digestFinding.${kind}`;
+
+export const publicNewsCategoryKey = (category: PublicNewsCategory): TranslationKey =>
+  `publicNewsCategory.${category}`;
 
 export const recoveryProjectKindKey = (kind: RecoveryProjectKind): TranslationKey =>
   `recoveryProjectKind.${kind}`;
@@ -78,6 +90,7 @@ export const helperVerificationMethodKey = (method: HelperVerificationMethod): T
 export const recoveryApplicationStatusKey = (status: RecoveryApplicationStatus): TranslationKey =>
   `recoveryApplicationStatus.${status}`;
 
+/** Referencia visual breve para elegir a quién se va a apoyar. */
 export const RECOVERY_PROJECT_KIND_ICONS: Record<RecoveryProjectKind, string> = {
   [RecoveryProjectKind.HOME]: '🏠',
   [RecoveryProjectKind.BUSINESS]: '🏪',
@@ -127,6 +140,16 @@ export const HOUSE_DAMAGE_OPTIONS: { value: string; key: TranslationKey }[] = [
   { value: 'Acceso bloqueado', key: 'damage.access' },
   { value: 'Vivienda inhabitable', key: 'damage.uninhabitable' },
   { value: 'Pérdida total', key: 'damage.totalLoss' },
+];
+
+/** Necesidades que una brigada puede registrar sin pedir un relato ni documentos. */
+export const FAMILY_NEED_OPTIONS: { value: string; key: TranslationKey }[] = [
+  ...LEGACY_HOUSE_NEED_OPTIONS,
+  ...HOUSE_DAMAGE_OPTIONS.filter(({ value }) =>
+    ['Techo afectado', 'Servicios suspendidos', 'Vivienda inhabitable', 'Pérdida total'].includes(
+      value,
+    ),
+  ),
 ];
 
 const HOUSE_NEED_KEYS = new Map(

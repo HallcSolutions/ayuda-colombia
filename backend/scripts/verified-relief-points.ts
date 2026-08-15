@@ -1,7 +1,10 @@
 import {
   ReliefPointStatus,
   ReliefPointType,
+  SupplyCategory,
+  UrgencyLevel,
 } from '../src/common/constants/app.constants';
+import { VERIFIED_RELIEF_SERVICES } from './verified-relief-services';
 
 export interface VerifiedReliefPoint {
   key: string;
@@ -20,6 +23,11 @@ export interface VerifiedReliefPoint {
   needs: string;
   sourceLabel: string;
   sourceUrl: string;
+  additionalSourceUrls?: string[];
+  alertTitle?: string;
+  alertCategory?: SupplyCategory;
+  alertSeverity?: UrgencyLevel;
+  alertCreatedBy?: string;
   caveat?: string;
 }
 
@@ -34,22 +42,25 @@ const CALI_FOOD_BANK =
   'https://www.bancodealimentoscali.org/nuevo-contactenos/';
 const LUIS_DIAZ_POINT =
   'https://www.tropicanafm.com/2026/luis-diaz-y-gera-ponce-enviaran-ayuda-humanitaria-para-apoyar-a-las-victimas-del-terremoto-todo-suma-473397.html';
+const UPDATED_RESOURCES = 'https://ayudaterremotocolombia.com/recursos';
 
 type VerifiedReliefPointInput = Omit<
   VerifiedReliefPoint,
   'type' | 'status' | 'verifiedAt'
 > & {
   type?: ReliefPointType;
+  status?: ReliefPointStatus;
+  verifiedAt?: string;
 };
 
 const verified = (point: VerifiedReliefPointInput): VerifiedReliefPoint => ({
   ...point,
   type: point.type ?? ReliefPointType.COLLECTION_CENTER,
-  status: ReliefPointStatus.ACTIVE,
-  verifiedAt: '2026-08-13',
+  status: point.status ?? ReliefPointStatus.ACTIVE,
+  verifiedAt: point.verifiedAt ?? '2026-08-13',
 });
 
-/** Puntos activos corroborados para la emergencia del 10 de agosto de 2026. */
+/** Directorio corroborado para la emergencia del 10 de agosto de 2026. */
 export const VERIFIED_RELIEF_POINTS: VerifiedReliefPoint[] = [
   verified({
     key: 'cartagena-bernardo-caraballo',
@@ -145,9 +156,12 @@ export const VERIFIED_RELIEF_POINTS: VerifiedReliefPoint[] = [
     contactName: 'Gobernación del Valle del Cauca',
     contactPhone: 'No publicado',
     schedule: 'Horario por confirmar con la Gobernación',
-    needs: 'Agua, cobijas, colchones, alimentos, aseo y primeros auxilios.',
-    sourceLabel: 'Gobernación del Valle / directorio verificado',
+    needs:
+      'Alimentos no perecederos, elementos de aseo, mantas, linternas, herramientas, elementos de protección y alimentos para animales.',
+    sourceLabel: 'Gobernación del Valle — publicación oficial',
     sourceUrl: 'https://x.com/GobValle/status/2086936778468893171',
+    alertTitle: 'Necesidades verificadas 15 de agosto',
+    verifiedAt: '2026-08-15',
   }),
   verified({
     key: 'bogota-unicentro',
@@ -177,9 +191,10 @@ export const VERIFIED_RELIEF_POINTS: VerifiedReliefPoint[] = [
     contactPhone: 'No publicado',
     schedule: 'Horario por confirmar con la Gobernación',
     needs:
-      'Alimentos, colchones, cobijas, aseo, EPP, linternas, carpas, toallas y alimento para animales.',
-    sourceLabel: 'Gobernación del Valle / directorio verificado',
+      'Alimentos no perecederos, colchonetas, mantas, kits de aseo, elementos de protección, linternas, carpas, toallas y alimentos para perros y gatos.',
+    sourceLabel: 'Gobernación del Valle — publicación oficial',
     sourceUrl: 'https://x.com/GobValle/status/2086948308153405790',
+    verifiedAt: '2026-08-15',
   }),
   verified({
     key: 'bogota-tadeo',
@@ -193,8 +208,9 @@ export const VERIFIED_RELIEF_POINTS: VerifiedReliefPoint[] = [
     contactPhone: 'No publicado',
     schedule: 'Lunes a viernes 8:00 a 18:00; sábado 8:00 a 12:00',
     needs: 'Agua, cobijas, colchones, alimentos, aseo y primeros auxilios.',
-    sourceLabel: 'IDIGER / EL PAÍS',
-    sourceUrl: 'https://x.com/IDIGER/status/2086971113758712252',
+    sourceLabel: 'EL PAÍS — iniciativas nacionales',
+    sourceUrl: INITIATIVES,
+    verifiedAt: '2026-08-15',
   }),
   verified({
     key: 'medellin-banco-alimentos',
@@ -345,11 +361,14 @@ export const VERIFIED_RELIEF_POINTS: VerifiedReliefPoint[] = [
     longitude: -76.534835,
     contactName: 'Alcaldía de Cali',
     contactPhone: 'Línea 195',
-    schedule: 'Horario por confirmar en la Línea 195',
-    needs:
-      'Guantes de construcción, gafas de seguridad, cascos, colchones y agua.',
-    sourceLabel: 'Alcaldía de Cali / EL PAÍS',
-    sourceUrl: INITIATIVES,
+    schedule: 'Cerrado; la recepción municipal se trasladó a Petronio Álvarez',
+    status: ReliefPointStatus.CLOSED,
+    needs: '',
+    sourceLabel: 'Ayuda Terremoto Colombia — directorio actualizado',
+    sourceUrl: UPDATED_RESOURCES,
+    caveat:
+      'Ya no recibe donaciones. El punto municipal autorizado vigente es Ciudadela Petronio Álvarez — Coliseo del Pueblo.',
+    verifiedAt: '2026-08-15',
   }),
 ];
 
@@ -656,11 +675,13 @@ VERIFIED_RELIEF_POINTS.push(
     longitude: -73.3614618,
     contactName: 'Gobernación de Boyacá',
     contactPhone: '(608) 742 0150',
-    schedule: 'Activa hasta el 14 de agosto; confirmar horario',
-    needs:
-      'Agua, alimentos no perecederos, elementos de aseo, cobijas y artículos de primera necesidad.',
+    schedule: 'Cerrado: la jornada finalizó el 14 de agosto',
+    status: ReliefPointStatus.CLOSED,
+    needs: '',
     sourceLabel: 'Gobernación de Boyacá / EL PAÍS',
     sourceUrl: INITIATIVES,
+    caveat: 'La convocatoria publicada finalizó el 14 de agosto.',
+    verifiedAt: '2026-08-15',
   }),
   verified({
     key: 'monteria-happy-lora',
@@ -688,12 +709,15 @@ VERIFIED_RELIEF_POINTS.push(
     longitude: -74.8279,
     contactName: 'Fundación Luis Díaz Sembrando Esperanza',
     contactPhone: 'No publicado',
-    schedule: 'Hasta el 14 de agosto, 8:00 a 19:00',
-    needs:
-      'Alimentos no perecederos, agua, higiene personal, pañales e insumos médicos nuevos y sellados.',
+    schedule: 'Cerrado: la jornada finalizó el 14 de agosto',
+    status: ReliefPointStatus.CLOSED,
+    needs: '',
     sourceLabel: 'Fundación Luis Díaz / Tropicana',
     sourceUrl: LUIS_DIAZ_POINT,
     caveat:
-      'No recibe medicamentos, alimentos preparados o perecederos, productos abiertos, usados o vencidos ni ropa usada.',
+      'La convocatoria terminó el 14 de agosto. No recibe más donaciones.',
+    verifiedAt: '2026-08-15',
   }),
 );
+
+VERIFIED_RELIEF_POINTS.push(...VERIFIED_RELIEF_SERVICES);

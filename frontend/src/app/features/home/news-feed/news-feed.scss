@@ -7,26 +7,27 @@
   gap: 0;
 }
 
-/* El encabezado comparte las mismas columnas que cada novedad: hora y contenido. */
+/* El encabezado va centrado: no hereda las columnas de la lista. */
 .news .overview-heading {
-  grid-template-columns: 8.5rem minmax(0, 1fr);
+  grid-template-columns: 1fr;
+  justify-items: center;
   align-items: start;
   gap: 14px;
-  padding: 0 4px 30px 18px;
-}
-
-.news .section-kicker {
-  padding-top: 7px;
+  padding: 0 18px 30px;
+  text-align: center;
 }
 
 .news-empty {
   margin: 18px 0 0;
   color: var(--muted);
+  text-align: center;
 }
 
+/* La lista se mantiene en una columna centrada, debajo del encabezado. */
 .news-list {
   list-style: none;
-  margin: 0;
+  width: min(100%, 52rem);
+  margin: 0 auto;
   padding: 0;
   border-top: 0;
 }
@@ -113,13 +114,7 @@
 
 @media (max-width: 640px) {
   .news .overview-heading {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    padding: 0 4px 24px 18px;
-  }
-
-  .news .section-kicker {
-    padding-top: 0;
+    padding: 0 18px 24px;
   }
 
   .news-list li {

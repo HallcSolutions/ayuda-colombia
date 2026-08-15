@@ -1,4 +1,5 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { App } from 'supertest/types';
@@ -14,6 +15,9 @@ import {
 import { MonitoringController } from '../src/monitoring/monitoring.controller';
 import { MonitoringService } from '../src/monitoring/monitoring.service';
 import { MealsService } from '../src/meals/meals.service';
+import { NewsPublisherGuard } from '../src/news/news-publisher.guard';
+import { NewsController } from '../src/news/news.controller';
+import { NewsService } from '../src/news/news.service';
 import { ReliefPointsController } from '../src/relief-points/relief-points.controller';
 import { ReliefPointsService } from '../src/relief-points/relief-points.service';
 import { ReportsController } from '../src/reports/reports.controller';
@@ -30,6 +34,7 @@ describe('Reports API (e2e)', () => {
         AlertsController,
         MealsController,
         MonitoringController,
+        NewsController,
       ],
       providers: [
         {
@@ -38,11 +43,6 @@ describe('Reports API (e2e)', () => {
             findAll: jest.fn().mockResolvedValue([]),
             findOne: jest.fn(),
             create: jest.fn(),
-            update: jest.fn().mockResolvedValue({
-              id: '5c4826f4-b3a9-4f18-8d81-67eb1301d017',
-              status: 'in_progress',
-            }),
-            updateLocation: jest.fn(),
           },
         },
         {
@@ -50,7 +50,7 @@ describe('Reports API (e2e)', () => {
           useValue: {
             findAll: jest.fn().mockResolvedValue([]),
             findOne: jest.fn(),
-            create: jest.fn().mockImplementation((dto) => dto),
+            create: jest.fn((dto: unknown) => dto),
             update: jest.fn(),
           },
         },
@@ -58,7 +58,7 @@ describe('Reports API (e2e)', () => {
           provide: AlertsService,
           useValue: {
             findAll: jest.fn().mockResolvedValue([]),
-            create: jest.fn().mockImplementation((dto) => dto),
+            create: jest.fn((dto: unknown) => dto),
             resolve: jest.fn(),
           },
         },
@@ -66,7 +66,7 @@ describe('Reports API (e2e)', () => {
           provide: MealsService,
           useValue: {
             findAll: jest.fn().mockResolvedValue([]),
-            create: jest.fn().mockImplementation((dto) => dto),
+            create: jest.fn((dto: unknown) => dto),
             update: jest.fn(),
           },
         },
@@ -78,7 +78,26 @@ describe('Reports API (e2e)', () => {
             runDigest: jest.fn().mockResolvedValue({ id: 'digest-2' }),
           },
         },
+        {
+          provide: NewsService,
+          useValue: {
+            findAll: jest.fn().mockResolvedValue([]),
+            findOne: jest.fn(),
+            create: jest.fn(),
+            update: jest.fn(),
+          },
+        },
         DigestTokenGuard,
+        NewsPublisherGuard,
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn((key: string, fallback: unknown) => {
+              if (key === 'NEWS_PUBLISHER_KEY') return 'editor-prueba';
+              return fallback;
+            }),
+          },
+        },
         {
           provide: MONITORING_OPTIONS,
           useValue: buildMonitoringOptions({
@@ -117,17 +136,51 @@ describe('Reports API (e2e)', () => {
     });
   });
 
-  it('permite actualizar un reporte sin código de brigada', async () => {
-    const response = await request(app.getHttpServer())
+  it('no expone cambios públicos que otra persona pueda sabotear', async () => {
+    await request(app.getHttpServer())
       .patch('/api/reports/5c4826f4-b3a9-4f18-8d81-67eb1301d017')
       .send({ status: 'in_progress' })
-      .expect(200);
-
-    expect(response.body.data).toEqual({
-      id: '5c4826f4-b3a9-4f18-8d81-67eb1301d017',
-      status: 'in_progress',
-    });
+      .expect(404);
   });
+
+  it('acepta el registro mínimo sin cédula, foto ni GPS', async () => {
+    await request(app.getHttpServer())
+      .post('/api/reports')
+      .field('reporterName', 'Marta')
+      .field('contactPhone', '3001234567')
+      .field('contactRole', 'affected_person')
+      .field('contactChannel', 'both')
+      .field('consentToDirectContact', 'true')
+      .field('department', 'Chocó')
+      .field('municipality', 'Istmina')
+      .field('addressReference', 'Sector La Esperanza')
+      .field('householdSize', '4')
+      .field('urgency', 'high')
+      .field('needs', '["Agua potable","Alimentos"]')
+      .field('consentToShareLocation', 'false')
+      .expect(201);
+  });
+
+  it.each(['[]', '   ', '{}', '[""]'])(
+    'rechaza un reporte sin necesidades reales: %s',
+    async (needs) => {
+      await request(app.getHttpServer())
+        .post('/api/reports')
+        .field('reporterName', 'Marta')
+        .field('contactPhone', '3001234567')
+        .field('contactRole', 'affected_person')
+        .field('contactChannel', 'both')
+        .field('consentToDirectContact', 'false')
+        .field('department', 'Chocó')
+        .field('municipality', 'Istmina')
+        .field('addressReference', 'Sector La Esperanza')
+        .field('householdSize', '4')
+        .field('urgency', 'high')
+        .field('needs', needs)
+        .field('consentToShareLocation', 'false')
+        .expect(400);
+    },
+  );
 
   it('permite crear un punto sin código de brigada', async () => {
     await request(app.getHttpServer())
@@ -203,5 +256,19 @@ describe('Reports API (e2e)', () => {
     expect((response.body as { data: unknown }).data).toEqual({
       id: 'digest-2',
     });
+  });
+
+  it('rechaza filtros de noticias que no son categorías de desastre', async () => {
+    await request(app.getHttpServer())
+      .get('/api/news?category=programa-general')
+      .expect(400);
+  });
+
+  it('rechaza identificadores de noticia inválidos antes de consultar la base', async () => {
+    await request(app.getHttpServer()).get('/api/news/no-es-uuid').expect(400);
+  });
+
+  it('mantiene la publicación de noticias detrás de la llave editorial', async () => {
+    await request(app.getHttpServer()).post('/api/news').send({}).expect(401);
   });
 });

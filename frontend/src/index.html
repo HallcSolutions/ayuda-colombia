@@ -60,6 +60,10 @@
         margin: 0;
         background: #f8faf6;
       }
+      /* Mientras la portada tapa la pantalla nada se mueve detrás. */
+      body.is-booting {
+        overflow: hidden;
+      }
       .boot-loader {
         position: fixed;
         inset: 0;
@@ -82,6 +86,16 @@
         background:
           radial-gradient(circle at 20% 18%, rgba(223, 105, 79, 0.12), transparent 24rem),
           radial-gradient(circle at 82% 78%, rgba(18, 88, 64, 0.13), transparent 29rem), #f8faf6;
+      }
+      /* La aplicación la retira cuando la primera pantalla ya está entera.
+         `visibility` espera a que termine el desvanecido para no cortarlo. */
+      .boot-loader.is-done {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition:
+          opacity 320ms ease,
+          visibility 0s linear 320ms;
       }
       .boot-loader::before {
         position: absolute;
@@ -225,27 +239,36 @@
       }
     </style>
   </head>
-  <body>
-    <app-root>
-      <div class="boot-loader" role="status" aria-live="polite" aria-label="Preparando RedAyuda">
-        <div class="boot-card">
-          <span class="boot-emblem" aria-hidden="true">
-            <img
-              src="/assets/brand/redayuda-mark-192.png"
-              alt=""
-              width="72"
-              height="72"
-              fetchpriority="high"
-            />
-          </span>
-          <span class="boot-copy">
-            <small>RedAyuda</small>
-            <strong>Conectando ayuda con quienes la necesitan</strong>
-            <span>Estamos preparando información confiable para que puedas actuar.</span>
-          </span>
-          <span class="boot-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-        </div>
+  <body class="is-booting">
+    <app-root></app-root>
+
+    <!-- Vive fuera de <app-root> a propósito: Angular vacía el contenido de la etiqueta al
+       arrancar, y esta portada tiene que seguir puesta hasta que la primera pantalla esté
+       armada. La retira la propia aplicación (`hideBootCover`). -->
+    <div
+      id="boot-loader"
+      class="boot-loader"
+      role="status"
+      aria-live="polite"
+      aria-label="Preparando RedAyuda"
+    >
+      <div class="boot-card">
+        <span class="boot-emblem" aria-hidden="true">
+          <img
+            src="/assets/brand/redayuda-mark-192.png"
+            alt=""
+            width="72"
+            height="72"
+            fetchpriority="high"
+          />
+        </span>
+        <span class="boot-copy">
+          <small>RedAyuda</small>
+          <strong>Conectando ayuda con quienes la necesitan</strong>
+          <span>Estamos preparando información confiable para que puedas actuar.</span>
+        </span>
+        <span class="boot-dots" aria-hidden="true"><i></i><i></i><i></i></span>
       </div>
-    </app-root>
+    </div>
   </body>
 </html>

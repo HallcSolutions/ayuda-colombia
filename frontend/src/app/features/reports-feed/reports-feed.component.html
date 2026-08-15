@@ -42,27 +42,32 @@
 
   <div class="feature-content feed-content-shell">
     <div class="feed-tools">
-      <input
-        type="search"
-        [placeholder]="t('feed.searchPlaceholder')"
-        [attr.aria-label]="t('feed.searchPlaceholder')"
-        (input)="updateSearch($event)"
-      />
-      <select
-        [attr.aria-label]="t('feed.filterAll')"
-        [value]="statusFilter()"
-        (change)="updateStatusFilter($event)"
-      >
-        <option value="all">{{ t('feed.filterAll') }}</option>
-        <option value="open">{{ t('reportStatus.open') }}</option>
-        <option value="in_progress">{{ t('reportStatus.in_progress') }}</option>
-        <option value="resolved">{{ t('reportStatus.resolved') }}</option>
-      </select>
+      <label class="feed-search">
+        <span>{{ t('feed.searchLabel') }}</span>
+        <input
+          type="search"
+          name="direct-help-search"
+          autocomplete="off"
+          [placeholder]="t('feed.searchPlaceholder')"
+          (input)="updateSearch($event)"
+        />
+      </label>
+      <label class="feed-status-filter">
+        <span>{{ t('feed.statusFilterLabel') }}</span>
+        <select [value]="statusFilter()" (change)="updateStatusFilter($event)">
+          <option value="all">{{ t('feed.filterAll') }}</option>
+          <option value="open">{{ t('reportStatus.open') }}</option>
+          <option value="in_progress">{{ t('reportStatus.in_progress') }}</option>
+          <option value="resolved">{{ t('reportStatus.resolved') }}</option>
+        </select>
+      </label>
     </div>
 
-    @if (errorMessage()) {
-      <div class="form-message error" role="alert">{{ errorMessage() }}</div>
-    }
+    <aside class="direct-help-guidance">
+      <strong>{{ t('feed.directGuidanceTitle') }}</strong>
+      <p>{{ t('feed.directGuidanceBody') }}</p>
+    </aside>
+
     @if (reportsService.loading()) {
       <div class="empty-state">
         <span>•••</span>
@@ -111,40 +116,75 @@
                 ><time [attr.datetime]="report.createdAt">{{ formatDate(report.createdAt) }}</time>
               </div>
               <h3>{{ report.municipality }} · {{ report.addressReference }}</h3>
-              <p>{{ report.notice }}</p>
+              @if (report.notice) {
+                <p>{{ report.notice }}</p>
+              }
               <div class="need-tags">
                 @for (need of report.needs; track need) {
                   <span>{{ needLabel(need) }}</span>
                 }
               </div>
-              <div class="report-location">
-                <span>⌖</span>
+              <div class="report-verification">
+                <span aria-hidden="true">{{ report.fieldVerified ? '✓' : '!' }}</span>
                 <div>
-                  <strong>{{ t('feed.verifiedLocation') }}</strong
-                  ><small>{{
-                    report.location.accuracy
-                      ? t('feed.accuracy', { meters: report.location.accuracy.toFixed(0) })
-                      : t('feed.accuracyUnknown')
-                  }}</small>
+                  @if (report.fieldVerified) {
+                    <strong>{{ t('feed.fieldVerified') }}</strong>
+                    <small>{{
+                      report.verifiedAt
+                        ? t('feed.fieldVerifiedAt', { date: formatDate(report.verifiedAt) })
+                        : t('feed.fieldVerifiedWithoutDate')
+                    }}</small>
+                  } @else {
+                    <strong>{{ t('feed.fieldUnverified') }}</strong>
+                    <small>{{ t('feed.fieldUnverifiedHint') }}</small>
+                  }
                 </div>
-                <a [href]="mapUrl(report)" target="_blank" rel="noopener">{{
-                  t('feed.openMap')
-                }}</a>
+                @if (report.location) {
+                  <a [href]="mapUrl(report)" target="_blank" rel="noopener">
+                    {{ t('feed.openMap') }}
+                  </a>
+                } @else {
+                  <span class="location-private">{{ t('feed.locationNotRequired') }}</span>
+                }
               </div>
+
+              @if (report.directContact; as contact) {
+                <section class="direct-help-contact" [attr.aria-label]="t('feed.directContact')">
+                  <div>
+                    <span>{{ t('feed.directContact') }}</span>
+                    <h4>{{ contact.name }}</h4>
+                    <p>{{ contactRoleLabel(contact.role) }}</p>
+                  </div>
+                  <div class="direct-help-actions">
+                    @if (
+                      contact.channel === contactChannel.PHONE ||
+                      contact.channel === contactChannel.BOTH
+                    ) {
+                      <a class="call" [href]="'tel:' + contact.phone">
+                        {{ t('feed.call') }} · {{ contact.phone }}
+                      </a>
+                    }
+                    @if (
+                      contact.channel === contactChannel.WHATSAPP ||
+                      contact.channel === contactChannel.BOTH
+                    ) {
+                      <a
+                        class="whatsapp"
+                        [href]="whatsappLink(contact.phone)"
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        {{ t('feed.whatsapp') }}
+                      </a>
+                    }
+                  </div>
+                  <small>{{ t('feed.contactSafety') }}</small>
+                </section>
+              } @else {
+                <p class="contact-private">{{ t('feed.contactPrivate') }}</p>
+              }
               <div class="report-footer">
                 <span [class]="'status ' + report.status">{{ statusLabel(report.status) }}</span>
-                <div class="status-actions">
-                  @if (report.status === reportStatus.OPEN) {
-                    <button type="button" (click)="changeStatus(report, reportStatus.IN_PROGRESS)">
-                      {{ t('feed.markInProgress') }}
-                    </button>
-                  }
-                  @if (report.status === reportStatus.IN_PROGRESS) {
-                    <button type="button" (click)="changeStatus(report, reportStatus.RESOLVED)">
-                      {{ t('feed.markResolved') }}
-                    </button>
-                  }
-                </div>
               </div>
             </div>
           </article>

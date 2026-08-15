@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ReportStatus, UrgencyLevel } from '../../core/constants/app.constants';
+import { ReliefPointStatus, ReportStatus, UrgencyLevel } from '../../core/constants/app.constants';
 import {
   COLOMBIA_DEPARTMENT_SHAPES,
   COLOMBIA_MAP_VIEWBOX,
@@ -60,7 +60,12 @@ export class HomePage {
       .reduce((total, report) => total + report.householdSize, 0),
   );
 
-  readonly activePoints = computed(() => this.reliefPointsService.pointsInRegion().length);
+  readonly activePoints = computed(
+    () =>
+      this.reliefPointsService
+        .pointsInRegion()
+        .filter((point) => point.status !== ReliefPointStatus.CLOSED).length,
+  );
   readonly activeAlerts = computed(() => this.alertsService.activeAlerts().length);
   readonly portionsToday = computed(() =>
     this.mealsService.mealServices().reduce((total, meal) => total + meal.portionsPlanned, 0),

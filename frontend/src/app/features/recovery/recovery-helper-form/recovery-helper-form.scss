@@ -5,42 +5,76 @@
 }
 
 .helper-form.inline-form {
+  gap: 26px;
   padding: 0;
   border: 0;
   border-radius: 0;
 }
 
+/* Dos columnas fijas: con `auto-fit` las filas quedaban desparejas y los rótulos
+   largos partían la alineación de los campos. */
 .helper-form .field-grid {
-  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+}
+
+/* Un rótulo de dos líneas no debe empujar su campo: todos se apoyan abajo. */
+.helper-form label {
+  align-content: end;
+}
+
+.helper-form label.narrow input {
+  max-width: 11rem;
 }
 
 .verification-explainer {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   padding-left: 14px;
   border-left: 3px solid #d8bd64;
 }
 
+.verification-explainer strong {
+  font: 700 18px/1.25 var(--serif);
+}
+
 .verification-explainer p,
-.credential-fields p,
-.helper-result p {
+.section-lead {
   margin: 0;
   color: var(--muted);
+  font-size: 13px;
   line-height: 1.55;
 }
 
 .verification-explainer ol {
   display: grid;
-  gap: 6px;
-  margin: 2px 0 0;
-  padding-left: 20px;
+  gap: 4px;
+  margin: 4px 0 0;
+  padding-left: 18px;
   color: #445049;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.form-section {
+  display: grid;
+  gap: 14px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.form-section h4 {
+  margin: 0;
+  font: 700 19px/1.2 var(--serif);
+}
+
+.form-section .section-lead {
+  margin-top: -8px;
 }
 
 .skill-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: grid;
+  gap: 10px;
   margin: 0;
   padding: 0;
   border: 0;
@@ -48,7 +82,7 @@
 
 .skill-grid legend {
   width: 100%;
-  padding-bottom: 2px;
+  padding: 0 0 4px;
   color: var(--muted);
   font-size: 10px;
   font-weight: 850;
@@ -56,34 +90,38 @@
   text-transform: uppercase;
 }
 
-.skill-grid button {
+.skill-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-chips button {
   min-height: 44px;
-  padding: 8px 12px;
+  padding: 8px 16px;
   border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #fbfcfa;
+  border-radius: 999px;
+  background: transparent;
   color: var(--ink);
+  font-size: 13px;
   cursor: pointer;
 }
 
-.skill-grid button.selected {
+.skill-chips button:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.skill-chips button.selected {
   border-color: var(--green);
   background: var(--sage-wash);
   color: var(--green);
-  box-shadow: inset 0 0 0 1px var(--green);
+  font-weight: 700;
 }
 
-.form-section {
-  display: grid;
-  gap: 12px;
-  padding-top: 22px;
-  border-top: 1px solid var(--line);
-}
-
-.credential-fields h4,
-.helper-result h4 {
-  margin: 0;
-  font: 700 24px/1.15 var(--serif);
+.skill-chips button:focus-visible {
+  outline: 3px solid rgba(18, 88, 64, 0.2);
+  outline-offset: 2px;
 }
 
 .helper-form .consent {
@@ -111,75 +149,26 @@
   text-transform: none;
 }
 
+.helper-form .form-buttons {
+  align-items: center;
+}
+
 .required-hint {
   margin: 0;
   color: #8c5a13;
   font-size: 12px;
 }
 
-.helper-result {
-  display: grid;
-  gap: 14px;
-}
-
-.helper-result > span {
-  color: var(--green);
-  font-size: 10px;
-  font-weight: 850;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.helper-result dl {
-  display: grid;
-  gap: 8px;
-  margin: 0;
-  padding-block: 14px;
-  border-block: 1px solid var(--line);
-}
-
-.helper-result dt {
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.helper-result dd {
-  margin: 4px 0 0;
-  overflow-wrap: anywhere;
-  font-weight: 750;
-}
-
-.helper-result dd.pin {
-  font: 700 34px/1 var(--serif);
-  letter-spacing: 0.12em;
-}
-
-.helper-result button {
-  width: fit-content;
-  min-height: 44px;
-  padding: 0 17px;
-  border: 0;
-  border-radius: 8px;
-  background: var(--green);
-  color: white;
-  font-weight: 800;
-}
-
-.helper-result button.secondary {
-  border: 1px solid var(--green);
-  background: transparent;
-  color: var(--green);
-}
-
 @media (max-width: 640px) {
-  .skill-grid button {
-    flex: 1 1 min(9rem, 100%);
+  .helper-form .field-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .form-buttons button,
-  .helper-result button {
+  .helper-form label.narrow input {
+    max-width: none;
+  }
+
+  .form-buttons button {
     width: 100%;
   }
 }

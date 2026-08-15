@@ -14,6 +14,16 @@
   gap: clamp(24px, 3.5vw, 42px);
 }
 
+/** El encabezado arranca en el mismo margen que las cifras y las filas: una sola columna.
+    La línea la pone la banda de cifras justo debajo, así que aquí no se repite. */
+.digest .overview-heading {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 14px;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
 .digest-empty {
   margin: 0;
   color: var(--muted, #5b6472);
@@ -205,9 +215,8 @@
     gap: 28px;
   }
 
-  .overview-heading {
-    gap: 16px;
-    padding-bottom: 4px;
+  .digest .overview-heading {
+    gap: 12px;
 
     h2 {
       font-size: clamp(34px, 10vw, 42px);

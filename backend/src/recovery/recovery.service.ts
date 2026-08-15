@@ -230,6 +230,7 @@ export class RecoveryService {
         reviewedAt: null,
       }),
     );
+    await this.publishProject(projectId);
     return this.toTask(entity, []);
   }
 
@@ -775,16 +776,16 @@ export class RecoveryService {
   ): Promise<RecoveryProject[]> {
     if (!projects.length) return [];
     const projectIds = projects.map((project) => project.id);
-    const tasks = await this.tasks
+    const taskEntities = await this.tasks
       .createQueryBuilder('task')
       .where('task.projectId IN (:...projectIds)', { projectIds })
-      .andWhere('task.reviewedAt IS NOT NULL')
       .andWhere('task.status != :cancelled', {
         cancelled: RecoveryTaskStatus.CANCELLED,
       })
       .orderBy('task.createdAt', 'ASC')
       .getMany();
-    const taskIds = tasks.map((task) => task.id);
+    const reviewedTasks = taskEntities.filter((task) => task.reviewedAt);
+    const taskIds = reviewedTasks.map((task) => task.id);
     const applications = taskIds.length
       ? await this.applications.find({
           where: {
@@ -796,7 +797,7 @@ export class RecoveryService {
     return projects.map((project) =>
       this.toProject(
         project,
-        tasks
+        reviewedTasks
           .filter((task) => task.projectId === project.id)
           .map((task) =>
             this.toTask(
@@ -804,6 +805,11 @@ export class RecoveryService {
               applications.filter((item) => item.taskId === task.id),
             ),
           ),
+        taskEntities.filter(
+          (task) =>
+            task.projectId === project.id &&
+            task.status === RecoveryTaskStatus.PENDING_REVIEW,
+        ).length,
       ),
     );
   }
@@ -811,6 +817,7 @@ export class RecoveryService {
   private toProject(
     entity: RecoveryProjectEntity,
     tasks: RecoveryTask[],
+    pendingTaskCount = 0,
   ): RecoveryProject {
     return {
       id: entity.id,
@@ -831,6 +838,7 @@ export class RecoveryService {
       status: entity.status,
       verifiedBy: entity.verifiedBy,
       verifiedAt: entity.verifiedAt?.toISOString() ?? null,
+      pendingTaskCount,
       tasks,
       createdAt: entity.createdAt.toISOString(),
       updatedAt: entity.updatedAt.toISOString(),
@@ -904,7 +912,8 @@ export class RecoveryService {
       taskTitle: entity.task.title,
       helperId: entity.helperId,
       helperName: entity.helper.displayName,
-      helperPhone: viewer === 'project' ? entity.helper.contactPhone : '',
+      helperPhone:
+        viewer === 'project' && accepted ? entity.helper.contactPhone : '',
       helperVerificationLevel: entity.helper.verificationLevel,
       helperVerifiedSkills: entity.helper.verifiedSkills,
       helperVerificationSource: entity.helper.verificationSourceName,

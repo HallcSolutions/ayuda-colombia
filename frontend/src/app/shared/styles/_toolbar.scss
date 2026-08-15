@@ -1,7 +1,7 @@
 /* Barra de filtros compartida (puntos, alojamiento, desaparecidos, camiones).
    Todos los controles miden lo mismo de alto para que la fila quede alineada. */
 .toolbar {
-  --control-height: 42px;
+  --control-height: 44px;
 
   display: flex;
   flex-wrap: wrap;
@@ -71,7 +71,7 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 34px;
+  min-height: 44px;
   padding: 4px 14px;
   border: 0;
   border-radius: 7px;

@@ -1,12 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   computed,
   effect,
   inject,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { interval } from 'rxjs';
 import { CONVOY_STATUSES, ConvoyStatus } from '../../../core/constants/app.constants';
 import { convoyStatusKey } from '../../../core/i18n/domain-keys';
 import { I18nService } from '../../../core/i18n/i18n.service';
@@ -98,8 +99,10 @@ export class ConvoysSection {
       this.reliefPoints.loadPoints();
     });
 
-    const clock = setInterval(() => this.now.set(Date.now()), CLOCK_INTERVAL_MS);
-    inject(DestroyRef).onDestroy(() => clearInterval(clock));
+    // El reloj se para solo cuando la sección se cierra.
+    interval(CLOCK_INTERVAL_MS)
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.now.set(Date.now()));
   }
 
   /** El mapa abre la ficha del camión tocado, o la cierra al salir de él. */

@@ -8,6 +8,7 @@ import {
 } from '../common/constants/app.constants';
 import { MissingRecord } from '../common/interfaces/missing-record.interface';
 import { createEditPin } from '../common/security/edit-pin';
+import { PhotoStorageService } from '../common/uploads/photo-upload';
 import { MissingRecordEntity } from './infrastructure/entities/missing-record.entity';
 import { MissingGateway } from './missing.gateway';
 import { MissingService } from './missing.service';
@@ -51,6 +52,7 @@ describe('MissingService', () => {
     recordCreated: jest.Mock<void, [MissingRecord]>;
     recordUpdated: jest.Mock<void, [MissingRecord]>;
   };
+  let photoStorage: jest.Mocked<PhotoStorageService>;
 
   beforeEach(async () => {
     repository = {
@@ -74,10 +76,20 @@ describe('MissingService', () => {
           useValue: repository,
         },
         { provide: MissingGateway, useValue: gateway },
+        {
+          provide: PhotoStorageService,
+          useValue: {
+            store: jest.fn((files: Express.Multer.File[]) =>
+              Promise.resolve(files.map((file) => `/uploads/${file.filename}`)),
+            ),
+            remove: jest.fn().mockResolvedValue(undefined),
+          },
+        },
       ],
     }).compile();
 
     service = moduleRef.get(MissingService);
+    photoStorage = moduleRef.get(PhotoStorageService);
   });
 
   it('publica la búsqueda en estado «buscando» y la difunde a la red', async () => {
@@ -220,5 +232,30 @@ describe('MissingService', () => {
     await expect(service.findOne('ghost')).rejects.toBeInstanceOf(
       NotFoundException,
     );
+  });
+
+  it('elimina la foto si la búsqueda no se puede guardar', async () => {
+    repository.save.mockRejectedValue(new Error('base no disponible'));
+
+    await expect(
+      service.create(
+        {
+          kind: MissingSubjectKind.PERSON,
+          name: 'Luisa',
+          description: 'Sudadera azul',
+          department: 'Chocó',
+          municipality: 'Quibdó',
+          lastSeenPlace: 'Malecón',
+          lastSeenAt: '2026-08-12T18:30:00.000Z',
+          contactName: 'Marta',
+          contactPhone: '3001234567',
+          consentToPublish: true,
+        },
+        [photoFile('luisa.jpg')],
+      ),
+    ).rejects.toThrow('base no disponible');
+
+    expect(photoStorage.remove.mock.calls).toEqual([[['/uploads/luisa.jpg']]]);
+    expect(gateway.recordCreated).not.toHaveBeenCalled();
   });
 });

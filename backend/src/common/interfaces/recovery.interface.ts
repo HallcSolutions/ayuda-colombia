@@ -48,6 +48,8 @@ export interface RecoveryProject {
   status: RecoveryProjectStatus;
   verifiedBy: string;
   verifiedAt: string | null;
+  /** Confirma que hay necesidades declaradas sin exponer tareas aún no revisadas. */
+  pendingTaskCount: number;
   tasks: RecoveryTask[];
   createdAt: string;
   updatedAt: string;

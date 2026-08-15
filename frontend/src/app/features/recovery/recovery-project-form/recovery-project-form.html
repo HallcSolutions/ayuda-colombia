@@ -1,21 +1,16 @@
 @if (publishedPin()) {
-  <section class="access-result" role="status">
-    <span>{{ t('recovery.form.sentForReview') }}</span>
-    <h4>{{ t('recovery.form.keepAccess') }}</h4>
-    <dl>
-      <div>
-        <dt>{{ t('recovery.form.projectCode') }}</dt>
-        <dd>{{ publishedId() }}</dd>
-      </div>
-      <div>
-        <dt>{{ t('common.pin') }}</dt>
-        <dd class="pin">{{ publishedPin() }}</dd>
-      </div>
-    </dl>
-    <p>{{ t('recovery.form.keepAccessBody') }}</p>
-    <button type="button" (click)="copyAccess()">{{ t('recovery.form.copyAccess') }}</button>
-    <button type="button" class="secondary" (click)="closed.emit()">{{ t('common.close') }}</button>
-  </section>
+  <app-access-result
+    status="recovery.form.sentForReview"
+    title="recovery.form.keepAccess"
+    codeLabel="recovery.form.projectCode"
+    [code]="publishedId()"
+    [pin]="publishedPin()"
+    note="recovery.form.keepAccessBody"
+    (closed)="closed.emit()"
+  />
+  @if (errorKey(); as key) {
+    <p class="published-warning" role="alert">{{ t(key) }}</p>
+  }
 } @else {
   <form class="inline-form recovery-form" [formGroup]="form" (ngSubmit)="submit()">
     <p class="hint intro-note">{{ t('recovery.form.safetyReview') }}</p>
@@ -62,8 +57,12 @@
         ><input formControlName="municipality"
       /></label>
       <label
-        ><span>{{ t('recovery.form.area') }}</span
-        ><input formControlName="areaReference" [placeholder]="t('recovery.form.areaHint')"
+        ><span>{{ t(publicPlace() ? 'recovery.form.publicAddress' : 'recovery.form.area') }}</span
+        ><input
+          formControlName="areaReference"
+          [placeholder]="
+            t(publicPlace() ? 'recovery.form.publicAddressHint' : 'recovery.form.areaHint')
+          "
       /></label>
       <label class="wide"
         ><span>{{ t('recovery.form.story') }}</span

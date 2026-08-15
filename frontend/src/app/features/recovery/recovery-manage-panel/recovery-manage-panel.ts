@@ -14,7 +14,11 @@ import {
   recoveryTaskCategoryKey,
 } from '../../../core/i18n/domain-keys';
 import { I18nService } from '../../../core/i18n/i18n.service';
-import { RecoveryApplication, RecoveryProject } from '../../../core/models/recovery.model';
+import {
+  RecoveryApplication,
+  RecoveryProject,
+  RecoveryTask,
+} from '../../../core/models/recovery.model';
 import { RecoveryService } from '../../../core/services/recovery.service';
 
 @Component({
@@ -39,6 +43,8 @@ export class RecoveryManagePanel {
   readonly project = input.required<RecoveryProject>();
   readonly pin = signal('');
   readonly applications = signal<RecoveryApplication[]>([]);
+  readonly tasks = signal<RecoveryTask[]>([]);
+  readonly projectStatus = signal<RecoveryProjectStatus | null>(null);
   readonly authenticated = signal(false);
   readonly loading = signal(false);
   readonly error = signal('');
@@ -64,6 +70,8 @@ export class RecoveryManagePanel {
       this.applications.set(
         await firstValueFrom(this.recovery.getProjectApplications(this.project().id, this.pin())),
       );
+      this.tasks.set(this.project().tasks);
+      this.projectStatus.set(this.project().status);
       this.authenticated.set(true);
     } catch {
       this.error.set(this.t('recovery.manage.badPin'));
@@ -125,7 +133,10 @@ export class RecoveryManagePanel {
 
   async changeTask(taskId: string, status: RecoveryTaskStatus): Promise<void> {
     try {
-      await firstValueFrom(this.recovery.updateTask(this.project().id, taskId, status, this.pin()));
+      const updated = await firstValueFrom(
+        this.recovery.updateTask(this.project().id, taskId, status, this.pin()),
+      );
+      this.tasks.update((items) => items.map((item) => (item.id === updated.id ? updated : item)));
       this.recovery.loadProjects();
     } catch {
       this.error.set(this.t('recovery.manage.actionError'));
@@ -134,7 +145,10 @@ export class RecoveryManagePanel {
 
   async changeProject(status: RecoveryProjectStatus): Promise<void> {
     try {
-      await firstValueFrom(this.recovery.updateProject(this.project().id, status, this.pin()));
+      const updated = await firstValueFrom(
+        this.recovery.updateProject(this.project().id, status, this.pin()),
+      );
+      this.projectStatus.set(updated.status);
     } catch {
       this.error.set(this.t('recovery.manage.actionError'));
     }

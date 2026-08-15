@@ -29,9 +29,7 @@ Para desactivarlo (por ejemplo, en un despliegue donde se aplican aparte) usa `D
 | `relief_points` | Acopios, comedores, albergues y puestos de salud | `(department, municipality)`, `(status, type)` |
 | `meal_services` | Jornadas de comida por punto (FK con `ON DELETE CASCADE`) | `(reliefPointId, servedOn)` |
 | `aid_alerts` | Alertas de necesidad por punto (FK con `ON DELETE CASCADE`) | `(status, createdAt)` |
-| `recovery_projects` | Casos y ofertas locales publicados | `(department, municipality)`, `(status, kind)` |
-| `recovery_tasks` | Tareas clasificadas por oficio y riesgo | `(projectId, status)`, `(category, status)` |
-| `recovery_helpers` | Perfiles privados y nivel comprobado | `(verificationLevel, department, municipality)` |
+| `public_news` | Boletines oficiales de desastres activos | `(department, municipality)`, `(status, publishedAt)` |
 
 ### Comandos
 
@@ -47,6 +45,13 @@ Para desactivarlo (por ejemplo, en un despliegue donde se aplican aparte) usa `D
 
 Cada vez que cambies una entidad, genera la migración correspondiente y súbela con el cambio:
 sin ella, otras personas y el despliegue se quedan con el esquema viejo.
+
+### Producción
+
+La imagen aplica automáticamente las migraciones pendientes al iniciar. En Railway o un proveedor
+compatible configura `DATABASE_URL` y deja `DB_RUN_MIGRATIONS=true`; la migración de Noticias crea
+`public_news` y carga los boletines verificados sin depender de ejecutar `db:seed` dentro del contenedor.
+Las escrituras permanecen cerradas hasta definir `NEWS_PUBLISHER_KEY` como secreto del servicio.
 
 ## Pruebas
 

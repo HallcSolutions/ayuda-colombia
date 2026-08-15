@@ -29,8 +29,14 @@ export const routes: Routes = [
       import('./features/missing/missing-section/missing-section').then((m) => m.MissingSection),
   },
   {
+    path: 'noticias',
+    loadComponent: () =>
+      import('./features/public-news/public-news-page').then((m) => m.PublicNewsPage),
+  },
+  {
     path: 'recuperacion',
-    loadComponent: () => import('./features/recovery/recovery-page').then((m) => m.RecoveryPage),
+    loadComponent: () =>
+      import('./features/recovery/recovery-page').then((m) => m.RecoveryPage),
   },
   {
     path: 'reportar',

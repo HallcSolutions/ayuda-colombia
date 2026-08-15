@@ -12,29 +12,31 @@
         <div class="feature-action-card__body">
           <span>{{ t(card.eyebrowKey) }}</span>
           <p>{{ t(card.bodyKey) }}</p>
-          <button type="button" class="register feature-hero__action" (click)="toggleForm()">
-            {{ showForm() ? t('lodging.cancelPublish') : t(publishKey()) }}
-          </button>
+          @if (canPublish()) {
+            <button type="button" class="register feature-hero__action" (click)="toggleForm()">
+              {{ showForm() ? t('lodging.cancelPublish') : t(publishKey()) }}
+            </button>
+          }
         </div>
       </aside>
     }
 
     <dl class="stats feature-hero__metrics">
       <div>
-        <dt>{{ t('lodging.stats.freeSpaces') }}</dt>
-        <dd>{{ freeSpaces() }}</dd>
+        <dt>{{ t('lodging.stats.totalPlaces') }}</dt>
+        <dd>{{ totalPlacesCount() }}</dd>
       </div>
       <div>
-        <dt>{{ t('lodging.stats.offers') }}</dt>
-        <dd>{{ offersCount() }}</dd>
+        <dt>{{ t('lodging.stats.lodgingPlaces') }}</dt>
+        <dd>{{ lodgingPlacesCount() }}</dd>
       </div>
       <div>
-        <dt>{{ t('lodging.stats.hosted') }}</dt>
-        <dd>{{ hostedPeople() }}</dd>
+        <dt>{{ t('lodging.stats.healthPlaces') }}</dt>
+        <dd>{{ healthPlacesCount() }}</dd>
       </div>
       <div>
-        <dt>{{ t('lodging.stats.full') }}</dt>
-        <dd>{{ fullCount() }}</dd>
+        <dt>{{ t('lodging.stats.veterinaryPlaces') }}</dt>
+        <dd>{{ veterinaryPlacesCount() }}</dd>
       </div>
     </dl>
   </header>
@@ -54,17 +56,17 @@
   }
 
   <div class="feature-content lodging-content">
-    @if (group() === 'sleep') {
-      <app-colombia-map
-        [markers]="mapMarkers()"
-        [selectedId]="selectedOfferId()"
-        (markerSelected)="selectOffer($event)"
-      >
-        @if (selectedOffer(); as offer) {
-          <app-lodging-card [offer]="offer" />
-        }
-      </app-colombia-map>
-    }
+    <app-colombia-map
+      [markers]="mapMarkers()"
+      [selectedId]="selectedPlaceId()"
+      (markerSelected)="selectMapPlace($event)"
+    >
+      @if (selectedOffer(); as offer) {
+        <app-lodging-card [offer]="offer" />
+      } @else if (selectedCarePlace(); as place) {
+        <app-care-place-card [place]="place" />
+      }
+    </app-colombia-map>
 
     <div class="toolbar">
       <label class="search">
@@ -102,28 +104,100 @@
       </div>
     </div>
 
-    @if (group() !== 'sleep') {
+    @if (group() === 'health' || group() === 'veterinary') {
       <p class="care-hint">{{ t('lodging.careHint') }}</p>
     }
 
-    @if (group() === 'sleep') {
+    @if (group() === 'all') {
       @if (lodgingService.error()) {
         <p class="section-error" role="alert">{{ lodgingService.error() }}</p>
       }
+      @if (reliefPointsService.error()) {
+        <p class="section-error" role="alert">{{ reliefPointsService.error() }}</p>
+      }
 
-      @if (lodgingService.loading()) {
+      @if (lodgingService.loading() || reliefPointsService.loading()) {
         <p class="empty">{{ t('common.loading') }}</p>
-      } @else if (!offers().length) {
+      } @else if (!offers().length && !visibleCarePlaces().length) {
+        <div class="empty-state">
+          <h3>{{ t('lodging.emptyAll.title') }}</h3>
+          <p>{{ t('lodging.emptyAll.body') }}</p>
+        </div>
+      } @else {
+        <div class="all-place-groups">
+          @if (offers().length || visibleShelterPlaces().length) {
+            <section class="place-group" aria-labelledby="lodging-list-title">
+              <h3 id="lodging-list-title">{{ t('lodging.groupSleep') }}</h3>
+              @if (visibleShelterPlaces().length) {
+                <div class="care-list">
+                  @for (place of visibleShelterPlaces(); track place.id) {
+                    <app-care-place-card [place]="place" />
+                  }
+                </div>
+              }
+              @if (offers().length) {
+                <div class="lodging-grid">
+                  @for (offer of offers(); track offer.id) {
+                    <app-lodging-card [offer]="offer" />
+                  }
+                </div>
+              }
+            </section>
+          }
+
+          @if (visibleHealthPlaces().length) {
+            <section class="place-group" aria-labelledby="health-list-title">
+              <h3 id="health-list-title">{{ t('lodging.groupHealth') }}</h3>
+              <div class="care-list">
+                @for (place of visibleHealthPlaces(); track place.id) {
+                  <app-care-place-card [place]="place" />
+                }
+              </div>
+            </section>
+          }
+
+          @if (visibleVeterinaryPlaces().length) {
+            <section class="place-group" aria-labelledby="veterinary-list-title">
+              <h3 id="veterinary-list-title">{{ t('lodging.groupVeterinary') }}</h3>
+              <div class="care-list">
+                @for (place of visibleVeterinaryPlaces(); track place.id) {
+                  <app-care-place-card [place]="place" />
+                }
+              </div>
+            </section>
+          }
+        </div>
+      }
+    } @else if (group() === 'sleep') {
+      @if (lodgingService.error()) {
+        <p class="section-error" role="alert">{{ lodgingService.error() }}</p>
+      }
+      @if (reliefPointsService.error()) {
+        <p class="section-error" role="alert">{{ reliefPointsService.error() }}</p>
+      }
+
+      @if (lodgingService.loading() || reliefPointsService.loading()) {
+        <p class="empty">{{ t('common.loading') }}</p>
+      } @else if (!offers().length && !visibleShelterPlaces().length) {
         <div class="empty-state">
           <h3>{{ t('lodging.empty.title') }}</h3>
           <p>{{ t('lodging.empty.body') }}</p>
         </div>
       } @else {
-        <div class="lodging-grid">
-          @for (offer of offers(); track offer.id) {
-            <app-lodging-card [offer]="offer" />
-          }
-        </div>
+        @if (visibleShelterPlaces().length) {
+          <div class="care-list">
+            @for (place of visibleShelterPlaces(); track place.id) {
+              <app-care-place-card [place]="place" />
+            }
+          </div>
+        }
+        @if (offers().length) {
+          <div class="lodging-grid">
+            @for (offer of offers(); track offer.id) {
+              <app-lodging-card [offer]="offer" />
+            }
+          </div>
+        }
       }
     } @else {
       @if (reliefPointsService.error()) {

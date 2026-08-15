@@ -39,6 +39,7 @@ export class RecoveryService {
   private readonly http = inject(HttpClient);
   private readonly region = inject(RegionService);
   private readonly i18n = inject(I18nService);
+  private loadRequestId = 0;
 
   readonly projects = signal<RecoveryProject[]>([]);
   readonly loading = signal(false);
@@ -56,15 +57,18 @@ export class RecoveryService {
   }
 
   loadProjects(): void {
+    const requestId = ++this.loadRequestId;
     this.loading.set(true);
     this.error.set('');
     const params = withRegionParams(new HttpParams(), this.region.selection());
     this.http.get<ApiResponse<RecoveryProject[]>>(`${ENDPOINT}/projects`, { params }).subscribe({
       next: (response) => {
+        if (requestId !== this.loadRequestId) return;
         this.projects.set(response.data);
         this.loading.set(false);
       },
       error: () => {
+        if (requestId !== this.loadRequestId) return;
         this.error.set(this.i18n.t('recovery.loadError'));
         this.loading.set(false);
       },
@@ -123,6 +127,25 @@ export class RecoveryService {
       this.http.get<ApiResponse<RecoveryApplication[]>>(
         `${ENDPOINT}/projects/${projectId}/applications`,
         recoveryPinHeader(pin),
+      ),
+    );
+  }
+
+  getHelperApplications(helperId: string, pin: string): Observable<RecoveryApplication[]> {
+    return this.unwrap(
+      this.http.get<ApiResponse<RecoveryApplication[]>>(
+        `${ENDPOINT}/helpers/${helperId}/applications`,
+        helperPinHeader(pin),
+      ),
+    );
+  }
+
+  withdrawApplication(applicationId: string, pin: string): Observable<RecoveryApplication> {
+    return this.unwrap(
+      this.http.patch<ApiResponse<RecoveryApplication>>(
+        `${ENDPOINT}/applications/${applicationId}/withdraw`,
+        {},
+        helperPinHeader(pin),
       ),
     );
   }
