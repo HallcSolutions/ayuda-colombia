@@ -1,8 +1,10 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MissingStatus } from '../common/constants/app.constants';
@@ -14,6 +16,7 @@ import {
 import { createEditPin, matchesEditPin } from '../common/security/edit-pin';
 import { PhotoStorageService } from '../common/uploads/photo-upload';
 import { CreateMissingRecordDto } from './dto/create-missing-record.dto';
+import { CreateVerifiedMissingRecordDto } from './dto/create-verified-missing-record.dto';
 import { UpdateMissingRecordDto } from './dto/update-missing-record.dto';
 import { MissingGateway } from './missing.gateway';
 import { MissingRecordEntity } from './infrastructure/entities/missing-record.entity';
@@ -26,6 +29,7 @@ export class MissingService {
     private readonly repository: Repository<MissingRecordEntity>,
     private readonly gateway: MissingGateway,
     private readonly photoStorage: PhotoStorageService,
+    private readonly config: ConfigService,
   ) {}
 
   async findAll(filters: MissingFilters): Promise<MissingRecord[]> {
@@ -82,6 +86,53 @@ export class MissingService {
     return { ...record, editPin: editPin.pin };
   }
 
+  /**
+   * Inserta o refresca el mismo aviso por fuente y nombre. El enlace demuestra dónde
+   * se consultó; no convierte una foto ajena en contenido autorizado para republicar.
+   */
+  async createVerified(
+    dto: CreateVerifiedMissingRecordDto,
+  ): Promise<MissingRecord> {
+    this.assertTrustedSource(dto.sourceUrl);
+    const sourceUrl = dto.sourceUrl.trim();
+    const name = dto.name.trim();
+    const previous = await this.repository.findOneBy({
+      kind: dto.kind,
+      name,
+      sourceUrl,
+    });
+    const entity = this.repository.create({
+      ...(previous ?? {}),
+      kind: dto.kind,
+      name,
+      ageYears: dto.ageYears ?? null,
+      description: dto.description.trim(),
+      department: dto.department.trim(),
+      municipality: dto.municipality.trim(),
+      lastSeenPlace: dto.lastSeenPlace.trim(),
+      lastSeenAt: new Date(dto.lastSeenAt),
+      latitude: dto.latitude ?? null,
+      longitude: dto.longitude ?? null,
+      contactName: dto.contactName.trim(),
+      contactPhone: dto.contactPhone.trim(),
+      photos: previous?.photos ?? [],
+      status: dto.status,
+      foundAt:
+        dto.status === MissingStatus.FOUND
+          ? (previous?.foundAt ?? new Date())
+          : null,
+      consentToPublish: false,
+      editPinHash: '',
+      sourceName: dto.sourceName.trim(),
+      sourceUrl,
+      sourceVerifiedAt: new Date(dto.sourceVerifiedAt),
+    });
+    const record = this.toContract(await this.repository.save(entity));
+    if (previous) this.gateway.recordUpdated(record);
+    else this.gateway.recordCreated(record);
+    return record;
+  }
+
   async update(
     id: string,
     dto: UpdateMissingRecordDto,
@@ -123,6 +174,24 @@ export class MissingService {
     return entity;
   }
 
+  private assertTrustedSource(sourceUrl: string): void {
+    const trustedDomains = this.config
+      .get<string>('MISSING_TRUSTED_SOURCE_DOMAINS', '')
+      .split(',')
+      .map((domain) => domain.trim().toLowerCase())
+      .filter(Boolean);
+    const hostname = new URL(sourceUrl).hostname.toLowerCase();
+    if (
+      !trustedDomains.some(
+        (domain) => hostname === domain || hostname.endsWith(`.${domain}`),
+      )
+    ) {
+      throw new BadRequestException(
+        'La fuente no pertenece a un dominio institucional autorizado',
+      );
+    }
+  }
+
   private toContract(entity: MissingRecordEntity): MissingRecord {
     return {
       id: entity.id,
@@ -141,6 +210,9 @@ export class MissingService {
       contactName: entity.contactName,
       contactPhone: entity.contactPhone,
       photos: entity.photos,
+      sourceName: entity.sourceName,
+      sourceUrl: entity.sourceUrl,
+      sourceVerifiedAt: entity.sourceVerifiedAt?.toISOString() ?? null,
       status: entity.status,
       foundAt: entity.foundAt?.toISOString() ?? null,
       createdAt: entity.createdAt.toISOString(),

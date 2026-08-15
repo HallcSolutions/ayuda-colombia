@@ -72,6 +72,8 @@ export enum MissingSubjectKind {
 
 export enum MissingStatus {
   SEARCHING = 'searching',
+  /** Animal localizado y cuidado por una entidad mientras espera a su familia o adopción. */
+  SHELTERED = 'sheltered',
   FOUND = 'found',
   CLOSED = 'closed',
 }

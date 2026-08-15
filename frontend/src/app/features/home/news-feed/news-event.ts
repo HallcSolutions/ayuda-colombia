@@ -97,19 +97,22 @@ export function mealEvent(
 
 export function missingEvent(record: MissingRecord, t: Translate): NewsEvent {
   const found = record.status === MissingStatus.FOUND;
+  const sheltered = record.status === MissingStatus.SHELTERED;
   return {
     id: `missing-${record.id}-${record.status}`,
     kind: 'missing',
     at: (found ? record.foundAt : record.createdAt) ?? record.createdAt,
     headline: found
       ? t('news.missingFound', { name: record.name })
-      : t('news.missingPublished', {
-          kind: t(missingKindKey(record.kind)).toLowerCase(),
-          name: record.name,
-        }),
+      : sheltered
+        ? t('news.missingSheltered', { name: record.name })
+        : t('news.missingPublished', {
+            kind: t(missingKindKey(record.kind)).toLowerCase(),
+            name: record.name,
+          }),
     place: placeOf(record),
     detail: found ? '' : record.lastSeenPlace,
-    urgent: !found,
+    urgent: record.status === MissingStatus.SEARCHING,
     route: '/desaparecidos',
   };
 }

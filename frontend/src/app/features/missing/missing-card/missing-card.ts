@@ -10,7 +10,7 @@ import {
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { MissingRecord } from '../../../core/models/missing-record.model';
 import { MissingService } from '../../../core/services/missing.service';
-import { colombiaDateTime } from '../../../core/utils/date.util';
+import { colombiaDate, colombiaDateTime } from '../../../core/utils/date.util';
 import { mapUrl } from '../../../core/utils/geo.util';
 import { whatsappUrl } from '../../../core/utils/phone.util';
 
@@ -43,6 +43,15 @@ export class MissingCard {
     const foundAt = this.record().foundAt;
     return foundAt ? this.formatDate(foundAt) : '';
   });
+  readonly sourceVerifiedLabel = computed(() => {
+    const checkedAt = this.record().sourceVerifiedAt;
+    return checkedAt ? colombiaDate(checkedAt, this.i18n.locale()) : '';
+  });
+  readonly reportedDateLabel = computed(() =>
+    this.record().sourceUrl
+      ? colombiaDate(this.record().lastSeenAt, this.i18n.locale())
+      : this.lastSeenLabel(),
+  );
 
   readonly mapLink = computed(() => {
     const coordinates = this.record().coordinates;

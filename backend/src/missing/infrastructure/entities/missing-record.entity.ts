@@ -42,6 +42,13 @@ export class MissingRecordEntity {
   status!: MissingStatus;
   @Column({ type: 'timestamptz', nullable: true }) foundAt!: Date | null;
   @Column({ default: false }) consentToPublish!: boolean;
+  /** Fuente externa del aviso. No sustituye el consentimiento para copiar su contenido. */
+  @Column({ type: 'varchar', length: 160, nullable: true }) sourceName!:
+    string | null;
+  @Column({ type: 'varchar', length: 500, nullable: true }) sourceUrl!:
+    string | null;
+  @Column({ type: 'timestamptz', nullable: true })
+  sourceVerifiedAt!: Date | null;
   /** `salt:hash` del PIN de edición. Nunca sale por la API. */
   @Column({ type: 'varchar', length: 160, default: '' }) editPinHash!: string;
 

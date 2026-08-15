@@ -70,6 +70,7 @@ export enum MissingSubjectKind {
 
 export enum MissingStatus {
   SEARCHING = 'searching',
+  SHELTERED = 'sheltered',
   FOUND = 'found',
   CLOSED = 'closed',
 }

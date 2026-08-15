@@ -29,6 +29,7 @@
     "migration:revert": "npm run typeorm -- migration:revert",
     "migration:show": "npm run typeorm -- migration:show",
     "db:seed": "ts-node scripts/seed.ts",
+    "missing:publish-verified": "ts-node scripts/publish-verified-missing.ts",
     "db:reset": "npm run typeorm -- schema:drop && npm run migration:run && npm run db:seed"
   },
   "dependencies": {

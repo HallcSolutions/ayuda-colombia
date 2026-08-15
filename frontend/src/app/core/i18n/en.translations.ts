@@ -51,6 +51,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'missingKind.animal': 'Animal',
 
   'missingStatus.searching': 'Still missing',
+  'missingStatus.sheltered': 'In safe care',
   'missingStatus.found': 'Found!',
   'missingStatus.closed': 'Search closed',
 
@@ -137,6 +138,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'news.pointAdded': 'New {type}: {point}',
   'news.mealPlanned': '{point} is cooking {mealType} for {portions} people',
   'news.missingPublished': '{name} is missing ({kind})',
+  'news.missingSheltered': '{name} is in safe care',
   'news.missingFound': '{name} was found',
 
   'publicNews.eyebrow': 'Emergencies being monitored',
@@ -643,12 +645,19 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'missingCard.age': '{years} years old',
   'missingCard.ageUnknown': 'Age not provided',
   'missingCard.lastSeenPlace': 'Last seen at',
+  'missingCard.shelteredPlace': 'Shelter or programme',
   'missingCard.lastSeenAt': 'Date last seen',
+  'missingCard.reportedAt': 'Date reported by the source',
   'missingCard.signs': 'How to recognise them',
   'missingCard.contact': 'Who is looking for them',
+  'missingCard.institutionalContact': 'Institutional contact',
   'missingCard.call': 'Call',
   'missingCard.whatsapp': 'WhatsApp',
   'missingCard.openMap': 'See the spot on the map ↗',
+  'missingCard.openSource': 'Open the official listing and photo ↗',
+  'missingCard.sourceNotice':
+    'Listing linked from {source}. Check the photo there and confirm it is still current before acting.',
+  'missingCard.sourceChecked': 'Link checked on {date}.',
   'missingCard.foundNotice': 'Reunion reported on {date}.',
   'missingCard.pinPrompt': 'Enter the PIN you received when this post was published.',
   'missingCard.pinLabel': '6-digit PIN',

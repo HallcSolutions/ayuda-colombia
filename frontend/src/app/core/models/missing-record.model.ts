@@ -28,6 +28,9 @@ export interface MissingRecord {
   contactName: string;
   contactPhone: string;
   photos: string[];
+  sourceName: string | null;
+  sourceUrl: string | null;
+  sourceVerifiedAt: string | null;
   status: MissingStatus;
   foundAt: string | null;
   createdAt: string;

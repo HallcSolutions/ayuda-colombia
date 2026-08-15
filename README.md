@@ -31,6 +31,7 @@ La ilustración de portada está en `frontend/public/assets/redayuda-colombia-he
 - `GET/POST /api/alerts` y `PATCH /api/alerts/:id/resolve`: necesidades urgentes en tiempo real.
 - `GET /api/missing`: consulta pública de personas y animales desaparecidos, filtrable por `kind`, `status`, `department` y `municipality`.
 - `POST /api/missing`: publica una búsqueda con `multipart/form-data` (1 a 3 fotos). **No pide código**: quien busca a un familiar no es brigadista. Limitado a 10 publicaciones por minuto.
+- `POST /api/missing/verified`: crea o refresca de forma idempotente un aviso contrastado de persona o animal con `x-missing-publisher-key`. Solo acepta dominios institucionales permitidos y enlaza la ficha original sin copiar fotos ni teléfonos privados.
 - `PATCH /api/missing/:id`: marca el reencuentro, cierra o reabre la búsqueda y corrige el contacto. Exige la cabecera `x-missing-pin` con el PIN que devolvió la publicación.
 - WebSocket `/missing`: eventos `missing.created` y `missing.updated`.
 - `GET /api/lodging`: consulta pública de dormidas ofrecidas, filtrable por `kind`, `status`, `onlyAvailable`, `department` y `municipality`.

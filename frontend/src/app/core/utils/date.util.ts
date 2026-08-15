@@ -41,6 +41,16 @@ export function colombiaDateTime(value: string | Date, locale: string): string {
   }).format(new Date(value));
 }
 
+/** Día en Colombia sin inventar una hora cuando la fuente solo publicó una fecha. */
+export function colombiaDate(value: string | Date, locale: string): string {
+  return new Intl.DateTimeFormat(locale === 'es' ? 'es-CO' : 'en-US', {
+    timeZone: COLOMBIA_TIME_ZONE,
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(new Date(value));
+}
+
 /** Valor inicial de un campo `datetime-local`: ahora mismo, en hora de Colombia. */
 export function colombiaInputValue(date: Date = new Date()): string {
   return `${toIsoDate(date)}T${toIsoTime(date)}`;

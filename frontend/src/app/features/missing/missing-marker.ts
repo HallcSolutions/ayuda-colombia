@@ -4,6 +4,7 @@ import { MapMarker, MapMarkerTone } from '../../shared/colombia-map/colombia-map
 
 const TONE_BY_STATUS: Record<MissingStatus, MapMarkerTone> = {
   [MissingStatus.SEARCHING]: 'warning',
+  [MissingStatus.SHELTERED]: 'active',
   [MissingStatus.FOUND]: 'active',
   [MissingStatus.CLOSED]: 'muted',
 };

@@ -51,6 +51,7 @@ export const ES_TRANSLATIONS = {
   'missingKind.animal': 'Animal',
 
   'missingStatus.searching': 'En búsqueda',
+  'missingStatus.sheltered': 'Bajo resguardo',
   'missingStatus.found': '¡Encontrado!',
   'missingStatus.closed': 'Búsqueda cerrada',
 
@@ -138,6 +139,7 @@ export const ES_TRANSLATIONS = {
   'news.pointAdded': 'Nuevo {type}: {point}',
   'news.mealPlanned': '{point} prepara {mealType} para {portions} personas',
   'news.missingPublished': 'Se busca a {name} ({kind})',
+  'news.missingSheltered': '{name} está bajo resguardo',
   'news.missingFound': '{name} apareció',
 
   'publicNews.eyebrow': 'Emergencias en seguimiento',
@@ -656,12 +658,19 @@ export const ES_TRANSLATIONS = {
   'missingCard.age': '{years} años',
   'missingCard.ageUnknown': 'Edad no indicada',
   'missingCard.lastSeenPlace': 'Visto por última vez en',
+  'missingCard.shelteredPlace': 'Lugar de resguardo o programa',
   'missingCard.lastSeenAt': 'Fecha del último avistamiento',
+  'missingCard.reportedAt': 'Fecha reportada por la fuente',
   'missingCard.signs': 'Señas para reconocerlo',
   'missingCard.contact': 'Quién lo está buscando',
+  'missingCard.institutionalContact': 'Contacto institucional',
   'missingCard.call': 'Llamar',
   'missingCard.whatsapp': 'WhatsApp',
   'missingCard.openMap': 'Ver el punto en el mapa ↗',
+  'missingCard.openSource': 'Ver ficha y foto en la fuente oficial ↗',
+  'missingCard.sourceNotice':
+    'Aviso enlazado desde {source}. Revisa allí la foto y confirma que continúe vigente antes de actuar.',
+  'missingCard.sourceChecked': 'Enlace revisado el {date}.',
   'missingCard.foundNotice': 'Reencuentro reportado el {date}.',
   'missingCard.pinPrompt': 'Escribe el PIN que recibiste al publicar este aviso.',
   'missingCard.pinLabel': 'PIN de 6 dígitos',

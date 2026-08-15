@@ -10,6 +10,7 @@ import {
   Post,
   Query,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -21,8 +22,10 @@ import {
 } from '../common/interfaces/missing-record.interface';
 import { photoUploadOptions } from '../common/uploads/photo-upload';
 import { CreateMissingRecordDto } from './dto/create-missing-record.dto';
+import { CreateVerifiedMissingRecordDto } from './dto/create-verified-missing-record.dto';
 import { FindMissingQueryDto } from './dto/find-missing-query.dto';
 import { UpdateMissingRecordDto } from './dto/update-missing-record.dto';
+import { MissingPublisherGuard } from './missing-publisher.guard';
 import { MissingService } from './missing.service';
 
 /**
@@ -62,6 +65,15 @@ export class MissingController {
       );
     }
     return this.missingService.create(dto, files);
+  }
+
+  /** Importación editorial idempotente: enlaza la fuente y nunca copia datos privados. */
+  @Post('verified')
+  @UseGuards(MissingPublisherGuard)
+  createVerified(
+    @Body() dto: CreateVerifiedMissingRecordDto,
+  ): Promise<MissingRecord> {
+    return this.missingService.createVerified(dto);
   }
 
   @Patch(':id')

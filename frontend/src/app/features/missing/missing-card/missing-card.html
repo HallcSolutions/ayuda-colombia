@@ -8,6 +8,8 @@
         loading="lazy"
         decoding="async"
       />
+    } @else if (record().sourceUrl) {
+      <div class="source-photo-placeholder" aria-hidden="true">🐾</div>
     }
 
     <div class="who">
@@ -53,22 +55,33 @@
 
   <dl class="facts">
     <div>
-      <dt>{{ t('missingCard.lastSeenPlace') }}</dt>
+      @if (record().status === missingStatus.SHELTERED) {
+        <dt>{{ t('missingCard.shelteredPlace') }}</dt>
+      } @else {
+        <dt>{{ t('missingCard.lastSeenPlace') }}</dt>
+      }
       <dd>{{ record().lastSeenPlace }}</dd>
     </div>
     <div>
-      <dt>{{ t('missingCard.lastSeenAt') }}</dt>
+      <dt>{{ t(record().sourceUrl ? 'missingCard.reportedAt' : 'missingCard.lastSeenAt') }}</dt>
       <dd>
-        <time [attr.datetime]="record().lastSeenAt">{{ lastSeenLabel() }}</time>
+        <time [attr.datetime]="record().lastSeenAt">{{ reportedDateLabel() }}</time>
       </dd>
     </div>
     <div>
-      <dt>{{ t('missingCard.contact') }}</dt>
+      <dt>
+        {{ t(record().sourceUrl ? 'missingCard.institutionalContact' : 'missingCard.contact') }}
+      </dt>
       <dd>{{ record().contactName }}</dd>
     </div>
   </dl>
 
   <div class="row-actions">
+    @if (record().sourceUrl) {
+      <a class="source" [href]="record().sourceUrl" target="_blank" rel="noopener noreferrer">
+        {{ t('missingCard.openSource') }}
+      </a>
+    }
     <a class="call" [href]="'tel:' + record().contactPhone">
       {{ t('missingCard.call') }} · {{ record().contactPhone }}
     </a>
@@ -76,19 +89,28 @@
     @if (mapLink()) {
       <a [href]="mapLink()" target="_blank" rel="noopener">{{ t('missingCard.openMap') }}</a>
     }
-    @if (record().status === missingStatus.SEARCHING) {
+    @if (!record().sourceUrl && record().status === missingStatus.SEARCHING) {
       <button type="button" class="found" (click)="askForPin(missingStatus.FOUND)">
         {{ t('missingCard.markFound') }}
       </button>
       <button type="button" class="ghost" (click)="askForPin(missingStatus.CLOSED)">
         {{ t('missingCard.close') }}
       </button>
-    } @else {
+    } @else if (!record().sourceUrl) {
       <button type="button" class="ghost" (click)="askForPin(missingStatus.SEARCHING)">
         {{ t('missingCard.reopen') }}
       </button>
     }
   </div>
+
+  @if (record().sourceUrl && record().sourceName) {
+    <p class="source-notice">
+      {{ t('missingCard.sourceNotice', { source: record().sourceName ?? '' }) }}
+      @if (sourceVerifiedLabel()) {
+        {{ t('missingCard.sourceChecked', { date: sourceVerifiedLabel() }) }}
+      }
+    </p>
+  }
 
   @if (record().status === missingStatus.FOUND && foundLabel()) {
     <p class="found-notice">{{ t('missingCard.foundNotice', { date: foundLabel() }) }}</p>

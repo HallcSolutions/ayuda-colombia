@@ -1,4 +1,9 @@
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -33,6 +38,9 @@ const recordEntity = (
   contactName: 'Marta Martínez',
   contactPhone: '3001234567',
   photos: ['/uploads/foto.jpg'],
+  sourceName: null,
+  sourceUrl: null,
+  sourceVerifiedAt: null,
   status: MissingStatus.SEARCHING,
   foundAt: null,
   consentToPublish: true,
@@ -83,6 +91,16 @@ describe('MissingService', () => {
               Promise.resolve(files.map((file) => `/uploads/${file.filename}`)),
             ),
             remove: jest.fn().mockResolvedValue(undefined),
+          },
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn((_key: string, fallback: string) =>
+              _key === 'MISSING_TRUSTED_SOURCE_DOMAINS'
+                ? 'animalesbog.gov.co,policia.gov.co'
+                : fallback,
+            ),
           },
         },
       ],
@@ -145,6 +163,58 @@ describe('MissingService', () => {
     );
 
     expect(record.coordinates).toEqual({ latitude: 5.69, longitude: -76.66 });
+  });
+
+  it('publica una fuente verificada sin copiar fotos ni exigir consentimiento', async () => {
+    repository.findOneBy.mockResolvedValue(null);
+
+    const record = await service.createVerified({
+      kind: MissingSubjectKind.ANIMAL,
+      name: 'Martina',
+      description: 'Yorkie bicolor con microchip.',
+      department: 'Bogotá D.C.',
+      municipality: 'Bogotá D.C.',
+      lastSeenPlace: 'Barrios Unidos',
+      lastSeenAt: '2026-08-12T17:00:00.000Z',
+      contactName: 'IDPYBA',
+      contactPhone: '3058948873',
+      status: MissingStatus.SEARCHING,
+      sourceName: 'IDPYBA',
+      sourceUrl:
+        'https://www.animalesbog.gov.co/wpyba/animalesperdidos/martina',
+      sourceVerifiedAt: '2026-08-15T16:00:00.000Z',
+    });
+
+    expect(record.photos).toEqual([]);
+    expect(record.sourceName).toBe('IDPYBA');
+    expect(repository.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        consentToPublish: false,
+        editPinHash: '',
+        sourceUrl:
+          'https://www.animalesbog.gov.co/wpyba/animalesperdidos/martina',
+      }),
+    );
+  });
+
+  it('rechaza una fuente que no pertenece a la lista institucional', async () => {
+    await expect(
+      service.createVerified({
+        kind: MissingSubjectKind.ANIMAL,
+        name: 'Caso dudoso',
+        description: 'Sin fuente institucional.',
+        department: 'Meta',
+        municipality: 'Villavicencio',
+        lastSeenPlace: 'Sin confirmar',
+        lastSeenAt: '2026-08-15T16:00:00.000Z',
+        contactName: 'Desconocido',
+        contactPhone: '3000000000',
+        status: MissingStatus.SEARCHING,
+        sourceName: 'Sitio desconocido',
+        sourceUrl: 'https://example.com/aviso',
+        sourceVerifiedAt: '2026-08-15T16:00:00.000Z',
+      }),
+    ).rejects.toBeInstanceOf(BadRequestException);
   });
 
   it('marca el reencuentro con su fecha y lo limpia si se reabre la búsqueda', async () => {
