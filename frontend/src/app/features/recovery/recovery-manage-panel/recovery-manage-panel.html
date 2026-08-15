@@ -59,7 +59,14 @@
               </div>
               <div>
                 <dt>{{ t('recovery.manage.verification') }}</dt>
-                <dd>{{ t(verificationKey(application.helperVerificationLevel)) }}</dd>
+                <dd>
+                  {{ t(verificationKey(application.helperVerificationLevel)) }}
+                  @if (application.helperVerifiedBy) {
+                    <small>
+                      {{ t('recovery.manage.verifiedBy', { name: application.helperVerifiedBy }) }}
+                    </small>
+                  }
+                </dd>
               </div>
               @if (application.helperVerificationSource) {
                 <div>

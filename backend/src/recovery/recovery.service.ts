@@ -915,6 +915,7 @@ export class RecoveryService {
       helperPhone:
         viewer === 'project' && accepted ? entity.helper.contactPhone : '',
       helperVerificationLevel: entity.helper.verificationLevel,
+      helperVerifiedBy: entity.helper.verifiedBy,
       helperVerifiedSkills: entity.helper.verifiedSkills,
       helperVerificationSource: entity.helper.verificationSourceName,
       message: entity.message,

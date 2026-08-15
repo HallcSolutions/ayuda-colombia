@@ -329,6 +329,7 @@ describe('RecoveryService', () => {
       helperId: helperEntity().id,
       helper: helperEntity({
         verificationLevel: HelperVerificationLevel.IDENTITY,
+        verifiedBy: 'Equipo coordinador de prueba',
       }),
       message: 'Puedo ayudar',
       availability: 'Mañana',
@@ -349,6 +350,7 @@ describe('RecoveryService', () => {
       projectPin.pin,
     );
     expect(pending[0].helperPhone).toBe('');
+    expect(pending[0].helperVerifiedBy).toBe('Equipo coordinador de prueba');
 
     application.status = RecoveryApplicationStatus.ACCEPTED;
     const accepted = await service.getProjectApplications(

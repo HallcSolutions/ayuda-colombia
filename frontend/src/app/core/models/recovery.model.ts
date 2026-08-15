@@ -135,6 +135,7 @@ export interface RecoveryApplication {
   helperName: string;
   helperPhone: string;
   helperVerificationLevel: HelperVerificationLevel;
+  helperVerifiedBy: string;
   helperVerifiedSkills: RecoveryTaskCategory[];
   helperVerificationSource: string;
   message: string;
