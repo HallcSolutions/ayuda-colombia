@@ -125,14 +125,23 @@
         </div>
       } @else {
         <div class="all-place-groups">
-          @if (offers().length) {
+          @if (offers().length || visibleShelterPlaces().length) {
             <section class="place-group" aria-labelledby="lodging-list-title">
               <h3 id="lodging-list-title">{{ t('lodging.groupSleep') }}</h3>
-              <div class="lodging-grid">
-                @for (offer of offers(); track offer.id) {
-                  <app-lodging-card [offer]="offer" />
-                }
-              </div>
+              @if (visibleShelterPlaces().length) {
+                <div class="care-list">
+                  @for (place of visibleShelterPlaces(); track place.id) {
+                    <app-care-place-card [place]="place" />
+                  }
+                </div>
+              }
+              @if (offers().length) {
+                <div class="lodging-grid">
+                  @for (offer of offers(); track offer.id) {
+                    <app-lodging-card [offer]="offer" />
+                  }
+                </div>
+              }
             </section>
           }
 
@@ -163,20 +172,32 @@
       @if (lodgingService.error()) {
         <p class="section-error" role="alert">{{ lodgingService.error() }}</p>
       }
+      @if (reliefPointsService.error()) {
+        <p class="section-error" role="alert">{{ reliefPointsService.error() }}</p>
+      }
 
-      @if (lodgingService.loading()) {
+      @if (lodgingService.loading() || reliefPointsService.loading()) {
         <p class="empty">{{ t('common.loading') }}</p>
-      } @else if (!offers().length) {
+      } @else if (!offers().length && !visibleShelterPlaces().length) {
         <div class="empty-state">
           <h3>{{ t('lodging.empty.title') }}</h3>
           <p>{{ t('lodging.empty.body') }}</p>
         </div>
       } @else {
-        <div class="lodging-grid">
-          @for (offer of offers(); track offer.id) {
-            <app-lodging-card [offer]="offer" />
-          }
-        </div>
+        @if (visibleShelterPlaces().length) {
+          <div class="care-list">
+            @for (place of visibleShelterPlaces(); track place.id) {
+              <app-care-place-card [place]="place" />
+            }
+          </div>
+        }
+        @if (offers().length) {
+          <div class="lodging-grid">
+            @for (offer of offers(); track offer.id) {
+              <app-lodging-card [offer]="offer" />
+            }
+          </div>
+        }
       }
     } @else {
       @if (reliefPointsService.error()) {

@@ -555,7 +555,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'lodging.groupLabel': 'What are you looking for',
   'lodging.actionAllEyebrow': 'The whole network at first glance',
   'lodging.actionAllBody':
-    'See lodging, health posts and veterinary care together for the selected area.',
+    'See shelters, lodging, health posts and veterinary care together for the selected area.',
   'lodging.actionAllImageAlt': 'Volunteers guide a family towards available services',
   'lodging.actionSleepEyebrow': 'An open door can change a night',
   'lodging.actionSleepBody':
@@ -585,15 +585,16 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'lodging.searchPlaceholder': 'Search by place, address or city',
   'lodging.allStatuses': 'All statuses',
   'lodging.stats.totalPlaces': 'Registered places',
-  'lodging.stats.lodgingPlaces': 'Lodging',
+  'lodging.stats.lodgingPlaces': 'Lodging and shelters',
   'lodging.stats.healthPlaces': 'Health',
   'lodging.stats.veterinaryPlaces': 'Veterinary',
   'lodging.stats.freeSpaces': 'Free beds',
   'lodging.stats.offers': 'Places with beds',
   'lodging.stats.hosted': 'People hosted',
   'lodging.stats.full': 'No beds left',
-  'lodging.empty.title': 'No lodging matches these filters',
-  'lodging.empty.body': 'Change the area or the filters, or offer the first beds in your town.',
+  'lodging.empty.title': 'No shelters or lodging match these filters',
+  'lodging.empty.body':
+    'Change the area or the filters, or publish your town\'s first available bed.',
   'lodging.emptyAll.title': 'No places match these filters',
   'lodging.emptyAll.body': 'Change the area or search to see lodging, health and veterinary care.',
 

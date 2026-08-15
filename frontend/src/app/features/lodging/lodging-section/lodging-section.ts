@@ -11,6 +11,7 @@ import {
   LODGING_STATUSES,
   LodgingKind,
   LodgingStatus,
+  ReliefPointStatus,
   ReliefPointType,
 } from '../../../core/constants/app.constants';
 import {
@@ -172,22 +173,35 @@ export class LodgingSection {
   );
 
   /**
-   * Los sitios de salud y veterinaria son puntos de ayuda del directorio, no dormidas:
-   * se agrupan aquí porque quien llega a esta pantalla busca "a dónde voy", y el
-   * buscador de arriba también los filtra.
+   * Los albergues oficiales, sitios de salud y veterinarias vienen del directorio.
+   * Se muestran junto a las ofertas de alojamiento para no ocultar cupos públicos.
    */
   private readonly carePlaces = computed(() => {
     const search = this.search().trim().toLowerCase();
     const group = this.group();
+    const kind = this.kindFilter();
+    const status = this.statusFilter();
     return this.reliefPointsService
       .pointsInRegion()
       .filter((point) => {
+        if (group === 'sleep') return !kind && point.type === ReliefPointType.SHELTER;
         if (group === 'health') return point.type === ReliefPointType.MEDICAL_POST;
         if (group === 'veterinary') return point.type === ReliefPointType.VETERINARY;
         return (
           group === 'all' &&
-          [ReliefPointType.MEDICAL_POST, ReliefPointType.VETERINARY].includes(point.type)
+          [
+            ReliefPointType.SHELTER,
+            ReliefPointType.MEDICAL_POST,
+            ReliefPointType.VETERINARY,
+          ].includes(point.type)
         );
+      })
+      .filter((point) => {
+        if (group !== 'sleep' || !status) return true;
+        if (status === LodgingStatus.AVAILABLE)
+          return point.status === ReliefPointStatus.ACTIVE;
+        if (status === LodgingStatus.FULL) return point.status === ReliefPointStatus.FULL;
+        return point.status === ReliefPointStatus.CLOSED;
       })
       .filter(
         (point) =>
@@ -207,6 +221,9 @@ export class LodgingSection {
   );
   readonly visibleHealthPlaces = computed(() =>
     this.visibleCarePlaces().filter((point) => point.type === ReliefPointType.MEDICAL_POST),
+  );
+  readonly visibleShelterPlaces = computed(() =>
+    this.visibleCarePlaces().filter((point) => point.type === ReliefPointType.SHELTER),
   );
   readonly visibleVeterinaryPlaces = computed(() =>
     this.visibleCarePlaces().filter((point) => point.type === ReliefPointType.VETERINARY),
@@ -254,14 +271,22 @@ export class LodgingSection {
     this.reliefPointsService
       .pointsInRegion()
       .filter((point) =>
-        [ReliefPointType.MEDICAL_POST, ReliefPointType.VETERINARY].includes(point.type),
+        [
+          ReliefPointType.SHELTER,
+          ReliefPointType.MEDICAL_POST,
+          ReliefPointType.VETERINARY,
+        ].includes(point.type),
       ),
   );
 
   readonly totalPlacesCount = computed(
     () => this.lodgingService.offersInRegion().length + this.carePlacesInRegion().length,
   );
-  readonly lodgingPlacesCount = computed(() => this.lodgingService.offersInRegion().length);
+  readonly lodgingPlacesCount = computed(
+    () =>
+      this.lodgingService.offersInRegion().length +
+      this.carePlacesInRegion().filter((point) => point.type === ReliefPointType.SHELTER).length,
+  );
   readonly healthPlacesCount = computed(
     () =>
       this.carePlacesInRegion().filter((point) => point.type === ReliefPointType.MEDICAL_POST)

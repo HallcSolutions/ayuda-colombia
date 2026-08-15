@@ -123,6 +123,7 @@ describe('LodgingSection', () => {
   it('inicia con todos los lugares, sus listados y contadores generales', async () => {
     const fixture = await render(
       [
+        carePlace('Albergue Coliseo Mayor', ReliefPointType.SHELTER),
         carePlace('Veterinaria del Valle', ReliefPointType.VETERINARY),
         carePlace('Puesto de salud La Ceiba', ReliefPointType.MEDICAL_POST),
       ],
@@ -134,7 +135,7 @@ describe('LodgingSection', () => {
       element.querySelector<HTMLButtonElement>('.kind-tabs button.selected')?.textContent,
     ).toContain('Todos los lugares');
     expect(element.querySelectorAll('app-lodging-card').length).toBe(1);
-    expect(element.querySelectorAll('app-care-place-card').length).toBe(2);
+    expect(element.querySelectorAll('app-care-place-card').length).toBe(3);
     expect(element.querySelector('.feature-hero__metrics')?.textContent).toContain(
       'Lugares registrados',
     );
@@ -142,7 +143,7 @@ describe('LodgingSection', () => {
     expect(element.querySelector('.feature-hero__metrics')?.textContent).toContain('Veterinarias');
     expect(
       [...element.querySelectorAll('.feature-hero__metrics dd')].map((item) => item.textContent),
-    ).toEqual(['3', '1', '1', '1']);
+    ).toEqual(['4', '2', '1', '1']);
   });
 
   it('en Dormir se ofrece un cupo', async () => {
@@ -155,6 +156,19 @@ describe('LodgingSection', () => {
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector('app-lodging-form')).not.toBeNull();
     expect(element.querySelector('app-relief-point-form')).toBeNull();
+  });
+
+  it('muestra los albergues oficiales dentro de las dormidas', async () => {
+    const fixture = await render([
+      carePlace('Albergue Coliseo Mayor', ReliefPointType.SHELTER),
+      carePlace('Acopio del barrio', ReliefPointType.COLLECTION_CENTER),
+    ]);
+
+    await clickPlace(fixture, 'Todas las dormidas');
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelectorAll('app-care-place-card').length).toBe(1);
+    expect(element.querySelector('.care-list')?.textContent).toContain('Albergue Coliseo Mayor');
+    expect(element.querySelector('.care-list')?.textContent).not.toContain('Acopio del barrio');
   });
 
   /** Quien busca una veterinaria la encuentra en la misma fila donde filtra las dormidas. */

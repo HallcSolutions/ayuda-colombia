@@ -563,7 +563,7 @@ export const ES_TRANSLATIONS = {
   'lodging.groupLabel': 'Qué estás buscando',
   'lodging.actionAllEyebrow': 'La red completa, desde el primer vistazo',
   'lodging.actionAllBody':
-    'Consulta en una sola lista los alojamientos, puestos de salud y veterinarias disponibles en la zona elegida.',
+    'Consulta en una sola lista los albergues, alojamientos, puestos de salud y veterinarias disponibles en la zona elegida.',
   'lodging.actionAllImageAlt': 'Voluntarios orientan a una familia hacia los servicios disponibles',
   'lodging.actionSleepEyebrow': 'Una puerta abierta cambia una noche',
   'lodging.actionSleepBody':
@@ -594,15 +594,16 @@ export const ES_TRANSLATIONS = {
   'lodging.searchPlaceholder': 'Buscar por lugar, dirección o ciudad',
   'lodging.allStatuses': 'Todos los estados',
   'lodging.stats.totalPlaces': 'Lugares registrados',
-  'lodging.stats.lodgingPlaces': 'Alojamientos',
+  'lodging.stats.lodgingPlaces': 'Alojamientos y albergues',
   'lodging.stats.healthPlaces': 'Salud',
   'lodging.stats.veterinaryPlaces': 'Veterinarias',
   'lodging.stats.freeSpaces': 'Cupos libres',
   'lodging.stats.offers': 'Alojamientos con cupo',
   'lodging.stats.hosted': 'Personas alojadas',
   'lodging.stats.full': 'Sin cupos',
-  'lodging.empty.title': 'No hay alojamientos con estos filtros',
-  'lodging.empty.body': 'Cambia la zona o los filtros, u ofrece el primer cupo de tu municipio.',
+  'lodging.empty.title': 'No hay albergues ni alojamientos con estos filtros',
+  'lodging.empty.body':
+    'Cambia la zona o los filtros, o publica el primer cupo disponible de tu municipio.',
   'lodging.emptyAll.title': 'No hay lugares registrados con estos filtros',
   'lodging.emptyAll.body':
     'Cambia la zona o la búsqueda para consultar alojamientos, salud y veterinarias.',
