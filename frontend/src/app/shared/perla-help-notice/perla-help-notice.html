@@ -11,8 +11,8 @@
         {{ t('missing.help.whatsapp') }} <span aria-hidden="true">↗</span>
       </a>
       <button type="button" (click)="shareHelp(perla)">
-        <span aria-hidden="true">↗</span>
         {{ shareResult() === 'copied' ? t('share.linkCopied') : t('share.action') }}
+        <span aria-hidden="true">↗</span>
       </button>
       <a class="search-help__case" [routerLink]="missingPathFor(perla)">
         {{ t('missing.help.case') }} <span aria-hidden="true">→</span>

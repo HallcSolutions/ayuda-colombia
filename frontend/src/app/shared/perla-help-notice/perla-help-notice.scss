@@ -74,12 +74,33 @@
   text-align: left;
   text-decoration: none;
   cursor: pointer;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
 }
 
 .search-help__actions button,
 .search-help__actions .search-help__case {
   color: var(--green);
-  background: transparent;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.search-help__actions a:hover,
+.search-help__actions button:hover {
+  transform: translateY(-1px);
+}
+
+.search-help__actions button:hover,
+.search-help__actions .search-help__case:hover {
+  background: rgba(18, 88, 64, 0.08);
+}
+
+.search-help__actions a:focus-visible,
+.search-help__actions button:focus-visible {
+  outline: 3px solid rgba(239, 96, 69, 0.28);
+  outline-offset: 3px;
 }
 
 .search-help__error {
