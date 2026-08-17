@@ -698,7 +698,7 @@ export const ES_TRANSLATIONS = {
   'missing.searchPlaceholder': 'Buscar por nombre, lugar o señas',
   'missing.allKinds': 'Personas y animales',
   'missing.allStatuses': 'Todos los estados',
-  'missing.stats.searching': 'En búsqueda',
+  'missing.stats.open': 'Búsquedas activas',
   'missing.stats.people': 'Personas',
   'missing.stats.animals': 'Animales',
   'missing.stats.found': 'Reencuentros',

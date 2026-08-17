@@ -221,6 +221,11 @@ export const HELP_CONTACT_ROLES = Object.values(HelpContactRole);
 export const HELP_CONTACT_CHANNELS = Object.values(HelpContactChannel);
 export const MISSING_SUBJECT_KINDS = Object.values(MissingSubjectKind);
 export const MISSING_STATUSES = Object.values(MissingStatus);
+/** Sigue abierta mientras nadie haya vuelto a casa: buscando o al cuidado de alguien. */
+export const OPEN_MISSING_STATUSES: readonly MissingStatus[] = [
+  MissingStatus.SEARCHING,
+  MissingStatus.SHELTERED,
+];
 export const CONVOY_STATUSES = Object.values(ConvoyStatus);
 export const LODGING_KINDS = Object.values(LodgingKind);
 export const LODGING_STATUSES = Object.values(LodgingStatus);

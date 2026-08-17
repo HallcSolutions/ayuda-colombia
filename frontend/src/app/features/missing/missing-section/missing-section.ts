@@ -11,6 +11,7 @@ import {
   MISSING_SUBJECT_KINDS,
   MissingStatus,
   MissingSubjectKind,
+  OPEN_MISSING_STATUSES,
 } from '../../../core/constants/app.constants';
 import {
   MISSING_KIND_ICONS,
@@ -81,22 +82,22 @@ export class MissingSection {
   readonly records = computed(() =>
     [...this.visibleRecords()].sort(
       (first, second) =>
-        this.searchingFirst(first) - this.searchingFirst(second) ||
+        this.openFirst(first) - this.openFirst(second) ||
         second.lastSeenAt.localeCompare(first.lastSeenAt),
     ),
   );
 
-  readonly searchingCount = computed(
-    () =>
-      this.visibleRecords().filter((record) => record.status === MissingStatus.SEARCHING).length,
+  /** Las cifras cuentan lo mismo: personas + animales son las búsquedas todavía abiertas. */
+  private readonly openRecords = computed(() =>
+    this.visibleRecords().filter((record) => OPEN_MISSING_STATUSES.includes(record.status)),
   );
+
+  readonly openCount = computed(() => this.openRecords().length);
   readonly peopleCount = computed(
-    () =>
-      this.visibleRecords().filter((record) => record.kind === MissingSubjectKind.PERSON).length,
+    () => this.openRecords().filter((record) => record.kind === MissingSubjectKind.PERSON).length,
   );
   readonly animalCount = computed(
-    () =>
-      this.visibleRecords().filter((record) => record.kind === MissingSubjectKind.ANIMAL).length,
+    () => this.openRecords().filter((record) => record.kind === MissingSubjectKind.ANIMAL).length,
   );
   readonly foundCount = computed(
     () => this.visibleRecords().filter((record) => record.status === MissingStatus.FOUND).length,
@@ -144,7 +145,7 @@ export class MissingSection {
     this.showForm.update((open) => !open);
   }
 
-  private searchingFirst(record: MissingRecord): number {
-    return record.status === MissingStatus.SEARCHING ? 0 : 1;
+  private openFirst(record: MissingRecord): number {
+    return OPEN_MISSING_STATUSES.includes(record.status) ? 0 : 1;
   }
 }

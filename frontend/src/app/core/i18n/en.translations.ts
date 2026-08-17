@@ -687,7 +687,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'missing.searchPlaceholder': 'Search by name, place or description',
   'missing.allKinds': 'People and animals',
   'missing.allStatuses': 'All statuses',
-  'missing.stats.searching': 'Still missing',
+  'missing.stats.open': 'Active searches',
   'missing.stats.people': 'People',
   'missing.stats.animals': 'Animals',
   'missing.stats.found': 'Reunions',
