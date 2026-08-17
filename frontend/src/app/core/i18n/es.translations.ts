@@ -639,6 +639,24 @@ export const ES_TRANSLATIONS = {
   'feed.contactPrivate':
     'Esta familia prefirió no publicar un teléfono. Respeta su decisión y no intentes identificarla.',
 
+  'aidOffer.ariaLabel': 'Ayuda particular disponible para familias en Cali y ciudades cercanas',
+  'aidOffer.eyebrow': 'Aporte particular · Cali y alrededores',
+  'aidOffer.status': 'Disponibilidad por confirmar',
+  'aidOffer.title': 'Elementos para 20–30 familias sin hogar',
+  'aidOffer.body':
+    'Andrea Morales ofrece estos elementos a familias afectadas y coordina personalmente cada entrega en Cali y ciudades cercanas.',
+  'aidOffer.inventoryLabel': 'Elementos ofrecidos',
+  'aidOffer.tents': 'carpas',
+  'aidOffer.pillows': 'almohadas',
+  'aidOffer.wipes': 'pañitos húmedos',
+  'aidOffer.contactEyebrow': 'Coordinar una familia',
+  'aidOffer.delivery':
+    'Escríbele antes de desplazarte. Ella confirma la disponibilidad y acuerda directamente la entrega.',
+  'aidOffer.whatsapp': 'Contactar por WhatsApp',
+  'aidOffer.directory': 'Ver familias que necesitan ayuda',
+  'aidOffer.caveatTitle': 'Entrega particular:',
+  'aidOffer.caveatBody': 'no es un centro de acopio, no recibe donaciones y no coordina camiones.',
+
   'reportStatus.open': 'Pendiente',
   'reportStatus.in_progress': 'En atención',
   'reportStatus.resolved': 'Atendido',

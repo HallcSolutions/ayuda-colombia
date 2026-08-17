@@ -628,6 +628,25 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'feed.contactPrivate':
     'This family chose not to publish a phone number. Respect that choice and do not try to identify them.',
 
+  'aidOffer.ariaLabel': 'Private aid available for families in Cali and nearby cities',
+  'aidOffer.eyebrow': 'Private contribution · Cali and nearby areas',
+  'aidOffer.status': 'Confirm availability first',
+  'aidOffer.title': 'Supplies for 20–30 families without shelter',
+  'aidOffer.body':
+    'Andrea Morales is offering these supplies to affected families and personally coordinates each delivery in Cali and nearby cities.',
+  'aidOffer.inventoryLabel': 'Supplies being offered',
+  'aidOffer.tents': 'tents',
+  'aidOffer.pillows': 'pillows',
+  'aidOffer.wipes': 'wet wipes',
+  'aidOffer.contactEyebrow': 'Coordinate help for a family',
+  'aidOffer.delivery':
+    'Message her before traveling. She will confirm availability and arrange delivery directly.',
+  'aidOffer.whatsapp': 'Contact on WhatsApp',
+  'aidOffer.directory': 'See families who need help',
+  'aidOffer.caveatTitle': 'Private delivery:',
+  'aidOffer.caveatBody':
+    'this is not a collection point and does not accept donations or coordinate trucks.',
+
   'reportStatus.open': 'Pending',
   'reportStatus.in_progress': 'In progress',
   'reportStatus.resolved': 'Handled',

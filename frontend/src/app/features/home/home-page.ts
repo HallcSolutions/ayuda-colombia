@@ -19,6 +19,7 @@ import { MealsService } from '../../core/services/meals.service';
 import { RegionService } from '../../core/services/region.service';
 import { ReliefPointsService } from '../../core/services/relief-points.service';
 import { ReportsService } from '../../core/services/reports.service';
+import { AidOfferNotice } from '../../shared/aid-offer-notice/aid-offer-notice';
 import { ColombiaMap } from '../../shared/colombia-map/colombia-map';
 import { MapMarker } from '../../shared/colombia-map/colombia-map.model';
 import { toMapMarker } from '../relief-points/relief-point-marker';
@@ -27,7 +28,7 @@ import { NewsFeed } from './news-feed/news-feed';
 
 @Component({
   selector: 'app-home-page',
-  imports: [RouterLink, ColombiaMap, NeedsDigestPanel, NewsFeed],
+  imports: [RouterLink, ColombiaMap, NeedsDigestPanel, NewsFeed, AidOfferNotice],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

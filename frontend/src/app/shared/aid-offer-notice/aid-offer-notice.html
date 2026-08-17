@@ -1,0 +1,49 @@
+<section
+  id="ayuda-disponible-cali"
+  class="offer-shell"
+  [class.offer-shell--compact]="compact()"
+  [attr.aria-label]="t('aidOffer.ariaLabel')"
+>
+  <article class="offer-card">
+    <div class="offer-copy">
+      <header class="offer-meta">
+        <span class="offer-kicker"><i aria-hidden="true"></i>{{ t('aidOffer.eyebrow') }}</span>
+        <span class="offer-status">{{ t('aidOffer.status') }}</span>
+      </header>
+
+      <h2>{{ t('aidOffer.title') }}</h2>
+      <p>{{ t('aidOffer.body') }}</p>
+
+      <ul class="offer-inventory" [attr.aria-label]="t('aidOffer.inventoryLabel')">
+        <li>
+          <strong>30</strong><span>{{ t('aidOffer.tents') }}</span>
+        </li>
+        <li>
+          <strong>30</strong><span>{{ t('aidOffer.pillows') }}</span>
+        </li>
+        <li>
+          <strong>30</strong><span>{{ t('aidOffer.wipes') }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <aside class="offer-contact">
+      <span>{{ t('aidOffer.contactEyebrow') }}</span>
+      <strong>Andrea Morales</strong>
+      <p>{{ t('aidOffer.delivery') }}</p>
+      <a [href]="whatsappLink" target="_blank" rel="noopener noreferrer">
+        {{ t('aidOffer.whatsapp') }} <span aria-hidden="true">↗</span>
+      </a>
+      @if (compact()) {
+        <a class="offer-directory-link" routerLink="/reportes">
+          {{ t('aidOffer.directory') }} <span aria-hidden="true">→</span>
+        </a>
+      }
+    </aside>
+  </article>
+
+  <footer class="offer-caveat">
+    <strong>{{ t('aidOffer.caveatTitle') }}</strong>
+    <span>{{ t('aidOffer.caveatBody') }}</span>
+  </footer>
+</section>

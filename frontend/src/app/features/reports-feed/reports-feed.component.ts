@@ -18,11 +18,12 @@ import { ReportsService } from '../../core/services/reports.service';
 import { colombiaDateTime } from '../../core/utils/date.util';
 import { mapUrl as directionsUrl } from '../../core/utils/geo.util';
 import { whatsappUrl } from '../../core/utils/phone.util';
+import { AidOfferNotice } from '../../shared/aid-offer-notice/aid-offer-notice';
 import { ColombiaWatermark } from '../../shared/colombia-watermark/colombia-watermark';
 
 @Component({
   selector: 'app-reports-feed',
-  imports: [ColombiaWatermark, RouterLink],
+  imports: [ColombiaWatermark, RouterLink, AidOfferNotice],
   templateUrl: './reports-feed.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
