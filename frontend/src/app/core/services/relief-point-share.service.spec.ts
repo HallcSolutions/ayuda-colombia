@@ -62,10 +62,10 @@ describe('ReliefPointShareService', () => {
     expect(nativeShare).toHaveBeenCalledWith(
       expect.objectContaining({
         title: POINT.name,
-        text: expect.stringContaining(POINT.name),
         url: expect.stringContaining(service.pathFor(POINT)),
       }),
     );
+    expect(nativeShare.mock.calls[0][0]).not.toHaveProperty('text');
   });
 
   it('copia el mismo enlace directo cuando el equipo no tiene menú para compartir', async () => {

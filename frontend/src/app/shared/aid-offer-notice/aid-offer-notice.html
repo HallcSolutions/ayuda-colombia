@@ -34,10 +34,17 @@
       <a [href]="whatsappLink" target="_blank" rel="noopener noreferrer">
         {{ t('aidOffer.whatsapp') }} <span aria-hidden="true">↗</span>
       </a>
+      <button type="button" class="offer-share-button" (click)="shareOffer()">
+        <span aria-hidden="true">↗</span>
+        {{ shareResult() === 'copied' ? t('share.linkCopied') : t('share.action') }}
+      </button>
       @if (compact()) {
         <a class="offer-directory-link" routerLink="/reportes">
           {{ t('aidOffer.directory') }} <span aria-hidden="true">→</span>
         </a>
+      }
+      @if (shareResult() === 'failed') {
+        <p class="offer-share-error" role="alert">{{ t('share.error') }}</p>
       }
     </aside>
   </article>

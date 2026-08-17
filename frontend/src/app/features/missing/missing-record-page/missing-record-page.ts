@@ -5,6 +5,7 @@ import { missingKindKey } from '../../../core/i18n/domain-keys';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { MissingRecord } from '../../../core/models/missing-record.model';
 import { MissingService } from '../../../core/services/missing.service';
+import { uuidFromRouteParameter } from '../../../core/utils/route-id.util';
 import { MissingCard } from '../missing-card/missing-card';
 
 @Component({
@@ -21,7 +22,7 @@ export class MissingRecordPage {
   protected readonly t = inject(I18nService).t;
   protected readonly kindKey = missingKindKey;
 
-  readonly recordId = this.route.snapshot.paramMap.get('missingId') ?? '';
+  readonly recordId = uuidFromRouteParameter(this.route.snapshot.paramMap.get('missingId'));
   readonly loadedRecord = signal<MissingRecord | null>(null);
   readonly loading = signal(true);
   readonly loadError = signal('');

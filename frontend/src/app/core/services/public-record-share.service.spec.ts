@@ -86,6 +86,20 @@ describe('PublicRecordShareService', () => {
         url: expect.stringContaining(service.missingPathFor(MISSING)),
       }),
     );
+    expect(nativeShare.mock.calls[0][0]).not.toHaveProperty('text');
+  });
+
+  it('comparte la oferta de Andrea con un enlace estable al aviso', async () => {
+    const nativeShare = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'share', { configurable: true, value: nativeShare });
+    const service = TestBed.inject(PublicRecordShareService);
+
+    await expect(service.shareAidOffer()).resolves.toBe('shared');
+    expect(nativeShare).toHaveBeenCalledWith({
+      title: expect.stringContaining('Cali'),
+      url: service.aidOfferUrl(),
+    });
+    expect(service.aidOfferUrl()).toContain('/inicio#ayuda-disponible-cali');
   });
 
   it('copia la ficha individual de ayuda cuando no existe menú nativo', async () => {

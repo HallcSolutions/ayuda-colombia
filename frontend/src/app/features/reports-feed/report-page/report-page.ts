@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { HouseReport } from '../../../core/models/house-report.model';
 import { ReportsService } from '../../../core/services/reports.service';
+import { uuidFromRouteParameter } from '../../../core/utils/route-id.util';
 import { ReportCard } from '../report-card/report-card';
 
 @Component({
@@ -19,7 +20,7 @@ export class ReportPage {
 
   protected readonly t = inject(I18nService).t;
 
-  readonly reportId = this.route.snapshot.paramMap.get('reportId') ?? '';
+  readonly reportId = uuidFromRouteParameter(this.route.snapshot.paramMap.get('reportId'));
   readonly loadedReport = signal<HouseReport | null>(null);
   readonly loading = signal(true);
   readonly loadError = signal('');

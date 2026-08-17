@@ -649,6 +649,7 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'aidOffer.delivery':
     'Message her before traveling. She will confirm availability and arrange delivery directly.',
   'aidOffer.whatsapp': 'Contact on WhatsApp',
+  'aidOffer.shareTitle': 'Supplies available for families in Cali',
   'aidOffer.directory': 'See families who need help',
 
   'reportPage.navigation': 'Direct aid navigation',

@@ -23,6 +23,10 @@ export class PublicRecordShareService {
     return `/reportes/${slug}/${encodeURIComponent(report.id)}`;
   }
 
+  aidOfferPath(): string {
+    return '/inicio#ayuda-disponible-cali';
+  }
+
   missingUrlFor(record: MissingRecord): string {
     return this.urlFor(this.missingPathFor(record));
   }
@@ -31,13 +35,13 @@ export class PublicRecordShareService {
     return this.urlFor(this.reportPathFor(report));
   }
 
+  aidOfferUrl(): string {
+    return this.urlFor(this.aidOfferPath());
+  }
+
   shareMissing(record: MissingRecord): Promise<PublicRecordShareResult> {
     return this.share({
       title: `${record.name} · ${record.municipality}`,
-      text: this.i18n.t('share.missingText', {
-        name: record.name,
-        municipality: record.municipality,
-      }),
       url: this.missingUrlFor(record),
     });
   }
@@ -45,8 +49,14 @@ export class PublicRecordShareService {
   shareReport(report: HouseReport): Promise<PublicRecordShareResult> {
     return this.share({
       title: this.i18n.t('share.reportTitle', { municipality: report.municipality }),
-      text: this.i18n.t('share.reportText', { municipality: report.municipality }),
       url: this.reportUrlFor(report),
+    });
+  }
+
+  shareAidOffer(): Promise<PublicRecordShareResult> {
+    return this.share({
+      title: this.i18n.t('aidOffer.shareTitle'),
+      url: this.aidOfferUrl(),
     });
   }
 

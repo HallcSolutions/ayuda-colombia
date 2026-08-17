@@ -156,7 +156,8 @@
   line-height: 1.55;
 }
 
-.offer-contact a {
+.offer-contact a,
+.offer-contact button {
   display: inline-flex;
   min-height: 48px;
   align-items: center;
@@ -171,19 +172,36 @@
   font-weight: 800;
   text-align: center;
   text-decoration: none;
+  cursor: pointer;
   transition:
     transform 180ms ease,
     box-shadow 180ms ease;
 }
 
-.offer-contact a:hover {
+.offer-contact a:hover,
+.offer-contact button:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 22px rgba(18, 88, 64, 0.2);
 }
 
-.offer-contact a:focus-visible {
+.offer-contact a:focus-visible,
+.offer-contact button:focus-visible {
   outline: 3px solid rgba(18, 88, 64, 0.3);
   outline-offset: 3px;
+}
+
+.offer-contact .offer-share-button {
+  min-height: 44px;
+  margin-top: 9px;
+  color: var(--green);
+  background: transparent;
+}
+
+.offer-contact .offer-share-error {
+  margin: 9px 0 0;
+  color: #8c2f1c;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .offer-contact .offer-directory-link {
@@ -213,7 +231,8 @@
     border-left: 0;
   }
 
-  .offer-contact a {
+  .offer-contact a,
+  .offer-contact button {
     width: min(100%, 360px);
     box-sizing: border-box;
   }
@@ -249,13 +268,15 @@
     font-size: 28px;
   }
 
-  .offer-contact a {
+  .offer-contact a,
+  .offer-contact button {
     width: 100%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .offer-contact a {
+  .offer-contact a,
+  .offer-contact button {
     transition: none;
   }
 }

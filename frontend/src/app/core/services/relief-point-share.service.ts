@@ -1,7 +1,6 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { ReliefPointType } from '../constants/app.constants';
-import { I18nService } from '../i18n/i18n.service';
 import { ReliefPoint } from '../models/relief-point.model';
 
 export type ReliefPointShareResult = 'shared' | 'copied' | 'cancelled' | 'failed';
@@ -22,7 +21,6 @@ const TYPE_SLUG: Record<ReliefPointType, string> = {
 export class ReliefPointShareService {
   private readonly document = inject(DOCUMENT);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly i18n = inject(I18nService);
 
   pathFor(point: ReliefPoint): string {
     const readableName = `${point.name}-${point.municipality}`
@@ -46,14 +44,9 @@ export class ReliefPointShareService {
     if (!isPlatformBrowser(this.platformId)) return 'failed';
 
     const url = this.urlFor(point);
-    const data: ShareData = {
-      title: point.name,
-      text: this.i18n.t('reliefPointCard.shareText', {
-        point: point.name,
-        municipality: point.municipality,
-      }),
-      url,
-    };
+    // Algunas aplicaciones pegan `text` al final de `url` y rompen la ruta.
+    // El título y la ficha directa conservan el contexto sin arriesgar el enlace.
+    const data: ShareData = { title: point.name, url };
 
     if (typeof navigator.share === 'function') {
       try {

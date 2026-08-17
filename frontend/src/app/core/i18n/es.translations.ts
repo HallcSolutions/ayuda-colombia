@@ -660,6 +660,7 @@ export const ES_TRANSLATIONS = {
   'aidOffer.delivery':
     'Escríbele antes de desplazarte. Ella confirma la disponibilidad y acuerda directamente la entrega.',
   'aidOffer.whatsapp': 'Contactar por WhatsApp',
+  'aidOffer.shareTitle': 'Elementos disponibles para familias en Cali',
   'aidOffer.directory': 'Ver familias que necesitan ayuda',
 
   'reportPage.navigation': 'Navegación de la ayuda directa',
