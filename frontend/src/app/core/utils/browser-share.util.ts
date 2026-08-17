@@ -139,9 +139,10 @@ const imageFile = async (payload: PublicSharePayload): Promise<File | null> => {
 };
 
 /**
- * Las apps de historias suelen aceptar imágenes, pero no URLs. La tarjeta lleva un
- * QR y el enlace exacto se copia para poder pegarlo como sticker; si el dispositivo
- * no comparte archivos, se envía la URL normalmente.
+ * Las apps de historias suelen aceptar imágenes, pero pueden ignorar el texto. La
+ * tarjeta lleva un QR como respaldo; WhatsApp y las apps que sí aceptan el texto
+ * reciben además el enlace clicable. Si el dispositivo no comparte archivos, se
+ * envía la URL normalmente.
  */
 export const sharePublicLink = async (payload: PublicSharePayload): Promise<BrowserShareResult> => {
   if (typeof navigator.share === 'function') {
@@ -156,7 +157,11 @@ export const sharePublicLink = async (payload: PublicSharePayload): Promise<Brow
     const file = await imageFile(payload);
     if (file) {
       try {
-        await navigator.share({ files: [file] });
+        await navigator.share({
+          title: payload.title,
+          text: `${payload.title}\n${payload.url}`,
+          files: [file],
+        });
         return linkCopied ? 'copied' : 'shared';
       } catch (error) {
         if ((error as { name?: string } | null)?.name === 'AbortError') return 'cancelled';

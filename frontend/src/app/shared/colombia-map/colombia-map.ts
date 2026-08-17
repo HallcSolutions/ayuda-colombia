@@ -172,6 +172,9 @@ export class ColombiaMap {
   /** Caminos dibujados bajo las chinchetas: recorrido hecho y tramo que falta. */
   readonly trails = input<readonly MapTrail[]>([]);
   readonly selectedId = input<string | null>(null);
+  readonly hint = input('');
+  /** En seguimiento de camiones, la ficha flota sobre el mapa como una hoja de ruta. */
+  readonly overlayDetail = input(false);
   /** Punto elegido, o `null` cuando se cierra el detalle o se cambia de zona. */
   readonly markerSelected = output<MapMarker | null>();
 
@@ -449,6 +452,8 @@ export class ColombiaMap {
       count: 1,
       tone: marker.tone,
       urgent: marker.urgent,
+      symbol: marker.symbol ?? 'pin',
+      rotation: marker.rotation ?? 0,
       selected: this.selectedId() === marker.id,
       marker,
       municipality: marker.municipality,
@@ -476,6 +481,8 @@ export class ColombiaMap {
         count: markers.length,
         tone: single?.tone ?? 'active',
         urgent: markers.some((marker) => marker.urgent),
+        symbol: single?.symbol ?? 'pin',
+        rotation: single?.rotation ?? 0,
         selected: Boolean(single && this.selectedId() === single.id),
         marker: single,
         municipality: markers[0].municipality,

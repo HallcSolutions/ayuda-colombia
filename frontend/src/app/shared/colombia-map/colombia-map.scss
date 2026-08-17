@@ -169,6 +169,43 @@ svg {
   cursor: pointer;
 }
 
+/* El camión no salta entre señales: la posición recibida por socket se desliza en el mapa. */
+.pin.is-vehicle {
+  transition: transform 2.4s cubic-bezier(0.22, 0.72, 0.24, 1);
+}
+
+.pin .vehicle {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 1.2s ease;
+}
+
+.pin .vehicle-disc {
+  fill: var(--tone);
+  stroke: #fff;
+  stroke-width: 3;
+  filter: drop-shadow(0 5px 6px rgb(13 45 35 / 30%));
+}
+
+.pin .vehicle-body {
+  fill: #fff;
+}
+
+.pin .vehicle-wheel {
+  fill: var(--ink);
+  stroke: #fff;
+  stroke-width: 0.8;
+}
+
+.pin .vehicle-halo {
+  fill: none;
+  stroke: var(--tone);
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: vehicle-signal 2s ease-out infinite;
+}
+
 .pin .drop {
   fill: var(--tone);
   stroke: #fff;
@@ -201,6 +238,13 @@ svg {
   outline: none;
 }
 
+.pin:hover .vehicle-disc,
+.pin:focus-visible .vehicle-disc,
+.pin.is-selected .vehicle-disc {
+  stroke: var(--coral);
+  stroke-width: 4;
+}
+
 .pin.is-selected .drop {
   fill: var(--coral);
   stroke-width: 3.5;
@@ -226,6 +270,17 @@ svg {
   }
 }
 
+@keyframes vehicle-signal {
+  0% {
+    transform: scale(0.82);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1.65);
+    opacity: 0;
+  }
+}
+
 @keyframes map-stage-enter {
   from {
     opacity: 0;
@@ -243,6 +298,11 @@ svg {
   .pin .halo {
     animation: none;
     opacity: 0.6;
+  }
+
+  .pin .vehicle-halo {
+    animation: none;
+    opacity: 0.55;
   }
 
   .map-stage {
@@ -269,6 +329,46 @@ svg {
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+}
+
+/* En el rastreador la información funciona como hoja flotante, no como otra tarjeta. */
+.colombia-map.has-overlay-detail {
+  position: relative;
+  grid-template-areas:
+    'bar'
+    'stage';
+}
+
+.has-overlay-detail .map-legend {
+  display: none;
+}
+
+.has-overlay-detail .map-detail {
+  grid-area: stage;
+  z-index: 3;
+  align-self: end;
+  justify-self: start;
+  width: min(390px, calc(100% - 32px));
+  max-height: calc(100% - 32px);
+  box-sizing: border-box;
+  margin: 16px;
+  padding: 0;
+  overflow: auto;
+  border: 1px solid rgb(255 255 255 / 72%);
+  border-radius: 22px;
+  background: rgb(255 253 247 / 94%);
+  box-shadow: 0 22px 50px rgb(13 45 35 / 22%);
+  backdrop-filter: blur(15px);
+}
+
+.has-overlay-detail .street-map {
+  display: none;
+}
+
+.has-overlay-detail .map-detail .close {
+  z-index: 2;
+  top: 12px;
+  right: 12px;
 }
 
 /* El callejero del punto abierto: las calles que el dibujo del país no puede mostrar. */
@@ -336,7 +436,7 @@ svg {
 
 /* Con la ficha abierta el mapa cede espacio en vez de quedar tapado. */
 @media (min-width: 900px) {
-  .colombia-map:has(.map-detail) {
+  .colombia-map:not(.has-overlay-detail):has(.map-detail) {
     grid-template-columns: minmax(0, 1fr) 22rem;
     grid-template-areas:
       'bar bar'
@@ -345,7 +445,7 @@ svg {
     align-items: start;
   }
 
-  .colombia-map:has(.map-detail) .map-detail {
+  .colombia-map:not(.has-overlay-detail):has(.map-detail) .map-detail {
     max-height: min(72vh, 560px);
     overflow: auto;
   }

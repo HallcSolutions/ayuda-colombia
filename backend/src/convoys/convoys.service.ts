@@ -247,6 +247,8 @@ export class ConvoysService {
     position: GeoPoint,
     now: Date,
   ): Promise<void> {
+    let roadDurationSeconds: number | null = null;
+    let routeWasRefreshed = false;
     const ahead = routeAhead(trip.routeGeometry, position);
     const expired =
       !trip.routeUpdatedAt ||
@@ -257,6 +259,7 @@ export class ConvoysService {
       trip.routeGeometry = ahead.points;
       trip.remainingKm = ahead.km;
     } else {
+      routeWasRefreshed = true;
       const destination = this.destinationPoint(trip);
       const road = await this.routing.findRoad(position, destination);
       trip.routeGeometry = road
@@ -267,9 +270,22 @@ export class ConvoysService {
         : distanceKm(position, destination) * STRAIGHT_LINE_ROAD_FACTOR;
       trip.routeSource = road ? RouteSource.ROAD : RouteSource.STRAIGHT_LINE;
       trip.routeUpdatedAt = now;
+      roadDurationSeconds = road?.durationSeconds ?? null;
     }
 
-    trip.etaAt = estimateArrival(trip.remainingKm, trip.speedKmh, now);
+    // OSRM ya calcula el tiempo real de conducción de esa carretera. Dividir kilómetros
+    // por una velocidad fija hacía que rutas intermunicipales pudieran verse absurdamente
+    // cortas. Entre recálculos se conserva la hora vial anterior; cada seis minutos se
+    // vuelve a consultar desde la posición GPS más reciente.
+    if (roadDurationSeconds !== null) {
+      trip.etaAt = new Date(now.getTime() + roadDurationSeconds * 1000);
+    } else if (
+      routeWasRefreshed ||
+      !trip.etaAt ||
+      trip.etaAt.getTime() <= now.getTime()
+    ) {
+      trip.etaAt = estimateArrival(trip.remainingKm, trip.speedKmh, now);
+    }
   }
 
   /** Llegar es cuestión de metros: al entrar al acopio el viaje se cierra solo. */

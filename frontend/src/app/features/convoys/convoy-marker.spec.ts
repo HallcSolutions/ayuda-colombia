@@ -56,7 +56,10 @@ describe('toMapMarker', () => {
       department: 'Valle del Cauca',
       municipality: 'Cali',
       tone: 'active',
+      symbol: 'vehicle',
     });
+    expect(marker?.rotation).toBeGreaterThan(180);
+    expect(marker?.rotation).toBeLessThan(300);
   });
 
   it('no pone chincheta cuando el viaje no comparte ubicación', () => {

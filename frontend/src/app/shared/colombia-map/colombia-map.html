@@ -1,8 +1,8 @@
-<section class="colombia-map">
+<section class="colombia-map" [class.has-overlay-detail]="overlayDetail()">
   <header class="map-bar">
     <div>
       <span class="zone">{{ zoneLabel() }}</span>
-      <p>{{ t('map.hint') }}</p>
+      <p>{{ hint() || t('map.hint') }}</p>
     </div>
     <div class="map-steps">
       @if (region.municipality()) {
@@ -97,6 +97,7 @@
           <g
             class="pin"
             [class]="'tone-' + pin.tone"
+            [class.is-vehicle]="pin.symbol === 'vehicle' && pin.count === 1"
             [class.is-selected]="pin.selected"
             [class.is-urgent]="pin.urgent"
             [style.transform]="scaledTransform(pin)"
@@ -121,14 +122,27 @@
             @if (pin.urgent) {
               <circle class="halo" cx="0" cy="-28" r="15" />
             }
-            <path
-              class="drop"
-              d="M0 0 C-7 -12 -15 -19 -15 -28 A15 15 0 1 1 15 -28 C15 -19 7 -12 0 0 Z"
-            />
-            @if (pin.count > 1) {
-              <text class="count" x="0" y="-22" text-anchor="middle">{{ pin.count }}</text>
+            @if (pin.symbol === 'vehicle' && pin.count === 1) {
+              <g class="vehicle" [style.transform]="'rotate(' + pin.rotation + 'deg)'">
+                <circle class="vehicle-halo" cx="0" cy="-28" r="24" />
+                <circle class="vehicle-disc" cx="0" cy="-28" r="21" />
+                <path
+                  class="vehicle-body"
+                  d="M-10 -37 H5 C9 -37 12 -34 12 -30 V-20 H9 A4 4 0 0 1 1 -20 H-3 A4 4 0 0 1 -11 -20 H-13 V-34 C-13 -36 -12 -37 -10 -37 Z M5 -34 V-27 H10 V-30 C10 -32 8 -34 5 -34 Z"
+                />
+                <circle class="vehicle-wheel" cx="-7" cy="-20" r="2.6" />
+                <circle class="vehicle-wheel" cx="5" cy="-20" r="2.6" />
+              </g>
             } @else {
-              <circle class="dot" cx="0" cy="-28" r="5" />
+              <path
+                class="drop"
+                d="M0 0 C-7 -12 -15 -19 -15 -28 A15 15 0 1 1 15 -28 C15 -19 7 -12 0 0 Z"
+              />
+              @if (pin.count > 1) {
+                <text class="count" x="0" y="-22" text-anchor="middle">{{ pin.count }}</text>
+              } @else {
+                <circle class="dot" cx="0" cy="-28" r="5" />
+              }
             }
             <text class="caption" x="0" y="9" text-anchor="middle" dominant-baseline="hanging">
               {{ pin.caption }}
@@ -155,7 +169,12 @@
       </button>
 
       @if (streetMap(); as street) {
-        <iframe class="street-map" [src]="street" [title]="streetMapTitle()" loading="lazy"></iframe>
+        <iframe
+          class="street-map"
+          [src]="street"
+          [title]="streetMapTitle()"
+          loading="lazy"
+        ></iframe>
       }
 
       <ng-content />

@@ -14,6 +14,17 @@ const TONE_BY_STATUS: Record<ConvoyStatus, MapMarkerTone> = {
 const isTravelling = (trip: ConvoyTrip): boolean =>
   trip.status === ConvoyStatus.EN_ROUTE || trip.status === ConvoyStatus.PAUSED;
 
+/** Rumbo de la última miga GPS para orientar el camión sin predecir una ubicación falsa. */
+function vehicleHeading(trip: ConvoyTrip): number {
+  if (trip.trail.length < 2) return 0;
+  const from = trip.trail[trip.trail.length - 2];
+  const to = trip.trail[trip.trail.length - 1];
+  const latitude = ((from.latitude + to.latitude) / 2) * (Math.PI / 180);
+  const east = (to.longitude - from.longitude) * Math.cos(latitude);
+  const north = to.latitude - from.latitude;
+  return ((Math.atan2(east, north) * 180) / Math.PI + 360) % 360;
+}
+
 /**
  * La chincheta del camión va donde va el camión. Devuelve `null` cuando quien conduce
  * no autorizó compartir su ubicación: entonces el viaje se anuncia, pero no se ubica.
@@ -32,6 +43,8 @@ export function toMapMarker(trip: ConvoyTrip): MapMarker | null {
     label: `${trip.driverName} · ${trip.destination.name}`,
     tone: TONE_BY_STATUS[trip.status],
     urgent: false,
+    symbol: 'vehicle',
+    rotation: vehicleHeading(trip),
   };
 }
 

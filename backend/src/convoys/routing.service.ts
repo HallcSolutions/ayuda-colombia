@@ -6,6 +6,8 @@ import { GeoPoint } from '../common/interfaces/convoy-trip.interface';
 export interface RoadRoute {
   geometry: GeoPoint[];
   distanceKm: number;
+  /** Tiempo de conducción calculado por el motor vial, sin inventarlo desde kilómetros. */
+  durationSeconds: number;
 }
 
 /** Respuesta de OSRM; solo se declara lo que se usa. */
@@ -53,7 +55,12 @@ export class RoutingService {
 
       const body = (await response.json()) as OsrmRouteResponse;
       const route = body.routes?.[0];
-      if (body.code !== 'Ok' || !route?.geometry.coordinates.length)
+      if (
+        body.code !== 'Ok' ||
+        !route?.geometry.coordinates.length ||
+        !Number.isFinite(route.distance) ||
+        !Number.isFinite(route.duration)
+      )
         return null;
 
       return {
@@ -62,6 +69,7 @@ export class RoutingService {
           longitude,
         })),
         distanceKm: route.distance / 1000,
+        durationSeconds: route.duration,
       };
     } catch (error) {
       this.logger.warn(

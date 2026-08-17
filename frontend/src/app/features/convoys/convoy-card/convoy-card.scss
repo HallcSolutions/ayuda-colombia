@@ -1,142 +1,250 @@
-.convoy-card {
+.convoy-live {
   display: grid;
-  gap: 10px;
-  align-content: start;
-  padding: 18px 20px;
-  border: 1px solid var(--line);
-  border-left: 5px solid var(--green);
-  border-radius: 13px;
-  background: white;
+  gap: 14px;
+  padding: 20px;
+  color: var(--ink);
 }
 
-.convoy-card.status-scheduled,
-.convoy-card.status-paused {
-  border-left-color: #c8811f;
-}
-
-.convoy-card.status-arrived,
-.convoy-card.status-cancelled {
-  border-left-color: #7b8a80;
+header,
+.route-visual,
+footer {
+  display: flex;
+  align-items: center;
 }
 
 header {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
   justify-content: space-between;
+  gap: 12px;
+  padding-right: 34px;
 }
 
-h3 {
-  margin: 0;
-  font: 700 19px/1.2 var(--serif);
+.live-state,
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
 }
 
-.route {
-  margin: 4px 0 0;
+.live-state {
   color: var(--muted);
-  font-size: 13px;
+}
+
+.live-state i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #9ba69f;
+}
+
+.live-state.is-live {
+  color: var(--green);
+}
+
+.live-state.is-live i {
+  background: #20a468;
+  box-shadow: 0 0 0 5px rgb(32 164 104 / 14%);
+  animation: live-signal 1.8s ease-out infinite;
 }
 
 .status-chip {
-  padding: 4px 10px;
+  padding: 5px 9px;
   border-radius: 999px;
   background: #eef2ec;
   color: var(--ink);
-  font-size: 11px;
-  font-weight: 750;
-  white-space: nowrap;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
-.destination {
-  margin: 0;
-  font-weight: 700;
-}
-
-.eta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: baseline;
-  margin: 0;
-}
-
-.eta strong {
-  font-size: 17px;
-}
-
-.eta span {
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.eta.unknown,
-.eta.arrived {
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.progress {
-  margin: 0;
-  font-size: 13px;
-  color: var(--ink);
-}
-
-.notice {
-  margin: 0;
-  padding: 8px 10px;
-  border-radius: 8px;
-  background: #fbf4ea;
-  color: #7a5518;
-  font-size: 12px;
-}
-
-.facts {
+.route-visual {
   display: grid;
-  gap: 8px;
-  margin: 0;
-  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  grid-template-columns: minmax(0, auto) minmax(70px, 1fr) minmax(0, auto);
+  gap: 12px;
 }
 
-.facts dt {
+.route-visual div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.route-visual small {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 9px;
+  font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.facts dd {
-  margin: 2px 0 0;
+.route-visual strong {
+  overflow: hidden;
+  font: 700 17px/1.1 var(--serif);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.route-destination {
+  text-align: right;
+}
+
+.route-track {
+  position: relative;
+  height: 2px;
+  background: linear-gradient(90deg, var(--green) 0 58%, rgb(18 88 64 / 22%) 58%);
+}
+
+.route-track::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border: 2px solid var(--green);
+  border-radius: 50%;
+  background: #fffdf7;
+  transform: translateY(-50%);
+}
+
+.route-track i {
+  position: absolute;
+  left: 58%;
+  top: 50%;
+  font-style: normal;
+  transform: translate(-50%, -54%);
+}
+
+.destination-name {
+  margin: -5px 0 0;
+  color: #445049;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.eta {
+  display: grid;
+  gap: 2px;
+  padding-block: 14px;
+  border-block: 1px solid rgb(18 88 64 / 16%);
+}
+
+.eta > span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.eta strong {
+  color: var(--green);
+  font: 750 38px/1 var(--serif);
+  letter-spacing: -0.045em;
+}
+
+.eta small {
+  color: #445049;
+  font-size: 12px;
+}
+
+.eta.arrived,
+.eta-unknown {
+  color: var(--muted);
   font-size: 14px;
+}
+
+.live-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.live-metrics div + div {
+  padding-left: 9px;
+  border-left: 1px solid rgb(18 88 64 / 14%);
+}
+
+.live-metrics dt,
+.facts dt {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.live-metrics dd,
+.facts dd {
+  margin: 3px 0 0;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.notice {
+  margin: 0;
+  padding: 9px 11px;
+  border-radius: 9px;
+  background: #fbf4e4;
+  color: #775414;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+details {
+  border-top: 1px dashed rgb(18 88 64 / 20%);
+  padding-top: 10px;
+}
+
+summary {
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.facts {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 0;
 }
 
 .facts small {
   display: block;
+  margin-top: 2px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 500;
 }
 
 footer {
-  display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 10px;
-  border-top: 1px dashed var(--line);
-}
-
-.contact-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  gap: 7px 12px;
 }
 
 footer a {
-  font-size: 13px;
-  font-weight: 700;
   color: var(--ink);
+  font-size: 12px;
+  font-weight: 800;
 }
 
-.contact-links .whatsapp {
-  color: #1d7d4b;
+footer .whatsapp {
+  color: #16804b;
+}
+
+footer .map-link {
+  flex-basis: 100%;
+}
+
+@keyframes live-signal {
+  to {
+    box-shadow: 0 0 0 11px rgb(32 164 104 / 0%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-state.is-live i {
+    animation: none;
+  }
 }

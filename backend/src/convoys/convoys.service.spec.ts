@@ -219,6 +219,7 @@ describe('ConvoysService', () => {
       routing.findRoad.mockResolvedValue({
         geometry: [onTheRoad, { latitude: 3.4516, longitude: -76.532 }],
         distanceKm: 225,
+        durationSeconds: 6 * 60 * 60,
       });
 
       const trip = await service.addPing('trip-1', position, knownPin.pin);
@@ -229,10 +230,10 @@ describe('ConvoysService', () => {
       expect(trip.remainingKm).toBe(225);
       expect(trip.remainingRoute).toHaveLength(2);
       expect(trip.trail).toEqual([position]);
-      // Sin marcha medida todavía, la referencia son 45 km/h: 225 km son cinco horas.
+      // La hora viene del tiempo vial de OSRM, no de dividir distancia por una velocidad fija.
       const hoursAhead =
         (new Date(trip.etaAt!).getTime() - Date.now()) / 3_600_000;
-      expect(hoursAhead).toBeCloseTo(5, 1);
+      expect(hoursAhead).toBeCloseTo(6, 1);
       expect(gateway.tripMoved).toHaveBeenCalledWith(trip);
     });
 

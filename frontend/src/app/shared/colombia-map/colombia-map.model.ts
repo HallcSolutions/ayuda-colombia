@@ -13,6 +13,10 @@ export interface MapMarker extends Coordinates {
   readonly tone: MapMarkerTone;
   /** Marca la chincheta con un halo: el punto está pidiendo ayuda. */
   readonly urgent: boolean;
+  /** Los viajes en vivo se dibujan como vehículo; los demás registros conservan la chincheta. */
+  readonly symbol?: 'pin' | 'vehicle';
+  /** Rumbo del vehículo en grados, donde cero apunta al norte. */
+  readonly rotation?: number;
 }
 
 /**
@@ -62,6 +66,8 @@ export interface MapPin extends MapPoint {
   readonly count: number;
   readonly tone: MapMarkerTone;
   readonly urgent: boolean;
+  readonly symbol: 'pin' | 'vehicle';
+  readonly rotation: number;
   readonly selected: boolean;
   /** Nulo cuando la chincheta agrupa varios puntos de una misma ciudad. */
   readonly marker: MapMarker | null;

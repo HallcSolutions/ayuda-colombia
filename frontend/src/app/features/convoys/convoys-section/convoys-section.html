@@ -54,18 +54,11 @@
   <div class="feature-content convoys-content">
     <app-convoy-tracker />
 
-    <app-colombia-map
-      [markers]="mapMarkers()"
-      [trails]="mapTrails()"
-      [selectedId]="selectedTripId()"
-      (markerSelected)="selectTrip($event)"
-    >
-      @if (selectedTrip(); as trip) {
-        <app-convoy-card [trip]="trip" [now]="now()" />
-      }
-    </app-colombia-map>
-
-    <div class="toolbar">
+    <div class="live-toolbar">
+      <div>
+        <span class="live-label"><i aria-hidden="true"></i>{{ t('convoys.liveMap') }}</span>
+        <p>{{ t('convoys.liveMapHint') }}</p>
+      </div>
       <label>
         <span class="visually-hidden">{{ t('convoys.allStatuses') }}</span>
         <select [value]="statusFilter()" (change)="updateStatusFilter($event)">
@@ -81,6 +74,19 @@
       <p class="section-error" role="alert">{{ convoysService.error() }}</p>
     }
 
+    <app-colombia-map
+      [markers]="mapMarkers()"
+      [trails]="mapTrails()"
+      [selectedId]="selectedTripId()"
+      [overlayDetail]="true"
+      [hint]="t('convoys.mapHint')"
+      (markerSelected)="selectTrip($event)"
+    >
+      @if (selectedTrip(); as trip) {
+        <app-convoy-card [trip]="trip" [now]="now()" />
+      }
+    </app-colombia-map>
+
     @if (convoysService.loading()) {
       <p class="empty">{{ t('common.loading') }}</p>
     } @else if (!trips().length) {
@@ -89,11 +95,35 @@
         <p>{{ t('convoys.empty.body') }}</p>
       </div>
     } @else {
-      <div class="convoy-grid">
-        @for (trip of trips(); track trip.id) {
-          <app-convoy-card [trip]="trip" [now]="now()" />
-        }
-      </div>
+      <nav class="trip-switcher" [attr.aria-label]="t('convoys.chooseTrip')">
+        <ul>
+          @for (trip of trips(); track trip.id) {
+            <li>
+              <button
+                type="button"
+                [class.is-selected]="selectedTripId() === trip.id"
+                (click)="selectTripById(trip.id)"
+              >
+                <span class="truck-symbol" aria-hidden="true">🚚</span>
+                <span class="trip-route">
+                  <strong
+                    >{{ trip.originMunicipality }} → {{ trip.destination.municipality }}</strong
+                  >
+                  <small>{{ trip.destination.name }}</small>
+                </span>
+                <span class="trip-state">
+                  <strong>{{ t(statusKey(trip.status)) }}</strong>
+                  @if (trip.remainingKm !== null) {
+                    <small>{{ t('convoyCard.remaining', { km: trip.remainingKm }) }}</small>
+                  } @else {
+                    <small>{{ trip.vehicleDescription }}</small>
+                  }
+                </span>
+              </button>
+            </li>
+          }
+        </ul>
+      </nav>
     }
   </div>
 </section>

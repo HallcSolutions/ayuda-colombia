@@ -13,7 +13,7 @@ describe('sharePublicLink', () => {
     vi.unstubAllGlobals();
   });
 
-  it('comparte una imagen para que aparezcan las aplicaciones de historias', async () => {
+  it('comparte la imagen para historias y el enlace clicable para WhatsApp', async () => {
     const nativeShare = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, 'share', { configurable: true, value: nativeShare });
     Object.defineProperty(navigator, 'canShare', {
@@ -41,10 +41,10 @@ describe('sharePublicLink', () => {
     expect(nativeShare).toHaveBeenCalledWith(
       expect.objectContaining({
         files: [expect.any(File)],
+        text: expect.stringMatching(/Perla.*\nhttps:\/\//s),
       }),
     );
     expect(nativeShare.mock.calls[0]?.[0]).not.toHaveProperty('url');
-    expect(nativeShare.mock.calls[0]?.[0]).not.toHaveProperty('text');
   });
 
   it('copia el enlace directo antes de abrir una aplicación que solo recibe la imagen', async () => {
@@ -77,6 +77,10 @@ describe('sharePublicLink', () => {
     ).resolves.toBe('copied');
 
     expect(writeText).toHaveBeenCalledWith('https://redayudacolombia.com/desaparecidos/perla');
-    expect(nativeShare).toHaveBeenCalledWith({ files: [expect.any(File)] });
+    expect(nativeShare).toHaveBeenCalledWith({
+      title: 'Perla · Cali',
+      text: 'Perla · Cali\nhttps://redayudacolombia.com/desaparecidos/perla',
+      files: [expect.any(File)],
+    });
   });
 });

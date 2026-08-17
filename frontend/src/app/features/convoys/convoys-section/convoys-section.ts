@@ -99,6 +99,19 @@ export class ConvoysSection {
       this.reliefPoints.loadPoints();
     });
 
+    // Como en un rastreador de entregas, el viaje en movimiento se abre de entrada. Si
+    // cambia el filtro o termina, se elige el siguiente sin dejar una ficha huérfana.
+    effect(() => {
+      const trips = this.trips();
+      const selected = this.selectedTripId();
+      if (selected && trips.some((trip) => trip.id === selected)) return;
+      const preferred =
+        trips.find((trip) => trip.status === ConvoyStatus.EN_ROUTE && trip.position) ??
+        trips[0] ??
+        null;
+      this.selectedTripId.set(preferred?.id ?? null);
+    });
+
     // El reloj se para solo cuando la sección se cierra.
     interval(CLOCK_INTERVAL_MS)
       .pipe(takeUntilDestroyed())
@@ -108,6 +121,10 @@ export class ConvoysSection {
   /** El mapa abre la ficha del camión tocado, o la cierra al salir de él. */
   selectTrip(marker: MapMarker | null): void {
     this.selectedTripId.set(marker?.id ?? null);
+  }
+
+  selectTripById(id: string): void {
+    this.selectedTripId.set(id);
   }
 
   updateStatusFilter(event: Event): void {

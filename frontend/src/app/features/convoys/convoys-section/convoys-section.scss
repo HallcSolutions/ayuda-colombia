@@ -21,10 +21,166 @@
   color: var(--muted);
 }
 
-.convoy-grid {
+.live-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  padding-block: 2px 12px;
+  border-bottom: 1px solid rgb(18 88 64 / 14%);
+}
+
+.live-toolbar > div {
   display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
+  gap: 4px;
+}
+
+.live-toolbar p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.live-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.live-label i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #20a468;
+  box-shadow: 0 0 0 5px rgb(32 164 104 / 13%);
+  animation: convoy-live-pulse 1.8s ease-out infinite;
+}
+
+.live-toolbar select {
+  min-height: 42px;
+  padding: 8px 38px 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.trip-switcher {
+  border-block: 1px solid rgb(18 88 64 / 14%);
+}
+
+.trip-switcher ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trip-switcher li + li {
+  border-top: 1px solid rgb(18 88 64 / 11%);
+}
+
+.trip-switcher button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  width: 100%;
+  align-items: center;
+  padding: 13px 8px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease;
+}
+
+.trip-switcher button:hover,
+.trip-switcher button.is-selected {
+  background: rgb(18 88 64 / 6%);
+  color: var(--green);
+}
+
+.trip-switcher button.is-selected {
+  box-shadow: inset 3px 0 var(--coral);
+}
+
+.truck-symbol {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: #eaf2eb;
+  font-size: 17px;
+}
+
+.trip-route,
+.trip-state {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.trip-route strong,
+.trip-route small,
+.trip-state small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trip-route strong,
+.trip-state strong {
+  font-size: 13px;
+}
+
+.trip-route small,
+.trip-state small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.trip-state {
+  max-width: 160px;
+  text-align: right;
+}
+
+@keyframes convoy-live-pulse {
+  to {
+    box-shadow: 0 0 0 12px rgb(32 164 104 / 0%);
+  }
+}
+
+@media (max-width: 680px) {
+  .live-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .live-toolbar select {
+    width: 100%;
+  }
+
+  .trip-state {
+    max-width: 110px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-label i {
+    animation: none;
+  }
 }
 
 .visually-hidden {
