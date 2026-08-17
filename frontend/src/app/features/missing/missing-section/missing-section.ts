@@ -6,6 +6,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import {
   MISSING_STATUSES,
   MISSING_SUBJECT_KINDS,
@@ -20,7 +21,9 @@ import {
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { MissingRecord } from '../../../core/models/missing-record.model';
 import { MissingService } from '../../../core/services/missing.service';
+import { PublicRecordShareService } from '../../../core/services/public-record-share.service';
 import { RegionService } from '../../../core/services/region.service';
+import { whatsappUrl } from '../../../core/utils/phone.util';
 import { ColombiaMap } from '../../../shared/colombia-map/colombia-map';
 import { MapMarker } from '../../../shared/colombia-map/colombia-map.model';
 import { ColombiaWatermark } from '../../../shared/colombia-watermark/colombia-watermark';
@@ -31,13 +34,14 @@ import { toMapMarker } from '../missing-marker';
 
 @Component({
   selector: 'app-missing-section',
-  imports: [ColombiaMap, ColombiaWatermark, MissingCard, MissingForm, Modal],
+  imports: [ColombiaMap, ColombiaWatermark, MissingCard, MissingForm, Modal, RouterLink],
   templateUrl: './missing-section.html',
   styleUrl: './missing-section.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MissingSection {
   private readonly region = inject(RegionService);
+  private readonly shareService = inject(PublicRecordShareService);
   readonly missingService = inject(MissingService);
 
   protected readonly t = inject(I18nService).t;
@@ -51,6 +55,18 @@ export class MissingSection {
   readonly kindFilter = signal<'' | MissingSubjectKind>('');
   readonly statusFilter = signal<'' | MissingStatus>('');
   readonly showForm = signal(false);
+  readonly perlaHelpRequest = computed(
+    () =>
+      this.missingService
+        .records()
+        .find(
+          (record) =>
+            record.id === 'df431bcc-700c-4404-94ae-e68d85e38677' &&
+            record.status === MissingStatus.SEARCHING,
+        ) ?? null,
+  );
+
+  protected readonly perlaWhatsapp = whatsappUrl('324 683 6638');
 
   /** Búsquedas de la zona que pasan los filtros de texto, tipo y estado. */
   private readonly visibleRecords = computed(() => {
@@ -141,6 +157,10 @@ export class MissingSection {
 
   toggleForm(): void {
     this.showForm.update((open) => !open);
+  }
+
+  missingPathFor(record: MissingRecord): string {
+    return this.shareService.missingPathFor(record);
   }
 
   private searchingFirst(record: MissingRecord): number {

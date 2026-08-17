@@ -704,6 +704,13 @@ export const ES_TRANSLATIONS = {
   'missing.stats.found': 'Reencuentros',
   'missing.empty.title': 'No hay búsquedas con estos filtros',
   'missing.empty.body': 'Cambia la zona o la búsqueda, o publica el primer caso de tu municipio.',
+  'missing.help.eyebrow': 'Cómo ayudar ahora · Cali',
+  'missing.help.title': 'Se necesita un dron con cámara para buscar a Perla',
+  'missing.help.body':
+    'Su familia cree que puede estar atrapada en los techos del barrio La Merced. Si tienes un dron con cámara o puedes facilitar uno, comunícate para coordinar la búsqueda.',
+  'missing.help.location': 'Barrio La Merced · Cali, Valle del Cauca',
+  'missing.help.whatsapp': 'Ofrecer ayuda por WhatsApp',
+  'missing.help.case': 'Ver el caso de Perla',
   'missing.statusError':
     'No se pudo actualizar la búsqueda. Revisa tu conexión e intenta de nuevo.',
 

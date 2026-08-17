@@ -52,6 +52,25 @@
   }
 
   <div class="feature-content missing-content">
+    @if (perlaHelpRequest(); as perla) {
+      <aside class="search-help" aria-labelledby="perla-help-title">
+        <div class="search-help__copy">
+          <span>{{ t('missing.help.eyebrow') }}</span>
+          <h3 id="perla-help-title">{{ t('missing.help.title') }}</h3>
+          <p>{{ t('missing.help.body') }}</p>
+          <strong>{{ t('missing.help.location') }}</strong>
+        </div>
+        <div class="search-help__actions">
+          <a [href]="perlaWhatsapp" target="_blank" rel="noopener noreferrer">
+            {{ t('missing.help.whatsapp') }} <span aria-hidden="true">↗</span>
+          </a>
+          <a class="search-help__case" [routerLink]="missingPathFor(perla)">
+            {{ t('missing.help.case') }} <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </aside>
+    }
+
     <app-colombia-map
       [markers]="mapMarkers()"
       [selectedId]="selectedRecordId()"

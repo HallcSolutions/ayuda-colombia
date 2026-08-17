@@ -693,6 +693,13 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'missing.stats.found': 'Reunions',
   'missing.empty.title': 'No searches match these filters',
   'missing.empty.body': 'Change the area or the search, or publish the first case in your town.',
+  'missing.help.eyebrow': 'How to help now · Cali',
+  'missing.help.title': 'A camera drone is needed to search for Perla',
+  'missing.help.body':
+    'Her family believes she may be trapped on the roofs in La Merced. If you have a camera drone or can provide one, contact them to coordinate the search.',
+  'missing.help.location': 'La Merced neighbourhood · Cali, Valle del Cauca',
+  'missing.help.whatsapp': 'Offer help on WhatsApp',
+  'missing.help.case': 'View Perla’s case',
   'missing.statusError': 'The search could not be updated. Check your connection and try again.',
 
   'missingCard.photoAlt': 'Photo of {name}',
