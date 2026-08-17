@@ -1,0 +1,32 @@
+<main class="record-page">
+  <nav class="record-nav" [attr.aria-label]="t('missingPage.navigation')">
+    <a routerLink="/inicio"><span aria-hidden="true">←</span>{{ t('missingPage.home') }}</a>
+    <a routerLink="/desaparecidos">{{ t('missingPage.back') }}</a>
+  </nav>
+
+  @if (loading()) {
+    <p class="record-state">{{ t('common.loading') }}</p>
+  } @else if (loadError()) {
+    <section class="record-state record-state--error">
+      <h1>{{ t('missingPage.notFoundTitle') }}</h1>
+      <p>{{ loadError() }}</p>
+    </section>
+  } @else if (record(); as currentRecord) {
+    <header class="record-heading">
+      <span>{{ t(kindKey(currentRecord.kind)) }}</span>
+      <h1>{{ currentRecord.name }}</h1>
+      <p>
+        {{
+          t('missingPage.intro', {
+            municipality: currentRecord.municipality,
+            department: currentRecord.department,
+          })
+        }}
+      </p>
+    </header>
+
+    <section class="record-card-shell" [attr.aria-label]="currentRecord.name">
+      <app-missing-card [record]="currentRecord" />
+    </section>
+  }
+</main>

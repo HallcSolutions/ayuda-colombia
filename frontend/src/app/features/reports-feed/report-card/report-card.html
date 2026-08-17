@@ -1,0 +1,122 @@
+@if (report(); as currentReport) {
+  <article
+    [id]="'ayuda-' + currentReport.id"
+    class="report-card"
+    [class]="'report-card urgency-' + currentReport.urgency"
+  >
+    <figure class="report-photo" [class.is-illustration]="!currentReport.photos.length">
+      @if (currentReport.photos.length) {
+        <img
+          [src]="currentReport.photos[0]"
+          [alt]="t('feed.photoAlt', { municipality: currentReport.municipality })"
+          loading="lazy"
+          decoding="async"
+        />
+      } @else {
+        <img
+          [src]="illustrationFor(currentReport)"
+          [alt]="t('feed.illustrationAlt', { municipality: currentReport.municipality })"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>{{ t('feed.illustrationLabel') }}</figcaption>
+      }
+      <span class="urgency-badge">{{
+        t('feed.urgencyBadge', { level: urgencyLabel(currentReport.urgency) })
+      }}</span>
+      @if (currentReport.photos.length > 1) {
+        <span class="photo-count">{{
+          t('feed.photoCount', { count: currentReport.photos.length })
+        }}</span>
+      }
+    </figure>
+    <div class="report-content">
+      <div class="report-meta">
+        <span>{{ currentReport.department }}</span
+        ><time [attr.datetime]="currentReport.createdAt">{{
+          formatDate(currentReport.createdAt)
+        }}</time>
+      </div>
+      <h3>{{ currentReport.municipality }} · {{ currentReport.addressReference }}</h3>
+      @if (currentReport.notice) {
+        <p>{{ currentReport.notice }}</p>
+      }
+      <div class="need-tags">
+        @for (need of currentReport.needs; track need) {
+          <span>{{ needLabel(need) }}</span>
+        }
+      </div>
+      <div class="report-verification">
+        <span aria-hidden="true">{{ currentReport.fieldVerified ? '✓' : '!' }}</span>
+        <div>
+          @if (currentReport.fieldVerified) {
+            <strong>{{ t('feed.fieldVerified') }}</strong>
+            <small>
+              {{
+                currentReport.verifiedAt
+                  ? t('feed.fieldVerifiedAt', { date: formatDate(currentReport.verifiedAt) })
+                  : t('feed.fieldVerifiedWithoutDate')
+              }}
+            </small>
+          } @else {
+            <strong>{{ t('feed.fieldUnverified') }}</strong>
+            <small>{{ t('feed.fieldUnverifiedHint') }}</small>
+          }
+        </div>
+        @if (currentReport.location) {
+          <a [href]="mapUrl(currentReport)" target="_blank" rel="noopener">
+            {{ t('feed.openMap') }}
+          </a>
+        } @else {
+          <span class="location-private">{{ t('feed.locationNotRequired') }}</span>
+        }
+      </div>
+
+      @if (currentReport.directContact; as contact) {
+        <section class="direct-help-contact" [attr.aria-label]="t('feed.directContact')">
+          <div>
+            <span>{{ t('feed.directContact') }}</span>
+            <h4>{{ contact.name }}</h4>
+            <p>{{ contactRoleLabel(contact.role) }}</p>
+          </div>
+          <div class="direct-help-actions">
+            @if (
+              contact.channel === contactChannel.PHONE || contact.channel === contactChannel.BOTH
+            ) {
+              <a class="call" [href]="'tel:' + contact.phone">
+                {{ t('feed.call') }} · {{ contact.phone }}
+              </a>
+            }
+            @if (
+              contact.channel === contactChannel.WHATSAPP || contact.channel === contactChannel.BOTH
+            ) {
+              <a
+                class="whatsapp"
+                [href]="whatsappLink(contact.phone)"
+                target="_blank"
+                rel="noopener"
+              >
+                {{ t('feed.whatsapp') }}
+              </a>
+            }
+          </div>
+          <small>{{ t('feed.contactSafety') }}</small>
+        </section>
+      } @else {
+        <p class="contact-private">{{ t('feed.contactPrivate') }}</p>
+      }
+      <div class="report-footer">
+        <span [class]="'status ' + currentReport.status">{{
+          statusLabel(currentReport.status)
+        }}</span>
+        <button type="button" class="share-report" (click)="shareReport()">
+          <span aria-hidden="true">↗</span>
+          {{ shareResult() === 'copied' ? t('share.linkCopied') : t('share.action') }}
+        </button>
+        @if (shareResult() === 'failed') {
+          <small class="report-share-error" role="alert">{{ t('share.error') }}</small>
+        }
+      </div>
+    </div>
+  </article>
+}

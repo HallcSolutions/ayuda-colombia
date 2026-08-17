@@ -89,6 +89,10 @@
     @if (mapLink()) {
       <a [href]="mapLink()" target="_blank" rel="noopener">{{ t('missingCard.openMap') }}</a>
     }
+    <button type="button" class="share" (click)="shareRecord()">
+      <span aria-hidden="true">↗</span>
+      {{ shareResult() === 'copied' ? t('share.linkCopied') : t('share.action') }}
+    </button>
     @if (!record().sourceUrl && record().status === missingStatus.SEARCHING) {
       <button type="button" class="found" (click)="askForPin(missingStatus.FOUND)">
         {{ t('missingCard.markFound') }}
@@ -117,6 +121,9 @@
   }
   @if (errorMessage()) {
     <p class="card-error" role="alert">{{ errorMessage() }}</p>
+  }
+  @if (shareResult() === 'failed') {
+    <p class="card-error" role="alert">{{ t('share.error') }}</p>
   }
 
   @if (pendingStatus()) {

@@ -38,6 +38,20 @@ export const routes: Routes = [
       import('./features/convoys/convoys-section/convoys-section').then((m) => m.ConvoysSection),
   },
   {
+    path: 'desaparecidos/:missingSlug/:missingId',
+    loadComponent: () =>
+      import('./features/missing/missing-record-page/missing-record-page').then(
+        (m) => m.MissingRecordPage,
+      ),
+  },
+  {
+    path: 'desaparecidos/:missingId',
+    loadComponent: () =>
+      import('./features/missing/missing-record-page/missing-record-page').then(
+        (m) => m.MissingRecordPage,
+      ),
+  },
+  {
     path: 'desaparecidos',
     loadComponent: () =>
       import('./features/missing/missing-section/missing-section').then((m) => m.MissingSection),
@@ -49,13 +63,22 @@ export const routes: Routes = [
   },
   {
     path: 'recuperacion',
-    loadComponent: () =>
-      import('./features/recovery/recovery-page').then((m) => m.RecoveryPage),
+    loadComponent: () => import('./features/recovery/recovery-page').then((m) => m.RecoveryPage),
   },
   {
     path: 'reportar',
     loadComponent: () =>
       import('./features/report-form/report-form.component').then((m) => m.ReportFormComponent),
+  },
+  {
+    path: 'reportes/:reportSlug/:reportId',
+    loadComponent: () =>
+      import('./features/reports-feed/report-page/report-page').then((m) => m.ReportPage),
+  },
+  {
+    path: 'reportes/:reportId',
+    loadComponent: () =>
+      import('./features/reports-feed/report-page/report-page').then((m) => m.ReportPage),
   },
   {
     path: 'reportes',

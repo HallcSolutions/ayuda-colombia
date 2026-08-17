@@ -1,0 +1,25 @@
+<main class="record-page">
+  <nav class="record-nav" [attr.aria-label]="t('reportPage.navigation')">
+    <a routerLink="/inicio"><span aria-hidden="true">←</span>{{ t('reportPage.home') }}</a>
+    <a routerLink="/reportes">{{ t('reportPage.back') }}</a>
+  </nav>
+
+  @if (loading()) {
+    <p class="record-state">{{ t('common.loading') }}</p>
+  } @else if (loadError()) {
+    <section class="record-state record-state--error">
+      <h1>{{ t('reportPage.notFoundTitle') }}</h1>
+      <p>{{ loadError() }}</p>
+    </section>
+  } @else if (report(); as currentReport) {
+    <header class="record-heading">
+      <span>{{ t('feed.eyebrow') }}</span>
+      <h1>{{ t('reportPage.title', { municipality: currentReport.municipality }) }}</h1>
+      <p>{{ t('reportPage.intro') }}</p>
+    </header>
+
+    <section class="record-card-shell" [attr.aria-label]="t('reportPage.cardLabel')">
+      <app-report-card [report]="currentReport" />
+    </section>
+  }
+</main>

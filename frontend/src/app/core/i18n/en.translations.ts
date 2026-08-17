@@ -628,6 +628,13 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'feed.contactPrivate':
     'This family chose not to publish a phone number. Respect that choice and do not try to identify them.',
 
+  'share.action': 'Share',
+  'share.linkCopied': 'Link copied',
+  'share.error': 'The link could not be shared or copied.',
+  'share.missingText': 'Help us find {name}, missing in {municipality}.',
+  'share.reportTitle': 'Direct aid in {municipality}',
+  'share.reportText': 'A family in {municipality} needs direct aid.',
+
   'aidOffer.ariaLabel': 'Private aid available for families in Cali and nearby cities',
   'aidOffer.eyebrow': 'Private contribution · Cali and nearby areas',
   'aidOffer.status': 'Confirm availability first',
@@ -643,9 +650,23 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
     'Message her before traveling. She will confirm availability and arrange delivery directly.',
   'aidOffer.whatsapp': 'Contact on WhatsApp',
   'aidOffer.directory': 'See families who need help',
-  'aidOffer.caveatTitle': 'Private delivery:',
-  'aidOffer.caveatBody':
-    'this is not a collection point and does not accept donations or coordinate trucks.',
+
+  'reportPage.navigation': 'Direct aid navigation',
+  'reportPage.home': 'Back to home',
+  'reportPage.back': 'View all families',
+  'reportPage.title': 'Direct aid in {municipality}',
+  'reportPage.intro':
+    'This page brings together the need and the authorized contact so aid can be agreed directly.',
+  'reportPage.cardLabel': 'Individual direct aid record',
+  'reportPage.notFoundTitle': 'We could not find this request',
+  'reportPage.notFound': 'The link may be incomplete or the request is no longer published.',
+
+  'missingPage.navigation': 'Shared notice navigation',
+  'missingPage.home': 'Back to home',
+  'missingPage.back': 'View all searches',
+  'missingPage.intro': 'Shared notice from {municipality}, {department}.',
+  'missingPage.notFoundTitle': 'We could not find this notice',
+  'missingPage.notFound': 'The link may be incomplete or the notice is no longer published.',
 
   'reportStatus.open': 'Pending',
   'reportStatus.in_progress': 'In progress',

@@ -639,6 +639,13 @@ export const ES_TRANSLATIONS = {
   'feed.contactPrivate':
     'Esta familia prefirió no publicar un teléfono. Respeta su decisión y no intentes identificarla.',
 
+  'share.action': 'Compartir',
+  'share.linkCopied': 'Enlace copiado',
+  'share.error': 'No se pudo compartir ni copiar el enlace.',
+  'share.missingText': 'Ayudemos a encontrar a {name}, desaparecido en {municipality}.',
+  'share.reportTitle': 'Ayuda directa en {municipality}',
+  'share.reportText': 'Una familia en {municipality} necesita ayuda directa.',
+
   'aidOffer.ariaLabel': 'Ayuda particular disponible para familias en Cali y ciudades cercanas',
   'aidOffer.eyebrow': 'Aporte particular · Cali y alrededores',
   'aidOffer.status': 'Disponibilidad por confirmar',
@@ -654,8 +661,23 @@ export const ES_TRANSLATIONS = {
     'Escríbele antes de desplazarte. Ella confirma la disponibilidad y acuerda directamente la entrega.',
   'aidOffer.whatsapp': 'Contactar por WhatsApp',
   'aidOffer.directory': 'Ver familias que necesitan ayuda',
-  'aidOffer.caveatTitle': 'Entrega particular:',
-  'aidOffer.caveatBody': 'no es un centro de acopio, no recibe donaciones y no coordina camiones.',
+
+  'reportPage.navigation': 'Navegación de la ayuda directa',
+  'reportPage.home': 'Regresar al inicio',
+  'reportPage.back': 'Ver todas las familias',
+  'reportPage.title': 'Ayuda directa en {municipality}',
+  'reportPage.intro':
+    'Esta ficha reúne la necesidad y el contacto autorizado para acordar la ayuda directamente.',
+  'reportPage.cardLabel': 'Ficha individual de ayuda directa',
+  'reportPage.notFoundTitle': 'No encontramos esta solicitud',
+  'reportPage.notFound': 'El enlace puede estar incompleto o la solicitud ya no está publicada.',
+
+  'missingPage.navigation': 'Navegación del aviso compartido',
+  'missingPage.home': 'Regresar al inicio',
+  'missingPage.back': 'Ver todas las búsquedas',
+  'missingPage.intro': 'Aviso compartido desde {municipality}, {department}.',
+  'missingPage.notFoundTitle': 'No encontramos este aviso',
+  'missingPage.notFound': 'El enlace puede estar incompleto o el aviso ya no está publicado.',
 
   'reportStatus.open': 'Pendiente',
   'reportStatus.in_progress': 'En atención',

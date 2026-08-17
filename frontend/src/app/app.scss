@@ -1725,6 +1725,30 @@ textarea {
   padding-top: 13px;
   margin-top: auto;
 }
+.report-footer .share-report {
+  display: inline-flex;
+  gap: 7px;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--green);
+  border-radius: 8px;
+  padding: 9px 14px;
+  color: var(--green);
+  background: white;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.report-footer .share-report:hover {
+  color: white;
+  background: var(--green);
+}
+.report-share-error {
+  flex-basis: 100%;
+  color: #8c2f1c;
+  font-size: 11px;
+}
 .status {
   font-size: 10px;
   text-transform: uppercase;

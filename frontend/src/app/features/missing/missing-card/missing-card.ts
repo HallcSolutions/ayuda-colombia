@@ -10,6 +10,7 @@ import {
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { MissingRecord } from '../../../core/models/missing-record.model';
 import { MissingService } from '../../../core/services/missing.service';
+import { PublicRecordShareService } from '../../../core/services/public-record-share.service';
 import { colombiaDate, colombiaDateTime } from '../../../core/utils/date.util';
 import { mapUrl } from '../../../core/utils/geo.util';
 import { whatsappUrl } from '../../../core/utils/phone.util';
@@ -22,6 +23,7 @@ import { whatsappUrl } from '../../../core/utils/phone.util';
 })
 export class MissingCard {
   private readonly missingService = inject(MissingService);
+  private readonly shareService = inject(PublicRecordShareService);
   private readonly i18n = inject(I18nService);
 
   readonly record = input.required<MissingRecord>();
@@ -37,6 +39,7 @@ export class MissingCard {
   readonly pendingStatus = signal<MissingStatus | null>(null);
   readonly pin = signal('');
   readonly saving = signal(false);
+  readonly shareResult = signal<'idle' | 'copied' | 'failed'>('idle');
 
   readonly lastSeenLabel = computed(() => this.formatDate(this.record().lastSeenAt));
   readonly foundLabel = computed(() => {
@@ -59,6 +62,13 @@ export class MissingCard {
   });
 
   readonly whatsappLink = computed(() => whatsappUrl(this.record().contactPhone));
+
+  async shareRecord(): Promise<void> {
+    this.shareResult.set('idle');
+    const result = await this.shareService.shareMissing(this.record());
+    if (result === 'copied') this.shareResult.set('copied');
+    if (result === 'failed') this.shareResult.set('failed');
+  }
 
   /** Pide el PIN antes de tocar el aviso: cambiarlo no es una acción de un solo clic. */
   askForPin(status: MissingStatus): void {

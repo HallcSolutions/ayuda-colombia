@@ -55,6 +55,13 @@ export class MissingService {
     );
   }
 
+  loadRecord(id: string): Observable<MissingRecord> {
+    return this.http.get<ApiResponse<MissingRecord>>(`${ENDPOINT}/${id}`).pipe(
+      map((response) => response.data),
+      tap((record) => this.upsert(record)),
+    );
+  }
+
   /** Editar exige el PIN que se entregó al publicar: solo lo tiene quien creó el aviso. */
   changeStatus(id: string, status: MissingStatus, editPin: string): Observable<MissingRecord> {
     return this.http

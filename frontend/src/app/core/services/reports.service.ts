@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { I18nService } from '../i18n/i18n.service';
 import { ApiResponse } from '../interfaces/api-response.interface';
 import { HouseReport } from '../models/house-report.model';
@@ -50,6 +50,13 @@ export class ReportsService {
     return this.http
       .post<ApiResponse<HouseReport>>(ENDPOINT, payload)
       .pipe(map((response) => response.data));
+  }
+
+  loadReport(id: string): Observable<HouseReport> {
+    return this.http.get<ApiResponse<HouseReport>>(`${ENDPOINT}/${id}`).pipe(
+      map((response) => response.data),
+      tap((report) => this.upsert(report)),
+    );
   }
 
   private upsert(report: HouseReport): void {
