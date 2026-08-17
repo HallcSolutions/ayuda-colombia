@@ -2,12 +2,48 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NextFunction, Request, Response } from 'express';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { AppModule } from './app.module';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import {
+  missingIdFromSharePath,
+  renderMissingSharePreview,
+} from './missing/missing-share-preview';
+import { MissingService } from './missing/missing.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableShutdownHooks();
+
+  const clientIndexPath = join(process.cwd(), 'client', 'index.html');
+  if (existsSync(clientIndexPath)) {
+    const clientIndex = readFileSync(clientIndexPath, 'utf8');
+    const missingService = app.get(MissingService);
+    const publicSiteUrl =
+      process.env.FRONTEND_URL?.split(',')[0]?.trim() ||
+      'https://redayudacolombia.com';
+    app.use(
+      async (request: Request, response: Response, next: NextFunction) => {
+        if (request.method !== 'GET') return next();
+        const missingId = missingIdFromSharePath(request.path);
+        if (!missingId) return next();
+
+        try {
+          const record = await missingService.findOne(missingId);
+          response.setHeader('Cache-Control', 'public, max-age=60');
+          response
+            .type('html')
+            .send(
+              renderMissingSharePreview(clientIndex, record, publicSiteUrl),
+            );
+        } catch {
+          next();
+        }
+      },
+    );
+  }
+
   app.use((_request: Request, response: Response, next: NextFunction) => {
     response.setHeader('X-Content-Type-Options', 'nosniff');
     next();

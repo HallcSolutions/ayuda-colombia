@@ -72,6 +72,7 @@ describe('PublicRecordShareService', () => {
     expect(service.reportPathFor(REPORT)).toBe(
       `/reportes/ayuda-cali-barrio-la-merced/${REPORT.id}`,
     );
+    expect(new URL(service.missingUrlFor(MISSING)).searchParams.get('v')).toBeTruthy();
   });
 
   it('abre el menú nativo del celular con la ficha de Perla', async () => {

@@ -28,7 +28,10 @@ export class PublicRecordShareService {
   }
 
   missingUrlFor(record: MissingRecord): string {
-    return this.urlFor(this.missingPathFor(record));
+    const url = new URL(this.missingPathFor(record), this.document.location.origin);
+    const version = Date.parse(record.updatedAt) || record.updatedAt;
+    url.searchParams.set('v', String(version));
+    return url.toString();
   }
 
   reportUrlFor(report: HouseReport): string {
