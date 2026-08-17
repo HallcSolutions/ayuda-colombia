@@ -57,7 +57,9 @@
   </div>
 </header>
 
-<app-alert-banner />
+@if (showAlertBanner()) {
+  <app-alert-banner />
+}
 
 <main id="inicio" [attr.aria-busy]="loading.busy()">
   <router-outlet />

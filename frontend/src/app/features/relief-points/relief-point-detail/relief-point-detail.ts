@@ -23,6 +23,7 @@ import { MealService } from '../../../core/models/meal-service.model';
 import { ReliefPoint } from '../../../core/models/relief-point.model';
 import { AlertsService } from '../../../core/services/alerts.service';
 import { ReliefPointsService } from '../../../core/services/relief-points.service';
+import { ReliefPointShareService } from '../../../core/services/relief-point-share.service';
 import { COLOMBIA_UTC_OFFSET } from '../../../core/utils/date.util';
 import { mapUrl, streetMapUrl } from '../../../core/utils/geo.util';
 import { alertNeeds } from '../../../core/utils/needs.util';
@@ -44,6 +45,7 @@ export class ReliefPointDetail {
   private readonly reliefPointsService = inject(ReliefPointsService);
   private readonly alertsService = inject(AlertsService);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly shareService = inject(ReliefPointShareService);
   protected readonly i18n = inject(I18nService);
 
   readonly point = input.required<ReliefPoint>();
@@ -65,6 +67,7 @@ export class ReliefPointDetail {
   readonly errorMessage = signal('');
   /** Necesidad que se está retirando ahora mismo, para no repetir el envío. */
   readonly removingNeed = signal<string | null>(null);
+  readonly shareResult = signal<'idle' | 'copied' | 'failed'>('idle');
 
   readonly directionsUrl = computed(() => mapUrl(this.point()));
 
@@ -146,5 +149,12 @@ export class ReliefPointDetail {
     } catch {
       this.errorMessage.set(this.t('reliefPointCard.statusError'));
     }
+  }
+
+  async sharePoint(): Promise<void> {
+    this.shareResult.set('idle');
+    const result = await this.shareService.share(this.point());
+    if (result === 'copied') this.shareResult.set('copied');
+    if (result === 'failed') this.shareResult.set('failed');
   }
 }

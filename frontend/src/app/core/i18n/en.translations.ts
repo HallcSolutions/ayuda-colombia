@@ -252,6 +252,11 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'reliefPointCard.schedule': 'Schedule',
   'reliefPointCard.address': 'Address',
   'reliefPointCard.viewDetail': 'View details',
+  'reliefPointCard.share': 'Share',
+  'reliefPointCard.linkCopied': 'Link copied',
+  'reliefPointCard.shareError': 'The link could not be shared or copied.',
+  'reliefPointCard.shareText':
+    '{point}, in {municipality}, needs help. See the current information here:',
   'reliefPointCard.capacity': 'Daily capacity: {count} meals',
   'reliefPointCard.distance': '{km} km away from you',
   'reliefPointCard.mealsToday': 'Today’s meals',
@@ -275,6 +280,13 @@ export const EN_TRANSLATIONS: TranslationCatalog = {
   'reliefPointCard.markActive': 'Mark open',
   'reliefPointCard.markClosed': 'Mark closed',
   'reliefPointCard.statusError': 'The point status could not be changed.',
+
+  'reliefPointPage.navigation': 'Aid point navigation',
+  'reliefPointPage.home': 'Back to home',
+  'reliefPointPage.back': 'View all aid points',
+  'reliefPointPage.intro': 'Direct, current information for this aid point in {municipality}.',
+  'reliefPointPage.notFoundTitle': 'We could not find this point',
+  'reliefPointPage.notFound': 'The link may be incomplete or the point is no longer published.',
 
   'reliefPointForm.title': 'Register a collection point or kitchen',
   'reliefPointForm.titleMedicalPost': 'Register a medical post',

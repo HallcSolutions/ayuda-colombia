@@ -33,7 +33,7 @@
             @for (alert of alerts(); track alert.id) {
               <li [class]="'severity-' + alert.severity">
                 <p class="need-head">
-                  <strong>{{ t(categoryKey(alert.category)) }}</strong>
+                  <strong>{{ alert.title || t(categoryKey(alert.category)) }}</strong>
                   <span class="severity">{{ t(urgencyKey(alert.severity)) }}</span>
                 </p>
                 <!-- Una línea por necesidad: se retira la que ya llegó y el resto sigue en pie. -->
@@ -178,7 +178,17 @@
     <button type="button" (click)="registerMeal.emit(point())">
       <span aria-hidden="true">＋</span>{{ t('reliefPointCard.registerMeal') }}
     </button>
+    <button type="button" (click)="sharePoint()">
+      <span aria-hidden="true">↗</span>
+      {{
+        shareResult() === 'copied' ? t('reliefPointCard.linkCopied') : t('reliefPointCard.share')
+      }}
+    </button>
   </footer>
+
+  @if (shareResult() === 'failed') {
+    <p class="detail-error" role="alert">{{ t('reliefPointCard.shareError') }}</p>
+  }
 
   <section class="status-switch">
     <span>{{ t('reliefPointCard.updateStatus') }}</span>

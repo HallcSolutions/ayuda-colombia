@@ -49,6 +49,17 @@ export class MealsService {
     });
   }
 
+  /** Trae las jornadas de la ficha compartida aunque el filtro regional sea otro. */
+  loadMealServicesForPoint(reliefPointId: string): Observable<MealService[]> {
+    const params = new HttpParams()
+      .set('reliefPointId', reliefPointId)
+      .set('servedOn', this.servedOn());
+    return this.http.get<ApiResponse<MealService[]>>(ENDPOINT, { params }).pipe(
+      map((response) => response.data),
+      tap((services) => services.forEach((service) => this.upsert(service))),
+    );
+  }
+
   createMealService(payload: CreateMealServicePayload): Observable<MealService> {
     return this.http.post<ApiResponse<MealService>>(ENDPOINT, payload).pipe(
       map((response) => response.data),

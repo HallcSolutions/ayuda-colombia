@@ -257,6 +257,11 @@ export const ES_TRANSLATIONS = {
   'reliefPointCard.schedule': 'Horario',
   'reliefPointCard.address': 'Dirección',
   'reliefPointCard.viewDetail': 'Ver detalle',
+  'reliefPointCard.share': 'Compartir',
+  'reliefPointCard.linkCopied': 'Enlace copiado',
+  'reliefPointCard.shareError': 'No se pudo compartir ni copiar el enlace.',
+  'reliefPointCard.shareText':
+    '{point}, en {municipality}, necesita ayuda. Consulta aquí la información actual:',
   'reliefPointCard.capacity': 'Capacidad diaria: {count} raciones',
   'reliefPointCard.distance': 'a {km} km de ti',
   'reliefPointCard.mealsToday': 'Comidas de hoy',
@@ -280,6 +285,13 @@ export const ES_TRANSLATIONS = {
   'reliefPointCard.markActive': 'Marcar abierto',
   'reliefPointCard.markClosed': 'Marcar cerrado',
   'reliefPointCard.statusError': 'No se pudo cambiar el estado del punto.',
+
+  'reliefPointPage.navigation': 'Navegación de la ficha',
+  'reliefPointPage.home': 'Regresar al inicio',
+  'reliefPointPage.back': 'Ver todos los puntos',
+  'reliefPointPage.intro': 'Información directa y actual de este punto de ayuda en {municipality}.',
+  'reliefPointPage.notFoundTitle': 'No encontramos este punto',
+  'reliefPointPage.notFound': 'El enlace puede estar incompleto o el punto ya no está publicado.',
 
   'reliefPointForm.title': 'Registrar un punto de acopio o comedor',
   'reliefPointForm.titleMedicalPost': 'Registrar un puesto de salud',

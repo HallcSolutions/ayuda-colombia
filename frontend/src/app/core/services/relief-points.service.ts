@@ -55,6 +55,14 @@ export class ReliefPointsService {
     );
   }
 
+  /** Trae una ficha aunque el visitante tenga otro departamento seleccionado. */
+  loadPoint(id: string): Observable<ReliefPoint> {
+    return this.http.get<ApiResponse<ReliefPoint>>(`${ENDPOINT}/${id}`).pipe(
+      map((response) => response.data),
+      tap((point) => this.upsert(point)),
+    );
+  }
+
   changeStatus(id: string, status: ReliefPointStatus): Observable<ReliefPoint> {
     return this.http.patch<ApiResponse<ReliefPoint>>(`${ENDPOINT}/${id}`, { status }).pipe(
       map((response) => response.data),

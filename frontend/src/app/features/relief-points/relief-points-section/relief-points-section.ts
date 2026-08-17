@@ -8,6 +8,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   RELIEF_POINT_STATUSES,
   RELIEF_POINT_TYPES,
@@ -20,12 +21,13 @@ import {
 } from '../../../core/constants/colombia-map.constants';
 import { reliefPointStatusKey, reliefPointTypeKey } from '../../../core/i18n/domain-keys';
 import { I18nService } from '../../../core/i18n/i18n.service';
+import { Coordinates } from '../../../core/models/coordinates.model';
 import { ReliefPoint } from '../../../core/models/relief-point.model';
 import { AlertsService } from '../../../core/services/alerts.service';
 import { MealsService } from '../../../core/services/meals.service';
 import { RegionService } from '../../../core/services/region.service';
 import { ReliefPointsService } from '../../../core/services/relief-points.service';
-import { Coordinates } from '../../../core/models/coordinates.model';
+import { ReliefPointShareService } from '../../../core/services/relief-point-share.service';
 import { distanceInKm, mapUrl } from '../../../core/utils/geo.util';
 import { alertNeeds } from '../../../core/utils/needs.util';
 import { ColombiaMap } from '../../../shared/colombia-map/colombia-map';
@@ -33,7 +35,6 @@ import { MapMarker } from '../../../shared/colombia-map/colombia-map.model';
 import { Modal } from '../../../shared/modal/modal';
 import { AlertForm } from '../../alerts/alert-form/alert-form';
 import { MealServiceForm } from '../../meals/meal-service-form/meal-service-form';
-import { ReliefPointDetail } from '../relief-point-detail/relief-point-detail';
 import { ReliefPointForm } from '../relief-point-form/relief-point-form';
 import { needIcon } from '../need-icon';
 import { isVerifiedPlace } from '../verification';
@@ -42,7 +43,7 @@ import { DepartmentGroup, PointAction } from './relief-points-section.model';
 
 @Component({
   selector: 'app-relief-points-section',
-  imports: [ColombiaMap, ReliefPointDetail, ReliefPointForm, AlertForm, MealServiceForm, Modal],
+  imports: [ColombiaMap, ReliefPointForm, AlertForm, MealServiceForm, Modal],
   templateUrl: './relief-points-section.html',
   styleUrl: './relief-points-section.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -53,6 +54,8 @@ export class ReliefPointsSection {
   readonly mealsService = inject(MealsService);
   readonly alertsService = inject(AlertsService);
   private readonly injector = inject(Injector);
+  private readonly router = inject(Router);
+  private readonly shareService = inject(ReliefPointShareService);
 
   protected readonly t = inject(I18nService).t;
   protected readonly pointTypes = RELIEF_POINT_TYPES;
@@ -73,8 +76,8 @@ export class ReliefPointsSection {
   readonly showPointForm = signal(false);
   readonly activeAction = signal<PointAction>(null);
   readonly selectedPointId = signal<string | null>(null);
-  /** Punto cuya ficha completa está abierta en una ventana. */
-  readonly detailPointId = signal<string | null>(null);
+  readonly copiedPointId = signal<string | null>(null);
+  readonly shareFeedback = signal('');
 
   /** Puntos que pasan los filtros de la zona, texto, tipo y estado. */
   private readonly visiblePoints = computed(() => {
@@ -161,15 +164,6 @@ export class ReliefPointsSection {
   /** Punto abierto desde el mapa, mientras siga pasando los filtros. */
   readonly selectedPoint = computed(
     () => this.visiblePoints().find((point) => point.id === this.selectedPointId()) ?? null,
-  );
-
-  /**
-   * Punto de la ficha abierta. Se busca sobre todos los puntos cargados, no sobre los
-   * filtrados: cambiar el estado del punto desde la ficha no puede cerrarla de golpe.
-   */
-  readonly detailPoint = computed(
-    () =>
-      this.reliefPointsService.points().find((point) => point.id === this.detailPointId()) ?? null,
   );
 
   readonly directoryTitle = computed(() => {
@@ -272,21 +266,32 @@ export class ReliefPointsSection {
   }
 
   openDetail(point: ReliefPoint): void {
-    this.detailPointId.set(point.id);
+    void this.router.navigateByUrl(this.shareService.pathFor(point));
   }
 
-  closeDetail(): void {
-    this.detailPointId.set(null);
+  async sharePoint(point: ReliefPoint): Promise<void> {
+    this.shareFeedback.set('');
+    const result = await this.shareService.share(point);
+    if (result === 'copied') {
+      this.copiedPointId.set(point.id);
+      this.shareFeedback.set(this.t('reliefPointCard.linkCopied'));
+    } else if (result === 'failed') {
+      this.shareFeedback.set(this.t('reliefPointCard.shareError'));
+    }
+  }
+
+  shareLabel(point: ReliefPoint): string {
+    return this.copiedPointId() === point.id
+      ? this.t('reliefPointCard.linkCopied')
+      : this.t('reliefPointCard.share');
   }
 
   /** Los formularios sustituyen a la ficha: nunca se apilan dos ventanas. */
   openAlertForm(point: ReliefPoint): void {
-    this.closeDetail();
     this.activeAction.set({ point, kind: 'alert' });
   }
 
   openMealForm(point: ReliefPoint): void {
-    this.closeDetail();
     this.activeAction.set({ point, kind: 'meal' });
   }
 

@@ -73,6 +73,15 @@ export class AlertsService {
     });
   }
 
+  /** Carga las necesidades de una ficha compartida, aunque esté fuera de la zona guardada. */
+  loadAlertsForPoint(reliefPointId: string): Observable<AidAlert[]> {
+    const params = new HttpParams().set('reliefPointId', reliefPointId);
+    return this.http.get<ApiResponse<AidAlert[]>>(ENDPOINT, { params }).pipe(
+      map((response) => response.data),
+      tap((alerts) => alerts.forEach((alert) => this.upsert(alert))),
+    );
+  }
+
   createAlert(payload: CreateAidAlertPayload): Observable<AidAlert> {
     return this.http.post<ApiResponse<AidAlert>>(ENDPOINT, payload).pipe(
       map((response) => response.data),
@@ -92,17 +101,23 @@ export class AlertsService {
    * última, el servidor cierra la alerta y vuelve como atendida.
    */
   removeNeed(id: string, need: string): Observable<AidAlert> {
-    return this.http
-      .patch<ApiResponse<AidAlert>>(`${ENDPOINT}/${id}/needs/remove`, { need })
-      .pipe(
-        map((response) => response.data),
-        tap((alert) => this.upsert(alert)),
-      );
+    return this.http.patch<ApiResponse<AidAlert>>(`${ENDPOINT}/${id}/needs/remove`, { need }).pipe(
+      map((response) => response.data),
+      tap((alert) => this.upsert(alert)),
+    );
   }
 
   /** Alertas activas de un punto concreto. */
   activeAlertsOf(reliefPointId: string): AidAlert[] {
-    return this.activeAlerts().filter((alert) => alert.reliefPointId === reliefPointId);
+    return this.alerts()
+      .filter(
+        (alert) => alert.reliefPointId === reliefPointId && alert.status === AlertStatus.ACTIVE,
+      )
+      .sort(
+        (first, second) =>
+          SEVERITY_ORDER[first.severity] - SEVERITY_ORDER[second.severity] ||
+          second.createdAt.localeCompare(first.createdAt),
+      );
   }
 
   private upsert(alert: AidAlert): void {

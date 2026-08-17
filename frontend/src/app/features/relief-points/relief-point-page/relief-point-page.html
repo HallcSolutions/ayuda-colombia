@@ -1,0 +1,74 @@
+<main class="point-page">
+  <nav class="page-nav" [attr.aria-label]="t('reliefPointPage.navigation')">
+    <a class="back-link" routerLink="/inicio">
+      <span aria-hidden="true">←</span>{{ t('reliefPointPage.home') }}
+    </a>
+    <a class="all-points-link" routerLink="/puntos">{{ t('reliefPointPage.back') }}</a>
+  </nav>
+
+  @if (loading()) {
+    <p class="page-state">{{ t('common.loading') }}</p>
+  } @else if (loadError()) {
+    <section class="page-state page-state--error">
+      <h1>{{ t('reliefPointPage.notFoundTitle') }}</h1>
+      <p>{{ loadError() }}</p>
+    </section>
+  } @else if (point(); as currentPoint) {
+    <section class="page-hero">
+      <header class="page-heading">
+        <span>{{ t(typeKey(currentPoint.type)) }}</span>
+        <h1>{{ currentPoint.name }}</h1>
+        <p>{{ t('reliefPointPage.intro', { municipality: currentPoint.municipality }) }}</p>
+      </header>
+      <div class="quick-actions">
+        <a [href]="directionsUrl()" target="_blank" rel="noopener">
+          {{ t('common.directions') }}
+        </a>
+        <button type="button" class="share" (click)="sharePoint()">
+          <span aria-hidden="true">↗</span>
+          {{
+            shareResult() === 'copied'
+              ? t('reliefPointCard.linkCopied')
+              : t('reliefPointCard.share')
+          }}
+        </button>
+      </div>
+    </section>
+
+    @if (shareResult() === 'failed') {
+      <p class="share-error" role="alert">{{ t('reliefPointCard.shareError') }}</p>
+    }
+
+    <app-relief-point-detail
+      [point]="currentPoint"
+      [alerts]="alerts()"
+      [meals]="meals()"
+      (requestHelp)="openAlertForm()"
+      (registerMeal)="openMealForm()"
+    />
+
+    @if (action(); as currentAction) {
+      <app-modal
+        [eyebrow]="
+          t(
+            currentAction === 'alert'
+              ? 'reliefPointCard.requestHelp'
+              : 'reliefPointCard.registerMeal'
+          )
+        "
+        [title]="
+          currentAction === 'alert'
+            ? t('alertForm.title', { point: currentPoint.name })
+            : t('mealForm.title', { point: currentPoint.name })
+        "
+        (closed)="closeAction()"
+      >
+        @if (currentAction === 'alert') {
+          <app-alert-form [reliefPoint]="currentPoint" (closed)="closeAction()" />
+        } @else {
+          <app-meal-service-form [reliefPoint]="currentPoint" (closed)="closeAction()" />
+        }
+      </app-modal>
+    }
+  }
+</main>

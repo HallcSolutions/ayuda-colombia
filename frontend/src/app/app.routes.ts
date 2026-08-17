@@ -14,6 +14,20 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'puntos/:pointSlug/:pointId',
+    loadComponent: () =>
+      import('./features/relief-points/relief-point-page/relief-point-page').then(
+        (m) => m.ReliefPointPage,
+      ),
+  },
+  {
+    path: 'puntos/:pointId',
+    loadComponent: () =>
+      import('./features/relief-points/relief-point-page/relief-point-page').then(
+        (m) => m.ReliefPointPage,
+      ),
+  },
+  {
     path: 'alojamientos',
     loadComponent: () =>
       import('./features/lodging/lodging-section/lodging-section').then((m) => m.LodgingSection),

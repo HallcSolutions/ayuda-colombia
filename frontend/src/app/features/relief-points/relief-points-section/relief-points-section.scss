@@ -352,6 +352,17 @@
   background: #fdeceb;
 }
 
+.share-feedback {
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid rgba(18, 88, 64, 0.18);
+  border-radius: 10px;
+  color: var(--green);
+  background: #eef6ef;
+  font-size: 13px;
+  font-weight: 750;
+}
+
 .empty,
 .empty-state {
   color: var(--muted);

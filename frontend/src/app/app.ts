@@ -69,6 +69,8 @@ export class App {
    * botón de menú. En pantalla ancha se ven siempre y este estado no pinta nada.
    */
   readonly menuOpen = signal(false);
+  /** La ficha compartida se mantiene enfocada en un solo lugar, sin el aviso nacional. */
+  readonly showAlertBanner = signal(true);
 
   toggleMenu(): void {
     this.menuOpen.update((open) => !open);
@@ -79,6 +81,15 @@ export class App {
   }
 
   constructor() {
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe((event) =>
+        this.showAlertBanner.set(!this.isPointDetailUrl(event.urlAfterRedirects)),
+      );
+
     // La portada aguanta hasta que la primera ruta está pintada: si se fuera antes,
     // se vería el encabezado pegado al pie y todo saltaría al llegar el contenido.
     this.router.events
@@ -104,5 +115,10 @@ export class App {
       this.region.selection();
       this.reportsService.loadReports();
     });
+  }
+
+  private isPointDetailUrl(url: string): boolean {
+    const segments = url.split(/[?#]/u)[0].split('/').filter(Boolean);
+    return segments[0] === 'puntos' && segments.length >= 2;
   }
 }

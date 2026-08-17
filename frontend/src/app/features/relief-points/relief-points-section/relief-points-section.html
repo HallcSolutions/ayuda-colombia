@@ -92,6 +92,9 @@
           <a [href]="directionsFor(point)" target="_blank" rel="noopener">
             {{ t('common.directions') }}
           </a>
+          <button type="button" (click)="sharePoint(point)">
+            <span aria-hidden="true">↗</span>{{ shareLabel(point) }}
+          </button>
           <button type="button" (click)="openAlertForm(point)">
             {{ t('reliefPointCard.requestHelp') }}
           </button>
@@ -99,6 +102,10 @@
       </div>
     }
   </app-colombia-map>
+
+  @if (shareFeedback()) {
+    <p class="share-feedback" role="status" aria-live="polite">{{ shareFeedback() }}</p>
+  }
 
   <section class="directory" id="directorio-ayuda">
     <header class="directory-heading">
@@ -157,19 +164,6 @@
         (closed)="closePointForm()"
       >
         <app-relief-point-form (closed)="closePointForm()" />
-      </app-modal>
-    }
-
-    @if (detailPoint(); as point) {
-      <app-modal [eyebrow]="t(typeKey(point.type))" [title]="point.name" (closed)="closeDetail()">
-        <app-relief-point-detail
-          [point]="point"
-          [meals]="mealsOf(point.id)"
-          [alerts]="alertsOf(point.id)"
-          [distanceKm]="distanceOf(point)"
-          (requestHelp)="openAlertForm($event)"
-          (registerMeal)="openMealForm($event)"
-        />
       </app-modal>
     }
 
@@ -290,6 +284,9 @@
                         <a [href]="directionsFor(point)" target="_blank" rel="noopener">
                           {{ t('common.directions') }}
                         </a>
+                        <button type="button" (click)="sharePoint(point)">
+                          <span aria-hidden="true">↗</span>{{ shareLabel(point) }}
+                        </button>
                         <button type="button" (click)="openAlertForm(point)">
                           {{ t('reliefPointCard.requestHelp') }}
                         </button>
