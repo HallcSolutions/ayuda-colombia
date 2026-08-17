@@ -3,8 +3,13 @@ import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { I18nService } from '../i18n/i18n.service';
 import { HouseReport } from '../models/house-report.model';
 import { MissingRecord } from '../models/missing-record.model';
+import {
+  BrowserShareResult,
+  PublicSharePayload,
+  sharePublicLink,
+} from '../utils/browser-share.util';
 
-export type PublicRecordShareResult = 'shared' | 'copied' | 'cancelled' | 'failed';
+export type PublicRecordShareResult = BrowserShareResult;
 
 /** Enlaces estables para que compartir abra una sola ficha y no un listado filtrado. */
 @Injectable({ providedIn: 'root' })
@@ -24,7 +29,12 @@ export class PublicRecordShareService {
   }
 
   aidOfferPath(): string {
-    return '/inicio#ayuda-disponible-cali';
+    return '/inicio?compartir=ayuda-andrea&v=20260817#ayuda-disponible-cali';
+  }
+
+  perlaDroneHelpPath(record: MissingRecord): string {
+    const version = Date.parse(record.updatedAt) || record.updatedAt;
+    return `/desaparecidos?compartir=ayuda-dron&v=${encodeURIComponent(String(version))}#como-ayudar-perla`;
   }
 
   missingUrlFor(record: MissingRecord): string {
@@ -42,10 +52,16 @@ export class PublicRecordShareService {
     return this.urlFor(this.aidOfferPath());
   }
 
+  perlaDroneHelpUrl(record: MissingRecord): string {
+    return this.urlFor(this.perlaDroneHelpPath(record));
+  }
+
   shareMissing(record: MissingRecord): Promise<PublicRecordShareResult> {
     return this.share({
       title: `${record.name} · ${record.municipality}`,
       url: this.missingUrlFor(record),
+      imageUrl: this.mediaUrl(record.photos[0] ?? '/assets/brand/redayuda-og.jpg'),
+      fileName: this.slug([record.name, record.municipality]),
     });
   }
 
@@ -53,6 +69,10 @@ export class PublicRecordShareService {
     return this.share({
       title: this.i18n.t('share.reportTitle', { municipality: report.municipality }),
       url: this.reportUrlFor(report),
+      imageUrl: this.mediaUrl(
+        report.photos[0] ?? '/assets/reports/report-shelter-illustration.jpg',
+      ),
+      fileName: this.slug(['ayuda', report.municipality]),
     });
   }
 
@@ -60,31 +80,32 @@ export class PublicRecordShareService {
     return this.share({
       title: this.i18n.t('aidOffer.shareTitle'),
       url: this.aidOfferUrl(),
+      imageUrl: this.mediaUrl('/assets/social/andrea-morales-ayuda-cali.png'),
+      fileName: 'andrea-morales-ayuda-cali',
     });
   }
 
-  private async share(data: ShareData): Promise<PublicRecordShareResult> {
-    if (!isPlatformBrowser(this.platformId)) return 'failed';
-
-    if (typeof navigator.share === 'function') {
-      try {
-        await navigator.share(data);
-        return 'shared';
-      } catch (error) {
-        if ((error as { name?: string } | null)?.name === 'AbortError') return 'cancelled';
-      }
-    }
-
-    try {
-      await navigator.clipboard.writeText(data.url ?? '');
-      return 'copied';
-    } catch {
-      return 'failed';
-    }
+  sharePerlaDroneHelp(record: MissingRecord): Promise<PublicRecordShareResult> {
+    return this.share({
+      title: this.i18n.t('missing.help.title'),
+      url: this.perlaDroneHelpUrl(record),
+      imageUrl: this.mediaUrl(record.photos[0] ?? '/assets/brand/redayuda-og.jpg'),
+      fileName: 'se-necesita-dron-para-perla',
+    });
   }
 
   private urlFor(path: string): string {
     return new URL(path, this.document.location.origin).toString();
+  }
+
+  private mediaUrl(path: string): string {
+    return new URL(path, this.document.location.origin).toString();
+  }
+
+  private share(payload: PublicSharePayload): Promise<PublicRecordShareResult> {
+    return isPlatformBrowser(this.platformId)
+      ? sharePublicLink(payload)
+      : Promise.resolve('failed');
   }
 
   private slug(parts: string[]): string {

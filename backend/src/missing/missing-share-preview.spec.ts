@@ -6,6 +6,7 @@ import { MissingRecord } from '../common/interfaces/missing-record.interface';
 import {
   missingIdFromSharePath,
   renderMissingSharePreview,
+  renderSocialPreview,
 } from './missing-share-preview';
 
 const ID = 'df431bcc-700c-4404-94ae-e68d85e38677';
@@ -73,5 +74,21 @@ describe('vista previa al compartir desaparecidos', () => {
     expect(html).toContain(`desaparecidos/perla-cali/${ID}?v=`);
     expect(html).not.toContain('Portada genérica');
     expect(html).not.toContain('og:image:width');
+  });
+
+  it('permite una vista previa propia para campañas como el dron o la ayuda de Andrea', () => {
+    const html = renderSocialPreview(INDEX_HTML, {
+      title: 'Se necesita un dron con cámara para buscar a Perla',
+      description: 'Cómo ayudar en el barrio La Merced de Cali.',
+      pageUrl:
+        'https://redayudacolombia.com/desaparecidos?compartir=ayuda-dron#como-ayudar-perla',
+      imageUrl: 'https://redayudacolombia.com/uploads/perla.png',
+      imageAlt: 'Foto de Perla',
+      type: 'article',
+    });
+
+    expect(html).toContain('Se necesita un dron con cámara');
+    expect(html).toContain('compartir=ayuda-dron');
+    expect(html).toContain('https://redayudacolombia.com/uploads/perla.png');
   });
 });

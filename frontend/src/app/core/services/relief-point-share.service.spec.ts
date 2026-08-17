@@ -27,6 +27,7 @@ const POINT: ReliefPoint = {
 describe('ReliefPointShareService', () => {
   afterEach(() => {
     Object.defineProperty(navigator, 'share', { configurable: true, value: undefined });
+    Object.defineProperty(navigator, 'canShare', { configurable: true, value: undefined });
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined });
   });
 

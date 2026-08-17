@@ -22,13 +22,14 @@ import { ReportsService } from '../../core/services/reports.service';
 import { AidOfferNotice } from '../../shared/aid-offer-notice/aid-offer-notice';
 import { ColombiaMap } from '../../shared/colombia-map/colombia-map';
 import { MapMarker } from '../../shared/colombia-map/colombia-map.model';
+import { PerlaHelpNotice } from '../../shared/perla-help-notice/perla-help-notice';
 import { toMapMarker } from '../relief-points/relief-point-marker';
 import { NeedsDigestPanel } from './needs-digest/needs-digest';
 import { NewsFeed } from './news-feed/news-feed';
 
 @Component({
   selector: 'app-home-page',
-  imports: [RouterLink, ColombiaMap, NeedsDigestPanel, NewsFeed, AidOfferNotice],
+  imports: [RouterLink, ColombiaMap, NeedsDigestPanel, NewsFeed, AidOfferNotice, PerlaHelpNotice],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

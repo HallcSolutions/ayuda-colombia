@@ -2,8 +2,9 @@ import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { ReliefPointType } from '../constants/app.constants';
 import { ReliefPoint } from '../models/relief-point.model';
+import { BrowserShareResult, sharePublicLink } from '../utils/browser-share.util';
 
-export type ReliefPointShareResult = 'shared' | 'copied' | 'cancelled' | 'failed';
+export type ReliefPointShareResult = BrowserShareResult;
 
 const TYPE_SLUG: Record<ReliefPointType, string> = {
   [ReliefPointType.COLLECTION_CENTER]: 'punto-de-acopio',
@@ -44,25 +45,15 @@ export class ReliefPointShareService {
     if (!isPlatformBrowser(this.platformId)) return 'failed';
 
     const url = this.urlFor(point);
-    // Algunas aplicaciones pegan `text` al final de `url` y rompen la ruta.
-    // El título y la ficha directa conservan el contexto sin arriesgar el enlace.
-    const data: ShareData = { title: point.name, url };
-
-    if (typeof navigator.share === 'function') {
-      try {
-        await navigator.share(data);
-        return 'shared';
-      } catch (error) {
-        if ((error as { name?: string } | null)?.name === 'AbortError') return 'cancelled';
-        // Si el menú nativo falla, todavía se puede entregar el enlace copiándolo.
-      }
-    }
-
-    try {
-      await navigator.clipboard.writeText(url);
-      return 'copied';
-    } catch {
-      return 'failed';
-    }
+    return sharePublicLink({
+      title: point.name,
+      url,
+      imageUrl: new URL('/assets/brand/redayuda-og.jpg', this.document.location.origin).toString(),
+      fileName: `${point.name}-${point.municipality}`
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-'),
+    });
   }
 }

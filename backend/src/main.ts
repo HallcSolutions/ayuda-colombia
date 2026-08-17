@@ -7,10 +7,14 @@ import { join } from 'node:path';
 import { AppModule } from './app.module';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import {
+  absoluteSocialUrl,
   missingIdFromSharePath,
   renderMissingSharePreview,
+  renderSocialPreview,
 } from './missing/missing-share-preview';
 import { MissingService } from './missing/missing.service';
+
+const PERLA_ID = 'df431bcc-700c-4404-94ae-e68d85e38677';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,9 +31,50 @@ async function bootstrap() {
       async (request: Request, response: Response, next: NextFunction) => {
         if (request.method !== 'GET') return next();
         const missingId = missingIdFromSharePath(request.path);
-        if (!missingId) return next();
+        const campaign = request.query['compartir'];
 
         try {
+          if (request.path === '/inicio' && campaign === 'ayuda-andrea') {
+            const siteUrl = publicSiteUrl.replace(/\/+$/, '');
+            response.setHeader('Cache-Control', 'public, max-age=60');
+            response.type('html').send(
+              renderSocialPreview(clientIndex, {
+                title: 'Elementos para 20–30 familias sin hogar · Cali',
+                description:
+                  'Andrea Morales ofrece 30 carpas, 30 almohadas y 30 paquetes de pañitos húmedos. Coordina personalmente cada entrega en Cali y ciudades cercanas. Confirma disponibilidad por WhatsApp: 312 683 6035.',
+                pageUrl: `${siteUrl}/inicio?compartir=ayuda-andrea&v=20260817#ayuda-disponible-cali`,
+                imageUrl: `${siteUrl}/assets/social/andrea-morales-ayuda-cali.png`,
+                imageAlt:
+                  'Carpas, almohadas y pañitos ofrecidos por Andrea Morales',
+              }),
+            );
+            return;
+          }
+
+          if (request.path === '/desaparecidos' && campaign === 'ayuda-dron') {
+            const siteUrl = publicSiteUrl.replace(/\/+$/, '');
+            const record = await missingService.findOne(PERLA_ID);
+            const version = Date.parse(record.updatedAt) || record.updatedAt;
+            const imageUrl =
+              absoluteSocialUrl(record.photos[0] ?? '', siteUrl) ||
+              `${siteUrl}/assets/brand/redayuda-og.jpg`;
+            response.setHeader('Cache-Control', 'public, max-age=60');
+            response.type('html').send(
+              renderSocialPreview(clientIndex, {
+                title: 'Se necesita un dron con cámara para buscar a Perla',
+                description:
+                  'Su familia cree que puede estar atrapada en los techos del barrio La Merced, en Cali. Si tienes un dron con cámara o puedes facilitar uno, comunícate al WhatsApp 324 683 6638.',
+                pageUrl: `${siteUrl}/desaparecidos?compartir=ayuda-dron&v=${encodeURIComponent(String(version))}#como-ayudar-perla`,
+                imageUrl,
+                imageAlt:
+                  'Foto de Perla, gata desaparecida en el barrio La Merced de Cali',
+                type: 'article',
+              }),
+            );
+            return;
+          }
+
+          if (!missingId) return next();
           const record = await missingService.findOne(missingId);
           response.setHeader('Cache-Control', 'public, max-age=60');
           response

@@ -62,6 +62,7 @@ const REPORT: HouseReport = {
 describe('PublicRecordShareService', () => {
   afterEach(() => {
     Object.defineProperty(navigator, 'share', { configurable: true, value: undefined });
+    Object.defineProperty(navigator, 'canShare', { configurable: true, value: undefined });
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined });
   });
 
@@ -73,6 +74,8 @@ describe('PublicRecordShareService', () => {
       `/reportes/ayuda-cali-barrio-la-merced/${REPORT.id}`,
     );
     expect(new URL(service.missingUrlFor(MISSING)).searchParams.get('v')).toBeTruthy();
+    expect(service.perlaDroneHelpUrl(MISSING)).toContain('/desaparecidos?compartir=ayuda-dron');
+    expect(service.perlaDroneHelpUrl(MISSING)).toContain('#como-ayudar-perla');
   });
 
   it('abre el menú nativo del celular con la ficha de Perla', async () => {
@@ -100,7 +103,8 @@ describe('PublicRecordShareService', () => {
       title: expect.stringContaining('Cali'),
       url: service.aidOfferUrl(),
     });
-    expect(service.aidOfferUrl()).toContain('/inicio#ayuda-disponible-cali');
+    expect(service.aidOfferUrl()).toContain('#ayuda-disponible-cali');
+    expect(service.aidOfferUrl()).toContain('compartir=ayuda-andrea');
   });
 
   it('copia la ficha individual de ayuda cuando no existe menú nativo', async () => {

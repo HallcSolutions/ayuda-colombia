@@ -47,7 +47,7 @@ const title = (record: MissingRecord): string => {
   return `Ayudemos a encontrar a ${record.name} · ${record.municipality}`;
 };
 
-const absoluteUrl = (value: string, siteUrl: string): string => {
+export const absoluteSocialUrl = (value: string, siteUrl: string): string => {
   try {
     const url = new URL(value, `${siteUrl}/`);
     return ['http:', 'https:'].includes(url.protocol) ? url.toString() : '';
@@ -55,6 +55,15 @@ const absoluteUrl = (value: string, siteUrl: string): string => {
     return '';
   }
 };
+
+export interface SocialPreview {
+  title: string;
+  description: string;
+  pageUrl: string;
+  imageUrl: string;
+  imageAlt: string;
+  type?: 'article' | 'website';
+}
 
 const replaceMeta = (
   html: string,
@@ -69,7 +78,39 @@ const replaceMeta = (
   );
 };
 
-/** Devuelve el mismo SPA, pero con la ficha en el HTML que leen las redes sociales. */
+/** Devuelve el mismo SPA con la información que leen las redes sociales. */
+export const renderSocialPreview = (
+  indexHtml: string,
+  preview: SocialPreview,
+): string => {
+  let html = indexHtml
+    .replace(
+      /<title>[^<]*<\/title>/i,
+      `<title>${escapeHtml(preview.title)} | RedAyuda Colombia</title>`,
+    )
+    .replace(
+      /<link\s+rel=["']canonical["'][^>]*>/i,
+      `<link rel="canonical" href="${escapeHtml(preview.pageUrl)}" />`,
+    )
+    .replace(
+      /\s*<meta\s+property=["']og:image:(?:type|width|height)["'][^>]*>/gi,
+      '',
+    );
+
+  html = replaceMeta(html, 'name', 'description', preview.description);
+  html = replaceMeta(html, 'property', 'og:type', preview.type ?? 'website');
+  html = replaceMeta(html, 'property', 'og:url', preview.pageUrl);
+  html = replaceMeta(html, 'property', 'og:title', preview.title);
+  html = replaceMeta(html, 'property', 'og:description', preview.description);
+  html = replaceMeta(html, 'property', 'og:image', preview.imageUrl);
+  html = replaceMeta(html, 'property', 'og:image:alt', preview.imageAlt);
+  html = replaceMeta(html, 'name', 'twitter:title', preview.title);
+  html = replaceMeta(html, 'name', 'twitter:description', preview.description);
+  html = replaceMeta(html, 'name', 'twitter:image', preview.imageUrl);
+  return html;
+};
+
+/** Vista previa de una ficha individual de persona o animal. */
 export const renderMissingSharePreview = (
   indexHtml: string,
   record: MissingRecord,
@@ -80,39 +121,15 @@ export const renderMissingSharePreview = (
   const path = `/desaparecidos/${slug(`${record.name}-${record.municipality}`)}/${record.id}`;
   const pageUrl = `${siteUrl}${path}?v=${encodeURIComponent(String(version))}`;
   const imageUrl =
-    absoluteUrl(record.photos[0] ?? '', siteUrl) ||
+    absoluteSocialUrl(record.photos[0] ?? '', siteUrl) ||
     `${siteUrl}/assets/brand/redayuda-og.jpg`;
-  const pageTitle = title(record);
-  const pageDescription = summary(record);
 
-  let html = indexHtml
-    .replace(
-      /<title>[^<]*<\/title>/i,
-      `<title>${escapeHtml(pageTitle)} | RedAyuda Colombia</title>`,
-    )
-    .replace(
-      /<link\s+rel=["']canonical["'][^>]*>/i,
-      `<link rel="canonical" href="${escapeHtml(pageUrl)}" />`,
-    )
-    .replace(
-      /\s*<meta\s+property=["']og:image:(?:type|width|height)["'][^>]*>/gi,
-      '',
-    );
-
-  html = replaceMeta(html, 'name', 'description', pageDescription);
-  html = replaceMeta(html, 'property', 'og:type', 'article');
-  html = replaceMeta(html, 'property', 'og:url', pageUrl);
-  html = replaceMeta(html, 'property', 'og:title', pageTitle);
-  html = replaceMeta(html, 'property', 'og:description', pageDescription);
-  html = replaceMeta(html, 'property', 'og:image', imageUrl);
-  html = replaceMeta(
-    html,
-    'property',
-    'og:image:alt',
-    `Foto de ${record.name}`,
-  );
-  html = replaceMeta(html, 'name', 'twitter:title', pageTitle);
-  html = replaceMeta(html, 'name', 'twitter:description', pageDescription);
-  html = replaceMeta(html, 'name', 'twitter:image', imageUrl);
-  return html;
+  return renderSocialPreview(indexHtml, {
+    title: title(record),
+    description: summary(record),
+    pageUrl,
+    imageUrl,
+    imageAlt: `Foto de ${record.name}`,
+    type: 'article',
+  });
 };
